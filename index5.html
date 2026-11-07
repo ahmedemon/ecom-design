@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Atelier Nine — A wardrobe that ages well</title>
+<meta name="description" content="Atelier Nine makes considered footwear, knitwear and denim in small runs from traceable materials." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Archivo:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          paper: '#F0EFEB',
+          ink: '#111111'
+        },
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          display: ['Archivo', 'Inter', 'system-ui', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  [x-cloak]{ display:none !important; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{ background:#F0EFEB; -webkit-font-smoothing:antialiased; }
+  ::selection{ background:#111; color:#fff; }
+  :where(a,button,input,select,textarea,[tabindex]):focus-visible{
+    outline: 2px solid #111;
+    outline-offset: 3px;
+  }
+
+  /* scroll snap container */
+  .snap-scroller{
+    height: 100dvh;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  .snap-scroller::-webkit-scrollbar{ display:none; }
+  .snap-section{ scroll-snap-align: start; scroll-snap-stop: always; }
+
+  /* entrance animations */
+  .section-content{ opacity:0; transform: translateY(24px); transition: opacity .9s cubic-bezier(.2,.8,.2,1), transform .9s cubic-bezier(.2,.8,.2,1); }
+  .is-active .section-content{ opacity:1; transform: translateY(0); }
+
+  .section-img{ opacity:0; transform: scale(.92) translateY(24px); transition: opacity 1s cubic-bezier(.2,.8,.2,1), transform 1s cubic-bezier(.2,.8,.2,1); }
+  .is-active .section-img{ opacity:1; transform: scale(1) translateY(0); }
+  .is-active .delay-1{ transition-delay:.12s; }
+  .is-active .delay-2{ transition-delay:.26s; }
+
+  /* gentle float */
+  @keyframes floaty{
+    0%,100%{ transform: translateY(0) rotate(var(--rot,0deg)); }
+    50%{ transform: translateY(-12px) rotate(var(--rot,0deg)); }
+  }
+  .float-slow{ animation: floaty 7s ease-in-out infinite; }
+  .float-slower{ animation: floaty 9s ease-in-out infinite; animation-delay:-3s; }
+
+  @media (prefers-reduced-motion: reduce){
+    .section-content, .section-img{ transition:none; opacity:1; transform:none; }
+    .float-slow, .float-slower{ animation:none; }
+  }
+
+  .line-clamp-2{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+</style>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js"></script>
+</head>
+
+<body class="font-sans text-ink">
+
+<div x-data="store()" x-cloak
+     @keydown.escape.window="onEscape()"
+     x-effect="document.getElementById('scroller') && (document.getElementById('scroller').style.overflowY = (modalOpen || cartOpen || wishOpen || searchOpen) ? 'hidden' : 'auto')">
+
+  <!-- ============================== HEADER ============================== -->
+  <header class="fixed top-0 inset-x-0 z-40 transition-colors duration-300"
+          :class="scrolled ? 'bg-paper/80 backdrop-blur-md' : 'bg-transparent'">
+    <div class="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 sm:h-20 sm:px-8 lg:px-12">
+
+      <!-- Logo -->
+      <a href="#" @click.prevent="scrollToSection(0)" class="flex items-center gap-2.5" aria-label="Atelier Nine — home">
+        <span class="grid h-8 w-8 place-items-center rounded-lg bg-ink text-white">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 4 20 20H4L12 4Z" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="font-display text-[15px] font-extrabold uppercase tracking-tight">Atelier&nbsp;Nine</span>
+      </a>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-1 sm:gap-2">
+        <button type="button" @click="openSearch()"
+                class="grid h-10 w-10 place-items-center rounded-full text-ink transition hover:bg-black/5"
+                aria-label="Search products">
+          <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <button type="button" @click="wishOpen = true"
+                class="relative grid h-10 w-10 place-items-center rounded-full text-ink transition hover:bg-black/5"
+                aria-label="Open wishlist">
+          <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.6-7 9-7 9Z" stroke-linejoin="round"/>
+          </svg>
+          <span x-show="wishlist.length" class="absolute right-1 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-ink px-1 text-[9px] font-bold text-white" x-text="wishlist.length" aria-hidden="true"></span>
+        </button>
+
+        <button type="button" @click="cartOpen = true"
+                class="flex h-10 items-center gap-2 rounded-full bg-ink px-4 text-white transition hover:bg-black"
+                aria-label="Open cart">
+          <svg class="h-[17px] w-[17px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M4 5h2l2.2 10.2a2 2 0 0 0 2 1.6h7.4a2 2 0 0 0 2-1.55L21 8H7" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="10" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/>
+          </svg>
+          <span class="text-[13px] font-semibold tabular-nums" x-text="cartCount()"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================== SCROLLER ============================== -->
+  <div id="scroller" class="snap-scroller relative">
+
+    <!-- ================= HERO ================= -->
+    <section data-snap-section data-index="0"
+             :class="activeSection === 0 ? 'is-active' : ''"
+             class="snap-section relative flex h-[100dvh] flex-col overflow-hidden bg-paper lg:block">
+
+      <!-- Content -->
+      <div class="section-content relative z-10 shrink-0 px-6 pt-24 sm:px-10 sm:pt-28 lg:absolute lg:left-12 lg:top-1/2 lg:max-w-xl lg:-translate-y-1/2 lg:px-0 lg:pt-0 xl:left-20">
+        <p class="text-[10px] font-semibold uppercase tracking-[0.3em] text-gray-500">Spring / Summer 25</p>
+        <h1 class="mt-5 font-display text-[2.6rem] font-black leading-[0.92] tracking-[-0.035em] text-ink sm:text-6xl lg:text-[5.2rem]">
+          A wardrobe<br>that ages<br><span class="text-gray-400">well.</span>
+        </h1>
+        <p class="mt-6 max-w-sm text-[14px] leading-relaxed text-gray-600 sm:text-[15px]">
+          Considered footwear, knitwear and denim — made in small runs from materials we can trace from mill to wardrobe.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <button type="button" @click="scrollToSection(1)"
+                  class="rounded-full bg-ink px-7 py-3.5 text-[13px] font-semibold text-white transition hover:bg-black">
+            Explore the collection
+          </button>
+          <span class="text-[11px] font-medium uppercase tracking-[0.2em] text-gray-400">Scroll to explore</span>
+        </div>
+      </div>
+
+      <!-- Stage -->
+      <div class="relative mt-6 min-h-0 flex-1 lg:absolute lg:inset-y-0 lg:right-0 lg:left-[52%] lg:mt-0">
+        <!-- main -->
+        <div class="section-img absolute left-[16%] top-[8%] w-[66%] aspect-square overflow-hidden rounded-2xl ring-1 ring-black/5 shadow-[0_30px_70px_-25px_rgba(0,0,0,0.4)] lg:left-[18%] lg:top-[16%] lg:w-[52%] lg:rounded-3xl">
+          <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=900&h=900&q=80"
+               alt="Everyday Low-Top sneaker" class="h-full w-full object-cover" fetchpriority="high" />
+        </div>
+        <!-- secondary top-right -->
+        <div class="section-img delay-1 absolute right-[2%] top-[0%] w-[24%] aspect-square overflow-hidden rounded-xl ring-1 ring-black/5 shadow-[0_20px_45px_-18px_rgba(0,0,0,0.35)] lg:right-[4%] lg:top-[6%] lg:w-[18%] lg:rounded-2xl">
+          <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&h=600&q=80"
+               alt="Merino crew sweater" class="float-slow h-full w-full object-cover" loading="lazy" />
+        </div>
+        <!-- secondary bottom-left -->
+        <div class="section-img delay-2 absolute left-[2%] bottom-[6%] w-[26%] aspect-square overflow-hidden rounded-xl ring-1 ring-black/5 shadow-[0_20px_45px_-18px_rgba(0,0,0,0.35)] lg:left-[2%] lg:bottom-[10%] lg:w-[20%] lg:rounded-2xl">
+          <img src="https://images.unsplash.com/photo-1520639888713-7851133b1ed0?auto=format&fit=crop&w=600&h=600&q=80"
+               alt="Chelsea boot" class="float-slower h-full w-full object-cover" loading="lazy" />
+        </div>
+      </div>
+
+      <!-- bottom hint -->
+      <div class="pointer-events-none absolute bottom-20 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 lg:flex">
+        <span class="text-[9px] font-semibold uppercase tracking-[0.3em] text-gray-400">Scroll</span>
+        <span class="h-8 w-px bg-gray-300"></span>
+      </div>
+    </section>
+
+    <!-- ================= PRODUCT SLIDES ================= -->
+    <template x-for="(product, i) in featuredProducts" :key="product.id">
+      <section :data-index="i + 1"
+               :class="activeSection === i + 1 ? 'is-active' : ''"
+               class="snap-section relative flex h-[100dvh] flex-col overflow-hidden bg-paper lg:block"
+               :aria-label="product.name">
+
+        <!-- Content -->
+        <div class="section-content relative z-10 shrink-0 px-6 pt-20 sm:px-10 sm:pt-24 lg:absolute lg:left-12 lg:top-1/2 lg:max-w-md lg:-translate-y-1/2 lg:px-0 lg:pt-0 xl:left-20">
+          <p class="text-[10px] font-semibold uppercase tracking-[0.3em] text-gray-400">
+            <span x-text="String(i + 1).padStart(2, '0')"></span>
+            <span class="mx-1">/</span>
+            <span x-text="String(featuredProducts.length).padStart(2, '0')"></span>
+          </p>
+          <h2 class="mt-3 font-display text-[2.1rem] font-black leading-[0.95] tracking-[-0.035em] text-ink sm:text-5xl lg:text-[4.2rem]"
+              x-text="product.name"></h2>
+          <p class="mt-3 text-[17px] font-semibold text-gray-700" x-text="money(priceFrom(product))"></p>
+          <p class="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400"
+             x-text="product.brand + ' · ' + product.categoryLabel"></p>
+
+          <button type="button" @click="openProduct(product)"
+                  class="group mt-7 inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.2em] text-ink">
+            View product
+            <span class="grid h-7 w-7 place-items-center rounded-full border border-gray-300 transition group-hover:border-ink group-hover:bg-ink group-hover:text-white">
+              <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-5-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+        </div>
+
+        <!-- Stage -->
+        <div class="relative mt-4 min-h-[30vh] flex-1 lg:absolute lg:inset-y-0 lg:right-0 lg:left-[44%] lg:mt-0 lg:min-h-0">
+
+          <!-- main image -->
+          <button type="button" @click="openProduct(product)"
+                  class="section-img absolute left-[16%] top-[8%] w-[66%] aspect-square overflow-hidden rounded-2xl ring-1 ring-black/5 shadow-[0_30px_70px_-25px_rgba(0,0,0,0.4)] lg:left-[20%] lg:top-[16%] lg:w-[52%] lg:rounded-3xl"
+                  :aria-label="'View ' + product.name">
+            <img :src="product.images[0]" :alt="product.name" class="h-full w-full object-cover" loading="lazy" />
+          </button>
+
+          <!-- secondary 1 -->
+          <button type="button" @click="openProduct(product)"
+                  class="section-img delay-1 absolute right-[2%] top-[0%] w-[24%] aspect-square overflow-hidden rounded-xl ring-1 ring-black/5 shadow-[0_20px_45px_-18px_rgba(0,0,0,0.35)] lg:right-[4%] lg:top-[6%] lg:w-[18%] lg:rounded-2xl"
+                  :aria-label="'View ' + product.name"
+                  style="--rot:-5deg">
+            <img :src="product.images[1]" :alt="product.name" class="float-slow h-full w-full object-cover" loading="lazy" style="transform: rotate(-5deg)" />
+          </button>
+
+          <!-- secondary 2 -->
+          <button type="button" @click="openProduct(product)"
+                  class="section-img delay-2 absolute left-[2%] bottom-[6%] w-[26%] aspect-square overflow-hidden rounded-xl ring-1 ring-black/5 shadow-[0_20px_45px_-18px_rgba(0,0,0,0.35)] lg:left-[2%] lg:bottom-[10%] lg:w-[20%] lg:rounded-2xl"
+                  :aria-label="'View ' + product.name">
+            <img :src="product.images[2]" :alt="product.name" class="float-slower h-full w-full object-cover" loading="lazy" style="transform: rotate(4deg)" />
+          </button>
+        </div>
+
+        <!-- Sizes -->
+        <div class="shrink-0 px-6 pb-24 lg:absolute lg:bottom-24 lg:right-12 lg:px-0 lg:pb-0 xl:right-20">
+          <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-gray-400">Select size</p>
+          <div class="grid grid-cols-4 gap-x-5 gap-y-2 sm:grid-cols-6 lg:grid-cols-3">
+            <template x-for="size in primarySizes(product)" :key="size">
+              <button type="button"
+                      @click="openProductWithSize(product, primarySizeOptionName(product), size)"
+                      class="text-left text-[13px] font-medium text-gray-500 transition hover:text-ink"
+                      :aria-label="'Select size ' + size + ' for ' + product.name">
+                <span x-text="size"></span>
+              </button>
+            </template>
+          </div>
+        </div>
+      </section>
+    </template>
+
+    <!-- ================= FINAL / NEWSLETTER ================= -->
+    <section :data-index="featuredProducts.length + 1"
+             :class="activeSection === featuredProducts.length + 1 ? 'is-active' : ''"
+             class="snap-section relative flex h-[100dvh] flex-col overflow-hidden bg-gray-900 text-white">
+
+      <div class="flex flex-1 items-center px-6 sm:px-10 lg:px-16">
+        <div class="section-content max-w-2xl">
+          <p class="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/40">Join the list</p>
+          <h2 class="mt-5 font-display text-[2.6rem] font-black leading-[0.92] tracking-[-0.035em] sm:text-6xl lg:text-[5rem]">
+            Get 10% off<br>your first order.
+          </h2>
+          <p class="mt-6 max-w-md text-[14px] leading-relaxed text-white/60">
+            Early access to drops, restocks and the occasional sample sale. No noise — just the pieces worth knowing about.
+          </p>
+
+          <form x-show="!newsletter.done" @submit.prevent="subscribe()" class="mt-8 flex max-w-md flex-col gap-2 sm:flex-row">
+            <label for="newsletter-email" class="sr-only">Email address</label>
+            <input id="newsletter-email" type="email" required x-model="newsletter.email"
+                   placeholder="you@email.com"
+                   class="min-w-0 flex-1 rounded-full border border-white/15 bg-white/5 px-5 py-3.5 text-sm text-white placeholder:text-white/35 focus:border-white focus:outline-none" />
+            <button type="submit"
+                    class="shrink-0 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-ink transition hover:bg-gray-100">
+              Subscribe
+            </button>
+          </form>
+
+          <div x-show="newsletter.done" x-cloak class="mt-8 inline-flex items-center gap-2.5 rounded-full bg-white/10 px-5 py-3 text-sm text-white">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>You're on the list. Check your inbox for 10% off.</span>
+          </div>
+
+          <button type="button" @click="scrollToSection(1)"
+                  class="mt-10 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-white/70 transition hover:text-white">
+            Back to the collection
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14m-5-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer links -->
+      <div class="shrink-0 border-t border-white/10 px-6 pb-20 pt-6 sm:px-10 lg:px-16">
+        <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex flex-wrap gap-x-6 gap-y-2 text-[12px] text-white/45">
+            <button @click="scrollToSection(1)" class="transition hover:text-white">Shop</button>
+            <a href="#" class="transition hover:text-white">Our story</a>
+            <a href="#" class="transition hover:text-white">Materials</a>
+            <a href="#" class="transition hover:text-white">Contact</a>
+            <a href="#" class="transition hover:text-white">Privacy</a>
+          </div>
+          <p class="text-[11px] text-white/30">© 2025 Atelier Nine — demo storefront</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============================== BOTTOM SCRUBBER ============================== -->
+  <div x-show="!modalOpen && !cartOpen && !wishOpen && !searchOpen"
+       class="fixed bottom-6 left-1/2 z-30 -translate-x-1/2">
+    <div class="flex items-center gap-3 rounded-full border border-black/5 bg-white/70 px-4 py-2 shadow-sm backdrop-blur">
+      <span class="text-[10px] font-semibold tabular-nums text-gray-500"
+            x-text="String(activeSection + 1).padStart(2, '0')"></span>
+
+      <div class="flex items-center gap-1.5">
+        <template x-for="i in totalSections()" :key="i">
+          <button type="button" @click="scrollToSection(i - 1)"
+                  class="h-[2px] rounded-full transition-all duration-500"
+                  :class="activeSection === i - 1 ? 'w-8 bg-ink' : 'w-4 bg-black/15 hover:bg-black/30'"
+                  :aria-label="'Go to section ' + i"></button>
+        </template>
+      </div>
+
+      <span class="text-[10px] font-medium tabular-nums text-gray-400"
+            x-text="'/' + String(totalSections()).padStart(2, '0')"></span>
+    </div>
+  </div>
+
+  <!-- ============================== SEARCH OVERLAY ============================== -->
+  <div x-show="searchOpen" x-cloak class="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="absolute inset-0 bg-gray-900/30 backdrop-blur-sm" @click="closeSearch()"></div>
+    <div class="absolute inset-x-0 top-0 max-h-[85vh] overflow-y-auto bg-paper shadow-2xl"
+         x-show="searchOpen"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="-translate-y-4 opacity-0"
+         x-transition:enter-end="translate-y-0 opacity-100">
+      <div class="mx-auto max-w-2xl px-6 py-6">
+        <div class="flex items-center gap-3 border-b border-gray-300 pb-4">
+          <svg class="h-5 w-5 shrink-0 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6" stroke-linecap="round"/></svg>
+          <input x-ref="searchInput" type="search" x-model="search"
+                 placeholder="Search the collection…"
+                 class="flex-1 bg-transparent text-lg font-medium text-ink placeholder:text-gray-400 focus:outline-none" />
+          <button type="button" @click="closeSearch()"
+                  class="rounded-full border border-gray-300 px-3 py-1 text-[11px] font-semibold text-gray-500 hover:border-gray-400">
+            Esc
+          </button>
+        </div>
+
+        <div class="mt-4">
+          <template x-if="search.trim() && searchResults().length === 0">
+            <p class="py-8 text-center text-sm text-gray-500">No products match “<span x-text="search"></span>”.</p>
+          </template>
+
+          <template x-if="!search.trim()">
+            <div class="py-8 text-center">
+              <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">Quick picks</p>
+              <div class="mt-4 flex flex-wrap justify-center gap-2">
+                <template x-for="p in featuredProducts" :key="p.id">
+                  <button type="button" @click="openFromSearch(p)"
+                          class="rounded-full border border-gray-300 px-3.5 py-1.5 text-[12px] font-medium text-gray-700 transition hover:border-ink hover:text-ink"
+                          x-text="p.name"></button>
+                </template>
+              </div>
+            </div>
+          </template>
+
+          <ul class="divide-y divide-gray-200">
+            <template x-for="p in searchResults()" :key="p.id">
+              <li>
+                <button type="button" @click="openFromSearch(p)"
+                        class="flex w-full items-center gap-4 py-3 text-left transition hover:opacity-70">
+                  <div class="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-gray-200">
+                    <img :src="p.images[0]" :alt="p.name" class="h-full w-full object-cover" loading="lazy" />
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-semibold text-ink" x-text="p.name"></p>
+                    <p class="text-[11px] uppercase tracking-wider text-gray-400" x-text="p.categoryLabel"></p>
+                  </div>
+                  <span class="text-sm font-semibold text-ink" x-text="money(priceFrom(p))"></span>
+                </button>
+              </li>
+            </template>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== CART DRAWER ============================== -->
+  <div x-show="cartOpen" x-cloak class="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Shopping cart">
+    <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" x-show="cartOpen" x-transition.opacity @click="cartOpen = false"></div>
+
+    <aside class="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-paper shadow-2xl"
+           x-show="cartOpen"
+           x-transition:enter="transition ease-out duration-300"
+           x-transition:enter-start="translate-x-full"
+           x-transition:enter-end="translate-x-0"
+           x-transition:leave="transition ease-in duration-200"
+           x-transition:leave-start="translate-x-0"
+           x-transition:leave-end="translate-x-full">
+
+      <header class="flex items-center justify-between border-b border-black/10 px-5 py-4">
+        <div>
+          <h2 class="font-display text-lg font-extrabold">Basket</h2>
+          <p class="text-[11px] text-gray-500"><span x-text="cartCount()"></span> item<span x-show="cartCount() !== 1">s</span></p>
+        </div>
+        <button type="button" @click="cartOpen = false"
+                class="grid h-9 w-9 place-items-center rounded-full text-gray-500 hover:bg-black/5" aria-label="Close cart">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+
+      <div class="flex-1 overflow-y-auto px-5 py-4">
+        <template x-if="cart.length === 0">
+          <div class="flex h-full flex-col items-center justify-center text-center">
+            <div class="grid h-12 w-12 place-items-center rounded-full bg-black/5 text-gray-400">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <path d="M4 5h2l2.2 10.2a2 2 0 0 0 2 1.6h7.4a2 2 0 0 0 2-1.55L21 8H7" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="10" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/>
+              </svg>
+            </div>
+            <p class="mt-4 font-display text-base font-bold">Your basket is empty</p>
+            <p class="mt-1 max-w-[14rem] text-sm text-gray-500">Start with the Everyday Low-Top — it's where most people begin.</p>
+            <button type="button" @click="cartOpen = false; scrollToSection(1)"
+                    class="mt-5 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-black">
+              Browse the collection
+            </button>
+          </div>
+        </template>
+
+        <ul class="divide-y divide-black/10">
+          <template x-for="line in cart" :key="line.key">
+            <li class="flex gap-3 py-4">
+              <div class="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-200">
+                <img :src="line.image" :alt="line.name" class="h-full w-full object-cover" />
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="min-w-0">
+                    <p class="truncate text-[13px] font-semibold" x-text="line.name"></p>
+                    <p class="mt-0.5 text-[11px] text-gray-500" x-text="line.variantLabel"></p>
+                  </div>
+                  <button type="button" @click="removeLine(line)"
+                          class="grid h-6 w-6 place-items-center rounded-full text-gray-400 hover:bg-black/5 hover:text-ink"
+                          :aria-label="'Remove ' + line.name">
+                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>
+                  </button>
+                </div>
+                <div class="mt-2.5 flex items-center justify-between">
+                  <div class="inline-flex items-center rounded-full border border-black/15">
+                    <button type="button" @click="changeQty(line, -1)" :disabled="line.qty <= 1"
+                            class="grid h-7 w-7 place-items-center rounded-l-full text-ink disabled:opacity-30" aria-label="Decrease quantity">
+                      <svg class="h-2.5 w-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12h14" stroke-linecap="round"/></svg>
+                    </button>
+                    <span class="w-7 text-center text-[12px] font-semibold tabular-nums" x-text="line.qty"></span>
+                    <button type="button" @click="changeQty(line, 1)" :disabled="line.qty >= line.stock"
+                            class="grid h-7 w-7 place-items-center rounded-r-full text-ink disabled:opacity-30" aria-label="Increase quantity">
+                      <svg class="h-2.5 w-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+                    </button>
+                  </div>
+                  <p class="text-[13px] font-bold tabular-nums" x-text="money(line.price * line.qty)"></p>
+                </div>
+              </div>
+            </li>
+          </template>
+        </ul>
+      </div>
+
+      <footer class="border-t border-black/10 px-5 py-4">
+        <dl class="space-y-1.5 text-[13px]">
+          <div class="flex justify-between text-gray-600"><dt>Subtotal</dt><dd class="font-medium text-ink" x-text="money(subtotal())"></dd></div>
+          <div class="flex justify-between text-gray-600"><dt>Shipping</dt><dd class="font-medium text-ink" x-text="subtotal() >= 100 || subtotal() === 0 ? 'Free' : money(6.9)"></dd></div>
+          <div class="flex justify-between border-t border-black/10 pt-2 text-[15px] font-bold"><dt>Total</dt><dd class="tabular-nums" x-text="money(total())"></dd></div>
+        </dl>
+        <button type="button" :disabled="cart.length === 0" @click="showToast('Checkout is a demo placeholder')"
+                class="mt-4 w-full rounded-full bg-ink py-3.5 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-40">
+          Proceed to checkout
+        </button>
+        <p class="mt-2 text-center text-[10px] uppercase tracking-wider text-gray-400">60-day returns · free exchanges</p>
+      </footer>
+    </aside>
+  </div>
+
+  <!-- ============================== WISHLIST DRAWER ============================== -->
+  <div x-show="wishOpen" x-cloak class="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Wishlist">
+    <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" x-show="wishOpen" x-transition.opacity @click="wishOpen = false"></div>
+
+    <aside class="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-paper shadow-2xl"
+           x-show="wishOpen"
+           x-transition:enter="transition ease-out duration-300"
+           x-transition:enter-start="translate-x-full"
+           x-transition:enter-end="translate-x-0"
+           x-transition:leave="transition ease-in duration-200"
+           x-transition:leave-start="translate-x-0"
+           x-transition:leave-end="translate-x-full">
+
+      <header class="flex items-center justify-between border-b border-black/10 px-5 py-4">
+        <div>
+          <h2 class="font-display text-lg font-extrabold">Saved</h2>
+          <p class="text-[11px] text-gray-500"><span x-text="wishlist.length"></span> saved</p>
+        </div>
+        <button type="button" @click="wishOpen = false"
+                class="grid h-9 w-9 place-items-center rounded-full text-gray-500 hover:bg-black/5" aria-label="Close wishlist">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+
+      <div class="flex-1 overflow-y-auto px-5 py-4">
+        <template x-if="wishlist.length === 0">
+          <div class="flex h-full flex-col items-center justify-center text-center">
+            <div class="grid h-12 w-12 place-items-center rounded-full bg-black/5 text-gray-400">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.6-7 9-7 9Z" stroke-linejoin="round"/></svg>
+            </div>
+            <p class="mt-4 font-display text-base font-bold">No favourites yet</p>
+            <p class="mt-1 max-w-[14rem] text-sm text-gray-500">Tap the heart on any product to keep it here.</p>
+            <button type="button" @click="wishOpen = false; scrollToSection(1)"
+                    class="mt-5 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-black">
+              Find something good
+            </button>
+          </div>
+        </template>
+
+        <ul class="divide-y divide-black/10">
+          <template x-for="p in wishlistProducts()" :key="p.id">
+            <li class="flex gap-3 py-4">
+              <div class="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-200">
+                <img :src="p.images[0]" :alt="p.name" class="h-full w-full object-cover" />
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-[13px] font-semibold" x-text="p.name"></p>
+                <p class="mt-0.5 text-[11px] uppercase tracking-wider text-gray-400" x-text="p.categoryLabel"></p>
+                <div class="mt-2.5 flex items-center justify-between">
+                  <p class="text-[13px] font-bold" x-text="money(priceFrom(p))"></p>
+                  <div class="flex items-center gap-1.5">
+                    <button type="button" @click="openProduct(p); wishOpen = false"
+                            class="rounded-full bg-ink px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-black">View</button>
+                    <button type="button" @click="toggleWish(p.id)"
+                            class="grid h-6 w-6 place-items-center rounded-full text-gray-400 hover:bg-black/5 hover:text-ink"
+                            :aria-label="'Remove ' + p.name">
+                      <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ============================== PRODUCT MODAL ============================== -->
+  <div x-show="modalOpen" x-cloak class="fixed inset-0 z-50" role="dialog" aria-modal="true"
+       :aria-label="activeProduct ? activeProduct.name : 'Product details'">
+    <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" x-show="modalOpen" x-transition.opacity @click="closeProduct()"></div>
+
+    <div class="absolute inset-0 overflow-y-auto overscroll-contain">
+      <div class="mx-auto w-full max-w-5xl bg-paper shadow-2xl sm:my-8 sm:rounded-3xl"
+           x-show="modalOpen"
+           x-transition:enter="transition ease-out duration-300"
+           x-transition:enter-start="opacity-0 translate-y-4"
+           x-transition:enter-end="opacity-100 translate-y-0">
+
+        <template x-if="activeProduct">
+          <div class="relative">
+
+            <button type="button" x-ref="modalClose" @click="closeProduct()"
+                    class="absolute right-4 top-4 z-20 grid h-10 w-10 place-items-center rounded-full bg-white/80 text-ink shadow-sm backdrop-blur transition hover:bg-white"
+                    aria-label="Close product details">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>
+            </button>
+
+            <div class="grid lg:grid-cols-[1.05fr_1fr]">
+
+              <!-- Gallery -->
+              <div class="p-4 sm:p-8">
+                <div class="relative aspect-square overflow-hidden rounded-2xl bg-gray-200 ring-1 ring-black/5">
+                  <img :src="activeProduct.images[gallery]" :alt="activeProduct.name + ' — view ' + (gallery + 1)"
+                       class="h-full w-full object-cover" />
+                  <span x-show="activeProduct.badge" x-cloak
+                        class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-ink backdrop-blur"
+                        x-text="activeProduct.badge"></span>
+                </div>
+
+                <div class="mt-3 flex gap-2">
+                  <template x-for="(img, idx) in activeProduct.images" :key="idx">
+                    <button type="button" @click="gallery = idx"
+                            class="h-16 w-16 overflow-hidden rounded-xl ring-1 ring-black/10 transition sm:h-20 sm:w-20"
+                            :class="gallery === idx ? 'ring-2 ring-ink' : 'opacity-60 hover:opacity-100'"
+                            :aria-label="'Show image ' + (idx + 1)">
+                      <img :src="img" alt="" class="h-full w-full object-cover" loading="lazy" />
+                    </button>
+                  </template>
+                </div>
+              </div>
+
+              <!-- Details -->
+              <div class="p-5 pb-8 sm:p-8 lg:pr-10">
+                <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-400"
+                   x-text="activeProduct.brand + ' · ' + activeProduct.categoryLabel"></p>
+                <h2 class="mt-2 font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl" x-text="activeProduct.name"></h2>
+
+                <div class="mt-2 flex items-center gap-1.5 text-[12px] text-gray-500">
+                  <svg class="h-3.5 w-3.5 text-amber-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 3.6 2.5 5.1 5.6.8-4 3.9 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4-3.9 5.6-.8Z"/></svg>
+                  <span class="font-semibold text-ink" x-text="activeProduct.rating.toFixed(1)"></span>
+                  <span class="text-gray-300">·</span>
+                  <span x-text="activeProduct.reviews + ' reviews'"></span>
+                </div>
+
+                <div class="mt-4 flex items-baseline gap-3">
+                  <span class="text-2xl font-bold tabular-nums" x-text="money(activeVariant() ? activeVariant().price : 0)"></span>
+                  <span x-show="activeVariant() && activeVariant().compareAt" x-cloak
+                        class="text-base text-gray-400 line-through"
+                        x-text="activeVariant() && activeVariant().compareAt ? money(activeVariant().compareAt) : ''"></span>
+                  <span x-show="activeVariant() && activeVariant().compareAt" x-cloak
+                        class="rounded-full bg-rose-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-rose-600"
+                        x-text="discountLabel()"></span>
+                </div>
+
+                <p class="mt-1.5 text-[12px] font-medium"
+                   :class="activeVariant() && activeVariant().stock > 0 ? 'text-emerald-700' : 'text-rose-600'">
+                  <span x-show="activeVariant() && activeVariant().stock > 0">
+                    In stock — <span x-text="activeVariant() ? activeVariant().stock : 0"></span> left
+                  </span>
+                  <span x-show="!activeVariant() || activeVariant().stock === 0">
+                    Out of stock for this combination
+                  </span>
+                </p>
+
+                <p class="mt-4 text-[14px] leading-relaxed text-gray-600" x-text="activeProduct.blurb"></p>
+
+                <!-- Options -->
+                <template x-for="opt in activeProduct.options" :key="opt.name">
+                  <div class="mt-5">
+                    <div class="flex items-baseline justify-between">
+                      <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-gray-500" x-text="opt.name"></p>
+                      <p class="text-[12px] font-medium text-ink" x-text="selected[opt.name]"></p>
+                    </div>
+
+                    <div x-show="opt.kind === 'color'" class="mt-2 flex flex-wrap gap-2">
+                      <template x-for="value in opt.values" :key="value">
+                        <button type="button" @click="selectOption(opt.name, value)"
+                                :disabled="!optionAvailable(opt.name, value)"
+                                :aria-pressed="selected[opt.name] === value"
+                                class="flex items-center gap-2 rounded-full border px-3 py-1.5 text-[12px] font-medium transition"
+                                :class="[
+                                  selected[opt.name] === value ? 'border-ink bg-ink text-white' : 'border-black/15 bg-white text-gray-700 hover:border-black/40',
+                                  optionAvailable(opt.name, value) ? '' : 'cursor-not-allowed opacity-40'
+                                ]">
+                          <span class="h-3.5 w-3.5 rounded-full border border-black/10" :style="'background:' + swatch(value)" aria-hidden="true"></span>
+                          <span x-text="value"></span>
+                        </button>
+                      </template>
+                    </div>
+
+                    <div x-show="opt.kind !== 'color'" class="mt-2 flex flex-wrap gap-2">
+                      <template x-for="value in opt.values" :key="value">
+                        <button type="button" @click="selectOption(opt.name, value)"
+                                :disabled="!optionAvailable(opt.name, value)"
+                                :aria-pressed="selected[opt.name] === value"
+                                class="rounded-lg border px-3.5 py-2 text-[12px] font-semibold transition"
+                                :class="[
+                                  selected[opt.name] === value ? 'border-ink bg-ink text-white' : 'border-black/15 bg-white text-gray-700 hover:border-black/40',
+                                  optionAvailable(opt.name, value) ? '' : 'cursor-not-allowed line-through opacity-40'
+                                ]"
+                                x-text="value"></button>
+                      </template>
+                    </div>
+                  </div>
+                </template>
+
+                <p class="mt-4 text-[11px] text-gray-400">
+                  SKU <span class="font-medium text-gray-600" x-text="activeVariant() ? activeVariant().sku : '—'"></span>
+                </p>
+
+                <!-- Quantity + actions -->
+                <div class="mt-5 flex items-center gap-2.5">
+                  <div class="inline-flex items-center rounded-full border border-black/15">
+                    <button type="button" @click="qty = Math.max(1, qty - 1)" :disabled="qty <= 1"
+                            class="grid h-11 w-10 place-items-center rounded-l-full text-ink disabled:opacity-30" aria-label="Decrease quantity">
+                      <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12h14" stroke-linecap="round"/></svg>
+                    </button>
+                    <span class="w-8 text-center text-sm font-bold tabular-nums" x-text="qty" aria-live="polite"></span>
+                    <button type="button" @click="qty = Math.min(maxQty(), qty + 1)" :disabled="qty >= maxQty()"
+                            class="grid h-11 w-10 place-items-center rounded-r-full text-ink disabled:opacity-30" aria-label="Increase quantity">
+                      <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+                    </button>
+                  </div>
+
+                  <button type="button" @click="addActiveToCart()" :disabled="!canAdd()"
+                          class="flex-1 rounded-full bg-ink py-3.5 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-40">
+                    Add to cart
+                  </button>
+
+                  <button type="button" @click="toggleWish(activeProduct.id)"
+                          class="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-black/15 text-ink transition hover:border-ink"
+                          :aria-pressed="inWishlist(activeProduct.id)" aria-label="Save to wishlist">
+                    <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                         :class="inWishlist(activeProduct.id) ? 'fill-rose-500 stroke-rose-500' : ''" aria-hidden="true">
+                      <path d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.6-7 9-7 9Z" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Delivery -->
+                <div class="mt-5 grid gap-2 rounded-2xl bg-black/[0.035] p-4 text-[12px] text-gray-600 sm:grid-cols-2">
+                  <p class="flex items-start gap-2">
+                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.5"/><circle cx="17.5" cy="18" r="1.5"/></svg>
+                    Free shipping over $100
+                  </p>
+                  <p class="flex items-start gap-2">
+                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12a8 8 0 1 1 2.3 5.7" stroke-linecap="round"/><path d="M4 20v-5h5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    60-day returns · free exchanges
+                  </p>
+                </div>
+
+                <!-- Accordions -->
+                <div class="mt-5 divide-y divide-black/10 border-y border-black/10">
+                  <div>
+                    <button type="button" @click="acc = acc === 'details' ? '' : 'details'"
+                            class="flex w-full items-center justify-between py-4 text-left" :aria-expanded="acc === 'details'">
+                      <span class="text-[12px] font-semibold uppercase tracking-[0.1em]">Product details</span>
+                      <svg class="h-4 w-4 text-gray-400 transition" :class="acc === 'details' ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <div x-show="acc === 'details'" x-cloak class="pb-4">
+                      <p class="text-[13px] leading-relaxed text-gray-600" x-text="activeProduct.description"></p>
+                      <ul class="mt-3 space-y-1.5 text-[12.5px] text-gray-600">
+                        <template x-for="d in activeProduct.details" :key="d">
+                          <li class="flex items-start gap-2">
+                            <span class="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-gray-400" aria-hidden="true"></span>
+                            <span x-text="d"></span>
+                          </li>
+                        </template>
+                      </ul>
+                    </div>
+                  </div>
+                  <div>
+                    <button type="button" @click="acc = acc === 'shipping' ? '' : 'shipping'"
+                            class="flex w-full items-center justify-between py-4 text-left" :aria-expanded="acc === 'shipping'">
+                      <span class="text-[12px] font-semibold uppercase tracking-[0.1em]">Shipping &amp; returns</span>
+                      <svg class="h-4 w-4 text-gray-400 transition" :class="acc === 'shipping' ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <div x-show="acc === 'shipping'" x-cloak class="pb-4 text-[13px] leading-relaxed text-gray-600">
+                      Dispatched within 24 hours. Standard shipping is $6.90 and free over $100. Unworn items with tags attached can be returned within 60 days — exchanges are always free.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== TOAST ============================== -->
+  <div x-show="toast.show" x-cloak
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="opacity-0 translate-y-3"
+       x-transition:enter-end="opacity-100 translate-y-0"
+       x-transition:leave="transition ease-in duration-200"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"
+       class="fixed bottom-24 left-1/2 z-[70] w-[calc(100%-2rem)] max-w-sm -translate-x-1/2"
+       role="status" aria-live="polite">
+    <div class="flex items-center gap-3 rounded-full bg-ink px-5 py-3 text-sm font-medium text-white shadow-2xl">
+      <svg class="h-4 w-4 shrink-0 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span x-text="toast.msg"></span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     DATA + STATE
+============================================================ -->
+<script>
+const IMG = (id, w = 900, h = 900) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=80`;
+
+function buildVariants(prefix, options, config = {}) {
+  const { price = 0, compareAt = null, outOfStock = [], lowStock = [], defaultStock = 6 } = config;
+  const names = options.map(o => o.name);
+  const combos = options.reduce(
+    (acc, opt) => acc.flatMap(c => opt.values.map(v => ({ ...c, [opt.name]: v }))),
+    [{}]
+  );
+  return combos.map(combo => {
+    const key = names.map(n => combo[n]).join(' / ');
+    const stock = outOfStock.includes(key) ? 0 : (lowStock.includes(key) ? 2 : defaultStock);
+    const sku = prefix + '-' + names
+      .map(n => String(combo[n]).replace(/[^a-zA-Z0-9]/g, '').slice(0, 5).toUpperCase())
+      .join('-');
+    const id = prefix + '-' + names
+      .map(n => String(combo[n]).replace(/[^a-zA-Z0-9]+/g, '').toLowerCase())
+      .join('-');
+    return {
+      id,
+      options: combo,
+      price: typeof price === 'function' ? price(combo) : price,
+      compareAt: typeof compareAt === 'function' ? compareAt(combo) : compareAt,
+      sku,
+      stock
+    };
+  });
+}
+
+function product(cfg) {
+  const {
+    options = [], prefix = 'SKU', price = 0, compareAt = null,
+    outOfStock = [], lowStock = [], defaultStock = 6, ...rest
+  } = cfg;
+  return {
+    ...rest,
+    options,
+    variants: buildVariants(prefix, options, { price, compareAt, outOfStock, lowStock, defaultStock })
+  };
+}
+
+const SHOE_SIZES = ['EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44', 'EU 45', 'EU 46'];
+const TOP_SIZES  = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const WAISTS     = ['28', '30', '32', '34', '36', '38'];
+const INSEAMS    = ['30', '32', '34'];
+
+const PRODUCTS = [
+  product({
+    id: 'everyday-low-top', name: 'Everyday Low-Top', brand: 'Atelier Nine',
+    category: 'sneakers', categoryLabel: 'Sneakers', tags: ['best', 'footwear'],
+    rating: 4.9, reviews: 384, badge: 'Bestseller',
+    images: [IMG('photo-1595950653106-6c9ebd614d3a'), IMG('photo-1560769629-975ec94e6a86'), IMG('photo-1606107557195-0e29a4b5b4aa')],
+    blurb: 'The pair you reach for without thinking. Full-grain leather, cupsole.',
+    description: 'A clean, quiet silhouette in full-grain leather over a stitched cupsole. Padded collar, cork-blend footbed and a rubber outsole that grips in the wet. They look better scuffed.',
+    details: ['Full-grain leather upper', 'Stitched cupsole construction', 'Cork-blend footbed', 'Runs true to size'],
+    prefix: 'ELT',
+    options: [{ name: 'Size', kind: 'size', values: SHOE_SIZES }, { name: 'Colour', kind: 'color', values: ['White', 'Black', 'Ecru'] }],
+    price: 98, compareAt: 120,
+    outOfStock: ['EU 40 / White', 'EU 46 / Black'], lowStock: ['EU 44 / Ecru'], defaultStock: 7
+  }),
+  product({
+    id: 'trail-runner-gtx', name: 'Trail Runner GTX', brand: 'Atelier Nine',
+    category: 'sneakers', categoryLabel: 'Sneakers', tags: ['new', 'footwear'],
+    rating: 4.8, reviews: 142, badge: 'New',
+    images: [IMG('photo-1542291026-7eec264c27ff'), IMG('photo-1600185365483-26d7a4cc7519'), IMG('photo-1521369909029-2afed882baee')],
+    blurb: 'A waterproof trail shoe that still looks right on the street.',
+    description: 'Built on a lugged rubber outsole with a waterproof membrane and a rock plate underfoot. The upper is recycled ripstop with a suede toe bumper.',
+    details: ['Waterproof, breathable membrane', 'Vibram® Megagrip outsole', 'Recycled ripstop upper', 'Runs true to size'],
+    prefix: 'TRG',
+    options: [{ name: 'Size', kind: 'size', values: SHOE_SIZES }, { name: 'Colour', kind: 'color', values: ['Slate', 'Forest', 'Sand'] }],
+    price: (c) => ['EU 45', 'EU 46'].includes(c.Size) ? 170 : 165,
+    compareAt: 195,
+    outOfStock: ['EU 40 / Sand', 'EU 46 / Slate'],
+    lowStock: ['EU 45 / Forest', 'EU 41 / Slate']
+  }),
+  product({
+    id: 'chelsea-boot', name: 'Chelsea Boot', brand: 'Atelier Nine',
+    category: 'boots', categoryLabel: 'Boots', tags: ['best', 'footwear'],
+    rating: 4.8, reviews: 221, badge: 'Bestseller',
+    images: [IMG('photo-1520639888713-7851133b1ed0'), IMG('photo-1543163521-1bf539c55dd2'), IMG('photo-1608256246200-53e635b5b65f')],
+    blurb: 'Goodyear-welted leather Chelsea on a commando sole.',
+    description: 'A proper Chelsea: full-grain leather, elasticated gussets and a Goodyear welt that can be resoled again and again. The commando sole handles a wet pavement without looking like a work boot.',
+    details: ['Goodyear-welted construction', 'Full-grain leather upper', 'Commando rubber sole', 'Half sizes available on request'],
+    prefix: 'CHB',
+    options: [{ name: 'Size', kind: 'size', values: SHOE_SIZES }, { name: 'Colour', kind: 'color', values: ['Black', 'Tan'] }],
+    price: 185, compareAt: 220,
+    outOfStock: ['EU 40 / Tan', 'EU 46 / Black'], lowStock: ['EU 44 / Tan']
+  }),
+  product({
+    id: 'leather-slide', name: 'Leather Slide Sandal', brand: 'Atelier Nine',
+    category: 'sandals', categoryLabel: 'Sandals', tags: ['new', 'footwear'],
+    rating: 4.7, reviews: 73, badge: 'New',
+    images: [IMG('photo-1560343090-f0409e92791a'), IMG('photo-1603808033192-082d6919d3e1'), IMG('photo-1543163521-1bf539c55dd2')],
+    blurb: 'A single-band leather slide on a moulded cork footbed.',
+    description: 'Vegetable-tanned leather over a contoured cork footbed that moulds to your foot. Made to be worn barefoot, from June to September.',
+    details: ['Vegetable-tanned leather', 'Moulded cork footbed', 'Rubber outsole', 'Runs true to size'],
+    prefix: 'LSL',
+    options: [{ name: 'Size', kind: 'size', values: SHOE_SIZES }, { name: 'Colour', kind: 'color', values: ['Tan', 'Black'] }],
+    price: 110, compareAt: 130,
+    outOfStock: ['EU 46 / Tan'], lowStock: ['EU 40 / Black']
+  }),
+  product({
+    id: 'merino-crew', name: 'Merino Crew Sweater', brand: 'Atelier Nine',
+    category: 'knitwear', categoryLabel: 'Knitwear', tags: ['best', 'apparel'],
+    rating: 4.9, reviews: 312, badge: 'Bestseller',
+    images: [IMG('photo-1596755094514-f87e34085b2c'), IMG('photo-1592878904946-b3cd8ae243d0'), IMG('photo-1489987707025-afc232f7ea0f')],
+    blurb: 'Fine-gauge extra-fine merino. Warm, breathable, never itchy.',
+    description: 'Knitted in a small mill in northern Portugal from extra-fine merino, with a clean crew neck and a slightly relaxed body. It layers under a jacket and holds its shape after a wash.',
+    details: ['100% extra-fine merino wool', 'Knitted in Portugal', 'Machine wash cold, dry flat', 'Relaxed fit — size down for a closer cut'],
+    prefix: 'MCS',
+    options: [{ name: 'Size', kind: 'size', values: TOP_SIZES }, { name: 'Colour', kind: 'color', values: ['Forest', 'Oat', 'Navy'] }],
+    price: 128, compareAt: 158,
+    outOfStock: ['XS / Oat', 'XXL / Forest'], lowStock: ['XL / Navy'], defaultStock: 5
+  }),
+  product({
+    id: 'cable-cardigan', name: 'Cable Knit Cardigan', brand: 'Atelier Nine',
+    category: 'knitwear', categoryLabel: 'Knitwear', tags: ['new', 'apparel'],
+    rating: 4.7, reviews: 96, badge: 'New',
+    images: [IMG('photo-1592878904946-b3cd8ae243d0'), IMG('photo-1596755094514-f87e34085b2c'), IMG('photo-1523381210434-271e8be1f52b')],
+    blurb: 'A chunky lambswool cable knit with horn buttons.',
+    description: 'Hand-finished cable knit in lambswool, with real horn buttons and a ribbed shawl collar. The kind of cardigan you keep by the door.',
+    details: ['100% lambswool', 'Real horn buttons', 'Hand-finished cable knit', 'Oversized fit'],
+    prefix: 'CKC',
+    options: [{ name: 'Size', kind: 'size', values: TOP_SIZES }, { name: 'Colour', kind: 'color', values: ['Cream', 'Charcoal', 'Rust'] }],
+    price: 148, compareAt: null,
+    outOfStock: ['XS / Rust', 'XXL / Cream'], lowStock: ['L / Charcoal'], defaultStock: 4
+  }),
+  product({
+    id: 'heavyweight-tee', name: 'Heavyweight Tee', brand: 'Atelier Nine',
+    category: 'shirts', categoryLabel: 'Shirts & Tees', tags: ['best', 'apparel'],
+    rating: 4.8, reviews: 402, badge: 'Bestseller',
+    images: [IMG('photo-1521572163474-6864f9cf17ab'), IMG('photo-1576566588028-4147f3842f27'), IMG('photo-1583743814966-8936f5b7be1a')],
+    blurb: '240gsm organic cotton, boxy fit, ribbed collar.',
+    description: 'A proper heavyweight tee: 240gsm organic cotton, a boxy body and a ribbed collar that will not stretch out. Garment-dyed in small batches so the colour fades beautifully.',
+    details: ['240gsm organic cotton', 'Garment-dyed in small batches', 'Boxy fit', 'Pre-shrunk'],
+    prefix: 'HWT',
+    options: [{ name: 'Size', kind: 'size', values: TOP_SIZES }, { name: 'Colour', kind: 'color', values: ['White', 'Black', 'Sand', 'Forest'] }],
+    price: 48, compareAt: 58,
+    outOfStock: ['XS / Black', 'XXL / White'], lowStock: ['L / Forest'], defaultStock: 9
+  }),
+  product({
+    id: 'oxford-shirt', name: 'Oxford Shirt', brand: 'Atelier Nine',
+    category: 'shirts', categoryLabel: 'Shirts & Tees', tags: ['apparel'],
+    rating: 4.7, reviews: 156, badge: null,
+    images: [IMG('photo-1596755094514-f87e34085b2c'), IMG('photo-1620012253295-c15cc3e65df4'), IMG('photo-1512374382149-233c42b6a83b')],
+    blurb: 'Washed Oxford cotton with a soft button-down collar.',
+    description: 'A washed Oxford in a slightly heavier cotton than most, with a soft roll to the collar and a single chest pocket. Wears in rather than out.',
+    details: ['Washed Oxford cotton', 'Soft button-down collar', 'Single chest pocket', 'Regular fit'],
+    prefix: 'OXF',
+    options: [{ name: 'Size', kind: 'size', values: TOP_SIZES }, { name: 'Colour', kind: 'color', values: ['White', 'Blue', 'Sand'] }],
+    price: 89, compareAt: null,
+    outOfStock: ['XS / Sand', 'XXL / White'], lowStock: ['M / Blue']
+  }),
+  product({
+    id: 'waxed-field-jacket', name: 'Waxed Field Jacket', brand: 'Atelier Nine',
+    category: 'outerwear', categoryLabel: 'Outerwear', tags: ['best', 'apparel'],
+    rating: 4.9, reviews: 178, badge: 'Bestseller',
+    images: [IMG('photo-1551028719-00167b16eac5'), IMG('photo-1576871337622-98d48d1cf531'), IMG('photo-1591047139829-d91aecb6caea')],
+    blurb: 'British waxed cotton, four pockets, made to be re-waxed.',
+    description: 'Cut from 8oz British waxed cotton with a corduroy collar and four bellows pockets. It will smell like a workshop for a week and then just smell like yours. Re-wax it every few years and it will outlast you.',
+    details: ['8oz British waxed cotton', 'Corduroy collar', 'Four bellows pockets', 'Re-waxable — we stock the wax'],
+    prefix: 'WFJ',
+    options: [{ name: 'Size', kind: 'size', values: TOP_SIZES }, { name: 'Colour', kind: 'color', values: ['Olive', 'Black'] }],
+    price: (c) => c.Size === 'XXL' ? 255 : 245,
+    compareAt: null,
+    outOfStock: ['XS / Olive', 'XXL / Black'], lowStock: ['L / Olive'], defaultStock: 4
+  }),
+  product({
+    id: 'selvedge-denim', name: 'Selvedge Denim', brand: 'Atelier Nine',
+    category: 'trousers', categoryLabel: 'Denim & Trousers', tags: ['best', 'apparel'],
+    rating: 4.8, reviews: 264, badge: 'Bestseller',
+    images: [IMG('photo-1542272604-787c3835535d'), IMG('photo-1544022613-e87ca75a784a'), IMG('photo-1594633312681-425c7b97ccd1')],
+    blurb: '14oz Japanese selvedge, straight leg, raw or rinse.',
+    description: 'Woven on shuttle looms in Okayama and cut straight through the leg with a mid rise. Raw will fade to your shape in a few months; rinse is already soft.',
+    details: ['14oz Japanese selvedge denim', 'Straight leg, mid rise', 'Chain-stitched hem', 'Raw or one-wash rinse'],
+    prefix: 'SEL',
+    options: [
+      { name: 'Waist', kind: 'size', values: WAISTS },
+      { name: 'Inseam', kind: 'size', values: INSEAMS },
+      { name: 'Colour', kind: 'color', values: ['Indigo', 'Rinse'] }
+    ],
+    price: (c) => c.Inseam === '34' ? 150 : 145,
+    compareAt: null,
+    outOfStock: ['28 / 34 / Indigo', '38 / 30 / Rinse', '30 / 34 / Rinse'],
+    lowStock: ['32 / 32 / Indigo'], defaultStock: 4
+  }),
+  product({
+    id: 'leather-belt', name: 'Leather Belt', brand: 'Atelier Nine',
+    category: 'accessories', categoryLabel: 'Accessories', tags: ['best', 'accessories'],
+    rating: 4.7, reviews: 118, badge: 'Bestseller',
+    images: [IMG('photo-1553062407-98eeb64c6a62'), IMG('photo-1620799140408-edc6dcb6d633'), IMG('photo-1520903920243-00d872a2d1c9')],
+    blurb: 'Vegetable-tanned bridle leather with a solid brass buckle.',
+    description: 'Cut from a single length of English bridle leather, edge-burnished by hand and finished with a solid brass buckle. It will darken and soften for years.',
+    details: ['English bridle leather', 'Solid brass buckle', 'Hand-burnished edges', '35mm width'],
+    prefix: 'BLT',
+    options: [{ name: 'Size', kind: 'size', values: ['S', 'M', 'L'] }, { name: 'Colour', kind: 'color', values: ['Tan', 'Black'] }],
+    price: 58, compareAt: 72,
+    outOfStock: ['S / Tan', 'L / Black'], lowStock: ['M / Tan'], defaultStock: 7
+  }),
+  product({
+    id: 'wool-beanie', name: 'Wool Beanie', brand: 'Atelier Nine',
+    category: 'accessories', categoryLabel: 'Accessories', tags: ['new', 'accessories'],
+    rating: 4.8, reviews: 203, badge: 'New',
+    images: [IMG('photo-1620799140408-edc6dcb6d633'), IMG('photo-1520903920243-00d872a2d1c9'), IMG('photo-1553062407-98eeb64c6a62')],
+    blurb: 'Ribbed lambswool beanie, knitted in a small mill.',
+    description: 'A proper ribbed beanie in soft lambswool with a folded cuff. It holds its shape and covers the ears without looking like a tea cosy.',
+    details: ['100% lambswool', 'Ribbed knit with folded cuff', 'One size', 'Hand wash cold'],
+    prefix: 'BNE',
+    options: [{ name: 'Colour', kind: 'color', values: ['Forest', 'Rust', 'Charcoal', 'Ecru'] }],
+    price: 32, compareAt: null,
+    outOfStock: ['Rust'], lowStock: ['Forest'], defaultStock: 9
+  })
+];
+
+const FEATURED_IDS = ['everyday-low-top', 'merino-crew', 'chelsea-boot', 'selvedge-denim', 'waxed-field-jacket'];
+
+document.addEventListener('alpine:init', () => {
+  Alpine.data('store', () => ({
+    products: PRODUCTS,
+    featuredProducts: FEATURED_IDS.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean),
+
+    /* ---- scroll state ---- */
+    activeSection: 0,
+    scrolled: false,
+
+    /* ---- commerce ---- */
+    cart: [],
+    wishlist: [],
+
+    /* ---- ui ---- */
+    cartOpen: false,
+    wishOpen: false,
+    searchOpen: false,
+    modalOpen: false,
+    activeProduct: null,
+    selected: {},
+    qty: 1,
+    gallery: 0,
+    acc: 'details',
+    lastFocus: null,
+    search: '',
+    toast: { show: false, msg: '', id: 0 },
+    newsletter: { email: '', done: false },
+
+    init() {
+      this.$nextTick(() => {
+        const scroller = document.getElementById('scroller');
+        if (scroller) {
+          scroller.addEventListener('scroll', () => this.onScroll(), { passive: true });
+          this.onScroll();
+        }
+      });
+    },
+
+    /* ================================================================
+       SCROLL
+    ================================================================ */
+    totalSections() {
+      return this.featuredProducts.length + 2;
+    },
+
+    onScroll() {
+      const scroller = document.getElementById('scroller');
+      if (!scroller) return;
+      const h = scroller.clientHeight;
+      const idx = Math.round(scroller.scrollTop / h);
+      if (idx !== this.activeSection) this.activeSection = idx;
+      this.scrolled = scroller.scrollTop > 20;
+    },
+
+    scrollToSection(i) {
+      const scroller = document.getElementById('scroller');
+      if (!scroller) return;
+      scroller.scrollTo({ top: i * scroller.clientHeight, behavior: 'smooth' });
+    },
+
+    /* ================================================================
+       HELPERS
+    ================================================================ */
+    money(n) { return '$' + Number(n || 0).toFixed(2); },
+
+    swatch(value) {
+      return {
+        Slate: '#475569', Forest: '#1F3D2B', Sand: '#D8C3A5', White: '#F8FAFC',
+        Black: '#111827', Ecru: '#EFE9DC', Navy: '#1E293B', Charcoal: '#374151',
+        Tan: '#B08968', Brown: '#6B4F3A', Olive: '#556B2F', Oat: '#E4D9C6',
+        Cream: '#F5F0E6', Rust: '#B45309', Blue: '#5B82A8', Rinse: '#3B4A5C',
+        Indigo: '#2E4A62'
+      }[value] || '#E5E7EB';
+    },
+
+    showToast(msg) {
+      this.toast = { show: true, msg, id: this.toast.id + 1 };
+      clearTimeout(this._toastTimer);
+      this._toastTimer = setTimeout(() => { this.toast.show = false; }, 2600);
+    },
+
+    /* ================================================================
+       PRICING + SIZES
+    ================================================================ */
+    priceFrom(p) {
+      const inStock = p.variants.filter(v => v.stock > 0).map(v => v.price);
+      const pool = inStock.length ? inStock : p.variants.map(v => v.price);
+      return Math.min(...pool);
+    },
+
+    primarySizeOptionName(product) {
+      const opt = product.options.find(o => o.name === 'Size')
+               || product.options.find(o => o.name === 'Waist')
+               || product.options.find(o => o.kind !== 'color')
+               || product.options[0];
+      return opt ? opt.name : null;
+    },
+
+    primarySizes(product) {
+      const name = this.primarySizeOptionName(product);
+      if (!name) return [];
+      const opt = product.options.find(o => o.name === name);
+      return opt ? opt.values : [];
+    },
+
+    /* ================================================================
+       VARIANT RESOLUTION
+    ================================================================ */
+    activeVariant() {
+      const p = this.activeProduct;
+      if (!p) return null;
+      return p.variants.find(v => p.options.every(o => v.options[o.name] === this.selected[o.name])) || null;
+    },
+
+    optionAvailable(name, value) {
+      const p = this.activeProduct;
+      if (!p) return false;
+      return p.variants.some(v => {
+        if (v.options[name] !== value) return false;
+        if (v.stock <= 0) return false;
+        return p.options.every(o => o.name === name || v.options[o.name] === this.selected[o.name]);
+      });
+    },
+
+    selectOption(name, value) {
+      if (!this.optionAvailable(name, value)) return;
+      this.selected = { ...this.selected, [name]: value };
+      this.qty = 1;
+    },
+
+    variantLabel(product, variant) {
+      return product.options.map(o => variant.options[o.name]).join(' · ');
+    },
+
+    maxQty() {
+      const v = this.activeVariant();
+      return v ? Math.max(1, v.stock) : 1;
+    },
+
+    canAdd() {
+      const v = this.activeVariant();
+      return !!v && v.stock > 0;
+    },
+
+    discountLabel() {
+      const v = this.activeVariant();
+      if (!v || !v.compareAt) return '';
+      return Math.round((1 - v.price / v.compareAt) * 100) + '% off';
+    },
+
+    /* ================================================================
+       MODAL
+    ================================================================ */
+    openProduct(product) {
+      this.lastFocus = document.activeElement;
+      this.activeProduct = product;
+      const first = product.variants.find(v => v.stock > 0) || product.variants[0];
+      this.selected = { ...first.options };
+      this.gallery = 0; this.qty = 1; this.acc = 'details';
+      this.modalOpen = true;
+      this.$nextTick(() => this.$refs.modalClose?.focus());
+    },
+
+    openProductWithSize(product, optionName, value) {
+      this.lastFocus = document.activeElement;
+      this.activeProduct = product;
+      let variant = product.variants.find(v => v.options[optionName] === value && v.stock > 0)
+                 || product.variants.find(v => v.stock > 0)
+                 || product.variants[0];
+      this.selected = { ...variant.options };
+      this.gallery = 0; this.qty = 1; this.acc = 'details';
+      this.modalOpen = true;
+      this.$nextTick(() => this.$refs.modalClose?.focus());
+    },
+
+    closeProduct() {
+      this.modalOpen = false;
+      this.$nextTick(() => this.lastFocus?.focus?.());
+    },
+
+    onEscape() {
+      if (this.modalOpen) return this.closeProduct();
+      if (this.cartOpen) return (this.cartOpen = false);
+      if (this.wishOpen) return (this.wishOpen = false);
+      if (this.searchOpen) return this.closeSearch();
+    },
+
+    /* ================================================================
+       SEARCH
+    ================================================================ */
+    openSearch() {
+      this.searchOpen = true;
+      this.$nextTick(() => this.$refs.searchInput?.focus());
+    },
+
+    closeSearch() {
+      this.searchOpen = false;
+      this.search = '';
+    },
+
+    searchResults() {
+      const q = this.search.trim().toLowerCase();
+      if (!q) return [];
+      return this.products.filter(p =>
+        `${p.name} ${p.brand} ${p.categoryLabel} ${p.blurb}`.toLowerCase().includes(q)
+      ).slice(0, 8);
+    },
+
+    openFromSearch(product) {
+      this.closeSearch();
+      this.openProduct(product);
+    },
+
+    /* ================================================================
+       CART
+    ================================================================ */
+    addToCart(product, variant, quantity) {
+      if (!variant || variant.stock <= 0) return;
+      const key = `${product.id}::${variant.id}`;
+      const existing = this.cart.find(l => l.key === key);
+      if (existing) existing.qty = Math.min(existing.qty + quantity, variant.stock);
+      else this.cart.push({
+        key, productId: product.id, variantId: variant.id,
+        name: product.name, image: product.images[0],
+        variantLabel: this.variantLabel(product, variant),
+        price: variant.price, qty: quantity, stock: variant.stock
+      });
+      this.showToast(`${product.name} added to basket`);
+    },
+
+    addActiveToCart() {
+      if (!this.canAdd()) return;
+      this.addToCart(this.activeProduct, this.activeVariant(), this.qty);
+      this.closeProduct();
+    },
+
+    changeQty(line, delta) {
+      const next = line.qty + delta;
+      if (next < 1) return;
+      line.qty = Math.min(next, line.stock);
+    },
+
+    removeLine(line) {
+      this.cart = this.cart.filter(l => l.key !== line.key);
+    },
+
+    cartCount() { return this.cart.reduce((sum, l) => sum + l.qty, 0); },
+    subtotal() { return this.cart.reduce((sum, l) => sum + l.price * l.qty, 0); },
+    total() { return this.subtotal() + (this.subtotal() >= 100 || this.subtotal() === 0 ? 0 : 6.9); },
+
+    /* ================================================================
+       WISHLIST
+    ================================================================ */
+    inWishlist(id) { return this.wishlist.includes(id); },
+
+    toggleWish(id) {
+      if (this.inWishlist(id)) {
+        this.wishlist = this.wishlist.filter(x => x !== id);
+        this.showToast('Removed from wishlist');
+      } else {
+        this.wishlist.push(id);
+        this.showToast('Saved to wishlist');
+      }
+    },
+
+    wishlistProducts() {
+      return this.wishlist.map(id => this.products.find(p => p.id === id)).filter(Boolean);
+    },
+
+    /* ================================================================
+       NEWSLETTER
+    ================================================================ */
+    subscribe() {
+      if (!this.newsletter.email) return;
+      this.newsletter.done = true;
+      this.newsletter.email = '';
+      this.showToast('You\'re subscribed — welcome to Atelier Nine');
+    }
+  }));
+});
+</script>
+</body>
+</html>

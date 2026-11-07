@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ATELIER — Essentials, Elevated</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+        },
+        colors: { bone: '#F4F1EC', sand: '#EDE7DE', ink: '#171614' },
+      },
+    },
+  };
+</script>
+
+<style>
+  :root { color-scheme: light; }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body { background-color: #F4F1EC; }
+  [x-cloak] { display: none !important; }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* ---------- Film grain ---------- */
+  .grain::after {
+    content: "";
+    position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    opacity: 0.032; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- 3D garment stage ---------- */
+  .stage { perspective: 1700px; perspective-origin: 50% 42%; }
+
+  .garment-3d {
+    transform-style: preserve-3d;
+    transform: rotateY(var(--ry, -28deg)) rotateX(var(--rx, 4deg)) translateZ(0);
+    transition: transform 1000ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform; backface-visibility: hidden;
+  }
+  .garment:hover .garment-3d,
+  .garment:focus-within .garment-3d {
+    transform: rotateY(0deg) rotateX(0deg) translateY(-18px) scale(1.055);
+  }
+  @media (max-width: 640px) {
+    .garment-3d { transform: rotateY(calc(var(--ry, -28deg) * 0.55)) rotateX(calc(var(--rx, 4deg) * 0.45)); }
+  }
+  .garment:hover { z-index: 40; }
+  @media (min-width: 1024px) { .garment { margin-top: var(--oy, 0px); } }
+
+  .garment::before {
+    content: ""; position: absolute; inset: 8% 4% 26%; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(255,255,255,0.95), rgba(255,255,255,0));
+    filter: blur(26px); opacity: 0; transition: opacity 800ms ease;
+    pointer-events: none; z-index: 0;
+  }
+  .garment:hover::before { opacity: 1; }
+  .garment-3d { position: relative; z-index: 1; }
+
+  .tee-svg { filter: drop-shadow(0 22px 22px rgba(58, 47, 36, 0.16)); }
+  .tee-svg-soft { filter: drop-shadow(0 14px 16px rgba(58, 47, 36, 0.10)); }
+
+  /* ---------- Entrance / reveal ---------- */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(46px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .garment { animation: rise 1.15s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+  .garment:nth-child(1) { animation-delay: 0.08s; }
+  .garment:nth-child(2) { animation-delay: 0.18s; }
+  .garment:nth-child(3) { animation-delay: 0.28s; }
+  .garment:nth-child(4) { animation-delay: 0.38s; }
+  .garment:nth-child(5) { animation-delay: 0.48s; }
+
+  .reveal { opacity: 0; transform: translateY(26px);
+    transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal.is-visible { opacity: 1; transform: none; }
+
+  /* ---------- Marquee ---------- */
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .marquee-track { animation: marquee 42s linear infinite; }
+  .marquee-track:hover { animation-play-state: paused; }
+
+  /* ---------- Cart bump ---------- */
+  @keyframes bump { 0%,100% { transform: scale(1); } 40% { transform: scale(1.32); } }
+  .bump { animation: bump 420ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+  /* ---------- Panel scroll ---------- */
+  .panel-scroll { scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.15) transparent; }
+  .panel-scroll::-webkit-scrollbar { width: 5px; }
+  .panel-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.14); border-radius: 99px; }
+
+  .opt-ring { box-shadow: 0 0 0 1.5px #171614, 0 0 0 4px #F4F1EC; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .garment, .marquee-track, .reveal { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+    .garment-3d { transition: none !important; }
+  }
+</style>
+</head>
+
+<body
+  class="grain font-sans text-ink antialiased overflow-x-hidden selection:bg-ink selection:text-bone"
+  x-data
+  x-effect="document.documentElement.style.overflow = ($store.ui.mobileMenu || $store.ui.cartOpen || $store.ui.checkoutOpen || $store.ui.productOpen) ? 'hidden' : ''">
+
+<!-- ============================================================
+     SVG LIBRARY
+     ============================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="teeShade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"    stop-color="#000" stop-opacity="0.22" />
+      <stop offset="0.14" stop-color="#000" stop-opacity="0.04" />
+      <stop offset="0.34" stop-color="#fff" stop-opacity="0.16" />
+      <stop offset="0.52" stop-color="#000" stop-opacity="0" />
+      <stop offset="0.74" stop-color="#000" stop-opacity="0.05" />
+      <stop offset="1"    stop-color="#000" stop-opacity="0.26" />
+    </linearGradient>
+    <linearGradient id="teeVert" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"    stop-color="#000" stop-opacity="0.13" />
+      <stop offset="0.22" stop-color="#000" stop-opacity="0" />
+      <stop offset="0.78" stop-color="#000" stop-opacity="0" />
+      <stop offset="1"    stop-color="#000" stop-opacity="0.17" />
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#C8A87F" />
+      <stop offset="0.5" stop-color="#B3925F" />
+      <stop offset="1" stop-color="#96764F" />
+    </linearGradient>
+
+    <g id="tee-shirt">
+      <path d="M112 78 C122 102 134 110 150 110 C166 110 178 102 188 78 L252 102 L288 176 L230 204 L214 172 L214 372 Q214 384 202 384 L98 384 Q86 384 86 372 L86 172 L70 204 L12 176 L48 102 Z" fill="var(--tee, #EFE9E0)" />
+      <path d="M112 78 C122 102 134 110 150 110 C166 110 178 102 188 78 L252 102 L288 176 L230 204 L214 172 L214 372 Q214 384 202 384 L98 384 Q86 384 86 372 L86 172 L70 204 L12 176 L48 102 Z" fill="url(#teeShade)" />
+      <path d="M112 78 C122 102 134 110 150 110 C166 110 178 102 188 78 L252 102 L288 176 L230 204 L214 172 L214 372 Q214 384 202 384 L98 384 Q86 384 86 372 L86 172 L70 204 L12 176 L48 102 Z" fill="url(#teeVert)" />
+      <path d="M88 182 C98 208 100 240 97 274" fill="none" stroke="rgba(0,0,0,0.055)" stroke-width="13" stroke-linecap="round" />
+      <path d="M212 182 C202 208 200 240 203 274" fill="none" stroke="rgba(0,0,0,0.045)" stroke-width="13" stroke-linecap="round" />
+      <path d="M120 196 C112 254 118 320 124 368" fill="none" stroke="rgba(0,0,0,0.05)" stroke-width="9" stroke-linecap="round" />
+      <path d="M181 196 C189 254 183 320 177 368" fill="none" stroke="rgba(0,0,0,0.05)" stroke-width="9" stroke-linecap="round" />
+      <path d="M150 206 C146 262 152 332 150 366" fill="none" stroke="rgba(255,255,255,0.11)" stroke-width="16" stroke-linecap="round" />
+      <path d="M116 85 C126 108 137 115 150 115 C163 115 174 108 184 85" fill="none" stroke="rgba(0,0,0,0.10)" stroke-width="7" stroke-linecap="round" />
+      <path d="M116 85 C126 108 137 115 150 115 C163 115 174 108 184 85" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="2" stroke-linecap="round" />
+      <path d="M16 168 L74 196" fill="none" stroke="rgba(0,0,0,0.09)" stroke-width="3" stroke-linecap="round" />
+      <path d="M284 168 L226 196" fill="none" stroke="rgba(0,0,0,0.09)" stroke-width="3" stroke-linecap="round" />
+      <path d="M94 366 L206 366" fill="none" stroke="rgba(0,0,0,0.07)" stroke-width="3" stroke-linecap="round" />
+      <text x="150" y="200" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="500" letter-spacing="4.6" fill="var(--ink, rgba(0,0,0,0.32))">ATELIER</text>
+    </g>
+
+    <g id="tee-hanger">
+      <path d="M150 82 V48 c0-15 18-21 24-9 4 9-3 18-12 15" fill="none" stroke="#A98A64" stroke-width="4.5" stroke-linecap="round" />
+      <path d="M150 84 L50 122 H250 Z" fill="url(#wood)" stroke="#8E704F" stroke-width="2.5" stroke-linejoin="round" />
+      <use href="#tee-shirt" />
+    </g>
+  </defs>
+</svg>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header x-data="{ scrolled: false }"
+        @scroll.window="scrolled = window.scrollY > 24"
+        class="fixed inset-x-0 top-0 z-40 transition-all duration-500"
+        :class="scrolled ? 'bg-bone/85 backdrop-blur-xl border-b border-black/[0.06] py-3' : 'py-6 border-b border-transparent'">
+  <div class="mx-auto grid max-w-[1440px] grid-cols-3 items-center px-5 sm:px-8 lg:px-12">
+
+    <nav class="hidden md:flex items-center gap-8 text-[10px] uppercase tracking-[0.22em] text-black/50">
+      <a href="#collection" class="transition-colors hover:text-ink">Shop</a>
+      <a href="#collection" class="transition-colors hover:text-ink">Collections</a>
+      <a href="#craft" class="transition-colors hover:text-ink">Atelier</a>
+    </nav>
+
+    <button class="md:hidden -ml-1 flex h-9 w-9 items-center justify-center rounded-full text-black/60 transition hover:bg-black/5"
+            @click="$store.ui.mobileMenu = true" aria-label="Open menu">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+        <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <a href="#" class="justify-self-center font-serif text-[22px] leading-none tracking-[0.32em] text-ink sm:text-[26px]">ATELIER</a>
+
+    <div class="flex items-center justify-end gap-5 text-[10px] uppercase tracking-[0.22em] text-black/50 sm:gap-7">
+      <button class="hidden sm:block transition-colors hover:text-ink">Search</button>
+      <button @click="$store.ui.cartOpen = true" class="relative flex items-center gap-1.5 transition-colors hover:text-ink">
+        <span>Cart</span>
+        <span class="relative inline-flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-ink px-1 text-[9px] font-medium text-bone"
+              x-text="$store.cart.count"
+              :class="$store.cart.bump && 'bump'"
+              @animationend="$store.cart.bump = false"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     MOBILE MENU — slides in from the LEFT
+     ============================================================ -->
+<div x-show="$store.ui.mobileMenu" x-cloak class="fixed inset-0 z-[90] md:hidden" role="dialog" aria-modal="true">
+
+  <div class="absolute inset-0 bg-ink/25 backdrop-blur-[3px]"
+       x-show="$store.ui.mobileMenu"
+       x-transition:enter="transition ease-out duration-400"
+       x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+       x-transition:leave="transition ease-in duration-300"
+       x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+       @click="$store.ui.mobileMenu = false"></div>
+
+  <aside class="absolute left-0 top-0 flex h-full w-[84%] max-w-[340px] flex-col bg-bone shadow-[24px_0_80px_-30px_rgba(0,0,0,0.45)]"
+         x-show="$store.ui.mobileMenu"
+         x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-500"
+         x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full">
+
+    <div class="flex items-center justify-between border-b border-black/[0.07] px-6 py-6">
+      <p class="font-serif text-xl tracking-[0.3em]">ATELIER</p>
+      <button @click="$store.ui.mobileMenu = false"
+              class="flex h-9 w-9 items-center justify-center rounded-full text-black/40 transition hover:bg-black/5 hover:text-ink" aria-label="Close menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto px-6 py-8">
+      <ul class="space-y-1">
+        <li><a href="#collection" @click="$store.ui.mobileMenu = false"
+               class="block py-3 font-serif text-[26px] leading-none text-ink/85 transition hover:text-ink">Shop</a></li>
+        <li><a href="#collection" @click="$store.ui.mobileMenu = false"
+               class="block py-3 font-serif text-[26px] leading-none text-ink/85 transition hover:text-ink">Collections</a></li>
+        <li><a href="#craft" @click="$store.ui.mobileMenu = false"
+               class="block py-3 font-serif text-[26px] leading-none text-ink/85 transition hover:text-ink">Atelier</a></li>
+      </ul>
+
+      <div class="mt-8 border-t border-black/[0.07] pt-8">
+        <p class="text-[9px] uppercase tracking-[0.32em] text-black/30">Account</p>
+        <ul class="mt-4 space-y-3.5 text-[11.5px] uppercase tracking-[0.18em] text-black/55">
+          <li><button @click="$store.ui.mobileMenu = false; $store.ui.cartOpen = true"
+                      class="transition hover:text-ink">Your bag (<span x-text="$store.cart.count"></span>)</button></li>
+          <li><a href="#" class="transition hover:text-ink">Orders</a></li>
+          <li><a href="#" class="transition hover:text-ink">Sign in</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="border-t border-black/[0.07] px-6 py-6">
+      <p class="text-[9.5px] uppercase tracking-[0.24em] text-black/30">Free worldwide shipping</p>
+      <div class="mt-3 flex gap-6 text-[9.5px] uppercase tracking-[0.24em] text-black/30">
+        <a href="#" class="hover:text-ink">Instagram</a>
+        <a href="#" class="hover:text-ink">Pinterest</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="relative overflow-hidden pt-32 sm:pt-36 lg:pt-44">
+
+  <div class="pointer-events-none absolute left-1/2 top-[-30rem] h-[62rem] w-[62rem] -translate-x-1/2 rounded-full
+              bg-[radial-gradient(circle,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.35)_45%,rgba(255,255,255,0)_68%)]"></div>
+  <div class="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-bone to-transparent"></div>
+
+  <div class="relative mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
+
+    <div class="reveal flex justify-center">
+      <span class="inline-flex items-center gap-2.5 rounded-full border border-black/[0.09] bg-white/50 px-4 py-1.5
+                   text-[9px] uppercase tracking-[0.34em] text-black/45 backdrop-blur-sm">
+        <span class="h-1 w-1 rounded-full bg-ink/70"></span>
+        Autumn — Winter 2025
+      </span>
+    </div>
+
+    <h1 class="reveal mt-8 text-center font-serif text-[clamp(2.9rem,8.2vw,7.2rem)] font-normal leading-[0.9] tracking-[-0.025em]">
+      The art of the<br />
+      <em class="italic text-black/55">everyday</em> essential
+    </h1>
+
+    <p class="reveal mx-auto mt-8 max-w-[26rem] text-center text-[12.5px] leading-[1.85] text-black/45 sm:text-[13.5px]">
+      Five weights of long-staple Peruvian cotton. Cut once, worn forever.
+      <span class="hidden sm:inline">Hover to bring each piece into view.</span>
+    </p>
+
+    <div class="reveal mt-10 flex flex-wrap items-center justify-center gap-3">
+      <a href="#collection"
+         class="group inline-flex items-center gap-3 rounded-full bg-ink px-8 py-3.5 text-[10px] uppercase tracking-[0.26em] text-bone
+                transition-all duration-500 hover:bg-black hover:shadow-[0_18px_40px_-16px_rgba(0,0,0,0.55)]">
+        Explore the collection
+        <svg class="h-3 w-3 transition-transform duration-500 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <a href="#craft"
+         class="inline-flex items-center rounded-full border border-black/[0.14] px-8 py-3.5 text-[10px] uppercase tracking-[0.26em] text-black/60
+                transition-all duration-500 hover:border-ink/40 hover:text-ink">
+        Our craft
+      </a>
+    </div>
+  </div>
+
+  <!-- ======================= THE RAIL ======================= -->
+  <div class="relative mt-6 sm:mt-10 lg:mt-2" x-data="{ hint: true }" @mouseenter.once="hint = false">
+
+    <div class="pointer-events-none absolute left-1/2 top-0 z-30 -translate-x-1/2 transition-opacity duration-700"
+         x-show="hint" x-transition.opacity.duration.600>
+      <span class="inline-flex items-center gap-2 rounded-full bg-ink/[0.055] px-4 py-1.5 text-[9px] uppercase tracking-[0.3em] text-black/40">
+        <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke-linecap="round"/><circle cx="12" cy="12" r="4"/>
+        </svg>
+        Hover to rotate · tap to configure
+      </span>
+    </div>
+
+    <div class="stage no-scrollbar overflow-x-auto overflow-y-visible">
+      <div class="flex w-max items-start justify-start gap-3 px-6 pb-10 pt-16 sm:gap-6 sm:px-10 lg:w-full lg:justify-center lg:gap-2 lg:px-12 lg:pt-20">
+
+        <article class="garment group relative w-[164px] shrink-0 snap-center sm:w-[196px] lg:w-[220px] xl:w-[238px]"
+                 style="--tee:#EFE9E0; --ink:rgba(0,0,0,0.34); --ry:-31deg; --rx:4deg; --oy:0px;">
+          <button type="button" @click="openProduct('bone')" class="block w-full text-left focus:outline-none">
+            <div class="garment-3d">
+              <svg viewBox="0 0 300 430" class="tee-svg h-auto w-full"><use href="#tee-hanger" /></svg>
+            </div>
+            <div class="mt-7 text-center">
+              <p class="text-[9px] uppercase tracking-[0.32em] text-black/25">01</p>
+              <h3 class="mt-1.5 font-serif text-[17px] leading-none transition-colors duration-500 group-hover:text-ink sm:text-[19px]">The Bone Tee</h3>
+              <p class="mt-2 text-[10.5px] tracking-[0.14em] text-black/40">from $89 — 180–400gsm</p>
+            </div>
+          </button>
+        </article>
+
+        <article class="garment group relative w-[164px] shrink-0 snap-center sm:w-[196px] lg:w-[220px] xl:w-[238px]"
+                 style="--tee:#2B2B2D; --ink:rgba(255,255,255,0.42); --ry:-23deg; --rx:3deg; --oy:-30px;">
+          <button type="button" @click="openProduct('charcoal')" class="block w-full text-left focus:outline-none">
+            <div class="garment-3d">
+              <svg viewBox="0 0 300 430" class="tee-svg h-auto w-full"><use href="#tee-hanger" /></svg>
+            </div>
+            <div class="mt-7 text-center">
+              <p class="text-[9px] uppercase tracking-[0.32em] text-black/25">02</p>
+              <h3 class="mt-1.5 font-serif text-[17px] leading-none transition-colors duration-500 group-hover:text-ink sm:text-[19px]">The Charcoal Tee</h3>
+              <p class="mt-2 text-[10.5px] tracking-[0.14em] text-black/40">from $89 — 180–400gsm</p>
+            </div>
+          </button>
+        </article>
+
+        <article class="garment group relative w-[164px] shrink-0 snap-center sm:w-[196px] lg:w-[220px] xl:w-[238px]"
+                 style="--tee:#D9C6A9; --ink:rgba(0,0,0,0.30); --ry:-35deg; --rx:5deg; --oy:12px;">
+          <button type="button" @click="openProduct('sand')" class="block w-full text-left focus:outline-none">
+            <div class="garment-3d">
+              <svg viewBox="0 0 300 430" class="tee-svg h-auto w-full"><use href="#tee-hanger" /></svg>
+            </div>
+            <div class="mt-7 text-center">
+              <p class="text-[9px] uppercase tracking-[0.32em] text-black/25">03</p>
+              <h3 class="mt-1.5 font-serif text-[17px] leading-none transition-colors duration-500 group-hover:text-ink sm:text-[19px]">The Sand Tee</h3>
+              <p class="mt-2 text-[10.5px] tracking-[0.14em] text-black/40">from $95 — 180–400gsm</p>
+            </div>
+          </button>
+        </article>
+
+        <article class="garment group relative w-[164px] shrink-0 snap-center sm:w-[196px] lg:w-[220px] xl:w-[238px]"
+                 style="--tee:#6C7A85; --ink:rgba(255,255,255,0.40); --ry:-26deg; --rx:3deg; --oy:-16px;">
+          <button type="button" @click="openProduct('slate')" class="block w-full text-left focus:outline-none">
+            <div class="garment-3d">
+              <svg viewBox="0 0 300 430" class="tee-svg h-auto w-full"><use href="#tee-hanger" /></svg>
+            </div>
+            <div class="mt-7 text-center">
+              <p class="text-[9px] uppercase tracking-[0.32em] text-black/25">04</p>
+              <h3 class="mt-1.5 font-serif text-[17px] leading-none transition-colors duration-500 group-hover:text-ink sm:text-[19px]">The Slate Tee</h3>
+              <p class="mt-2 text-[10.5px] tracking-[0.14em] text-black/40">from $89 — 180–400gsm</p>
+            </div>
+          </button>
+        </article>
+
+        <article class="garment group relative w-[164px] shrink-0 snap-center sm:w-[196px] lg:w-[220px] xl:w-[238px]"
+                 style="--tee:#B87C61; --ink:rgba(255,255,255,0.38); --ry:-30deg; --rx:4deg; --oy:6px;">
+          <button type="button" @click="openProduct('clay')" class="block w-full text-left focus:outline-none">
+            <div class="garment-3d">
+              <svg viewBox="0 0 300 430" class="tee-svg h-auto w-full"><use href="#tee-hanger" /></svg>
+            </div>
+            <div class="mt-7 text-center">
+              <p class="text-[9px] uppercase tracking-[0.32em] text-black/25">05</p>
+              <h3 class="mt-1.5 font-serif text-[17px] leading-none transition-colors duration-500 group-hover:text-ink sm:text-[19px]">The Clay Tee</h3>
+              <p class="mt-2 text-[10.5px] tracking-[0.14em] text-black/40">from $105 — 180–400gsm</p>
+            </div>
+          </button>
+        </article>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MARQUEE
+     ============================================================ -->
+<div class="relative overflow-hidden border-y border-black/[0.07] bg-white/25 py-4">
+  <div class="marquee-track flex w-max items-center">
+    <div class="flex items-center gap-12 pr-12 text-[9.5px] uppercase tracking-[0.36em] text-black/35">
+      <span>Free worldwide shipping</span><span class="text-black/15">✦</span>
+      <span>Long-staple Peruvian cotton</span><span class="text-black/15">✦</span>
+      <span>Carbon-neutral delivery</span><span class="text-black/15">✦</span>
+      <span>Lifetime repairs</span><span class="text-black/15">✦</span>
+      <span>Made in limited runs</span><span class="text-black/15">✦</span>
+    </div>
+    <div class="flex items-center gap-12 pr-12 text-[9.5px] uppercase tracking-[0.36em] text-black/35" aria-hidden="true">
+      <span>Free worldwide shipping</span><span class="text-black/15">✦</span>
+      <span>Long-staple Peruvian cotton</span><span class="text-black/15">✦</span>
+      <span>Carbon-neutral delivery</span><span class="text-black/15">✦</span>
+      <span>Lifetime repairs</span><span class="text-black/15">✦</span>
+      <span>Made in limited runs</span><span class="text-black/15">✦</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     COLLECTION GRID
+     ============================================================ -->
+<section id="collection" class="relative py-20 sm:py-28 lg:py-36">
+  <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
+
+    <div class="reveal flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="text-[9px] uppercase tracking-[0.42em] text-black/30">The Collection</p>
+        <h2 class="mt-4 font-serif text-[clamp(2rem,4.6vw,3.6rem)] leading-[1.02] tracking-[-0.02em]">
+          Five essentials,<br class="hidden sm:block" /> one silhouette
+        </h2>
+      </div>
+      <a href="#" class="group inline-flex items-center gap-3 self-start text-[10px] uppercase tracking-[0.24em] text-black/45 transition-colors hover:text-ink sm:self-auto">
+        View all pieces
+        <span class="block h-px w-9 bg-current transition-all duration-500 group-hover:w-14"></span>
+      </a>
+    </div>
+
+    <div class="mt-14 grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-6 lg:grid-cols-4 lg:gap-x-7">
+
+      <button type="button" @click="openProduct('bone')" class="reveal group block text-left" style="--tee:#EFE9E0; --ink:rgba(0,0,0,0.30);">
+        <div class="relative aspect-[3/4] overflow-hidden rounded-[3px] bg-[#EAE4DA] transition-colors duration-700 group-hover:bg-[#E4DCD0]">
+          <svg viewBox="0 40 300 370" class="tee-svg-soft absolute inset-0 h-full w-full p-6 transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06] group-hover:-rotate-1">
+            <use href="#tee-shirt" />
+          </svg>
+          <span class="absolute inset-x-4 bottom-4 translate-y-3 rounded-full bg-ink py-2.5 text-center text-[9px] uppercase tracking-[0.26em] text-bone opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+            Quick view
+          </span>
+        </div>
+        <div class="mt-4 flex items-start justify-between gap-3">
+          <div>
+            <h3 class="text-[12.5px] tracking-[0.02em] text-ink/85">The Bone Tee</h3>
+            <p class="mt-1 text-[10.5px] text-black/40">180–400gsm · Boxy fit</p>
+          </div>
+          <p class="whitespace-nowrap text-[11.5px] text-black/60">from $89</p>
+        </div>
+      </button>
+
+      <button type="button" @click="openProduct('charcoal')" class="reveal group block text-left" style="--tee:#2B2B2D; --ink:rgba(255,255,255,0.40); transition-delay:.08s">
+        <div class="relative aspect-[3/4] overflow-hidden rounded-[3px] bg-[#E7E3DD] transition-colors duration-700 group-hover:bg-[#E0DBD4]">
+          <svg viewBox="0 40 300 370" class="tee-svg-soft absolute inset-0 h-full w-full p-6 transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06] group-hover:-rotate-1">
+            <use href="#tee-shirt" />
+          </svg>
+          <span class="absolute inset-x-4 bottom-4 translate-y-3 rounded-full bg-ink py-2.5 text-center text-[9px] uppercase tracking-[0.26em] text-bone opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+            Quick view
+          </span>
+        </div>
+        <div class="mt-4 flex items-start justify-between gap-3">
+          <div>
+            <h3 class="text-[12.5px] tracking-[0.02em] text-ink/85">The Charcoal Tee</h3>
+            <p class="mt-1 text-[10.5px] text-black/40">180–400gsm · Boxy fit</p>
+          </div>
+          <p class="whitespace-nowrap text-[11.5px] text-black/60">from $89</p>
+        </div>
+      </button>
+
+      <button type="button" @click="openProduct('sand')" class="reveal group block text-left" style="--tee:#D9C6A9; --ink:rgba(0,0,0,0.28); transition-delay:.16s">
+        <div class="relative aspect-[3/4] overflow-hidden rounded-[3px] bg-[#EAE4DA] transition-colors duration-700 group-hover:bg-[#E4DCD0]">
+          <svg viewBox="0 40 300 370" class="tee-svg-soft absolute inset-0 h-full w-full p-6 transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06] group-hover:-rotate-1">
+            <use href="#tee-shirt" />
+          </svg>
+          <span class="absolute inset-x-4 bottom-4 translate-y-3 rounded-full bg-ink py-2.5 text-center text-[9px] uppercase tracking-[0.26em] text-bone opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+            Quick view
+          </span>
+        </div>
+        <div class="mt-4 flex items-start justify-between gap-3">
+          <div>
+            <h3 class="text-[12.5px] tracking-[0.02em] text-ink/85">The Sand Tee</h3>
+            <p class="mt-1 text-[10.5px] text-black/40">180–400gsm · Boxy fit</p>
+          </div>
+          <p class="whitespace-nowrap text-[11.5px] text-black/60">from $95</p>
+        </div>
+      </button>
+
+      <button type="button" @click="openProduct('slate')" class="reveal group block text-left" style="--tee:#6C7A85; --ink:rgba(255,255,255,0.38); transition-delay:.24s">
+        <div class="relative aspect-[3/4] overflow-hidden rounded-[3px] bg-[#E7E3DD] transition-colors duration-700 group-hover:bg-[#E0DBD4]">
+          <svg viewBox="0 40 300 370" class="tee-svg-soft absolute inset-0 h-full w-full p-6 transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06] group-hover:-rotate-1">
+            <use href="#tee-shirt" />
+          </svg>
+          <span class="absolute inset-x-4 bottom-4 translate-y-3 rounded-full bg-ink py-2.5 text-center text-[9px] uppercase tracking-[0.26em] text-bone opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+            Quick view
+          </span>
+        </div>
+        <div class="mt-4 flex items-start justify-between gap-3">
+          <div>
+            <h3 class="text-[12.5px] tracking-[0.02em] text-ink/85">The Slate Tee</h3>
+            <p class="mt-1 text-[10.5px] text-black/40">180–400gsm · Boxy fit</p>
+          </div>
+          <p class="whitespace-nowrap text-[11.5px] text-black/60">from $89</p>
+        </div>
+      </button>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CRAFT SPLIT
+     ============================================================ -->
+<section id="craft" class="relative overflow-hidden border-t border-black/[0.07] bg-white/30 py-20 sm:py-28 lg:py-36">
+  <div class="mx-auto grid max-w-[1440px] items-center gap-14 px-5 sm:px-8 lg:grid-cols-2 lg:gap-24 lg:px-12">
+
+    <div class="reveal relative order-2 lg:order-1">
+      <div class="relative aspect-[4/5] overflow-hidden rounded-[4px] bg-[linear-gradient(155deg,#EDE7DE_0%,#E3DACD_55%,#D8CCBA_100%)]">
+        <div class="pointer-events-none absolute -left-16 -top-16 h-64 w-64 rounded-full bg-white/60 blur-3xl"></div>
+        <svg viewBox="0 20 300 400" class="tee-svg absolute inset-0 h-full w-full p-10 sm:p-16" style="--tee:#F2EDE5; --ink:rgba(0,0,0,0.22);">
+          <use href="#tee-hanger" />
+        </svg>
+        <div class="absolute bottom-5 left-5 rounded-full border border-black/10 bg-white/70 px-4 py-2 text-[9px] uppercase tracking-[0.26em] text-black/45 backdrop-blur">
+          Weight 180–400 g/m²
+        </div>
+      </div>
+
+      <div class="absolute -right-2 top-8 rounded-[3px] border border-black/[0.07] bg-bone/90 px-5 py-4 shadow-[0_22px_50px_-24px_rgba(0,0,0,0.35)] backdrop-blur sm:-right-6">
+        <p class="font-serif text-2xl leading-none">38</p>
+        <p class="mt-1.5 text-[8.5px] uppercase tracking-[0.24em] text-black/40">Stitch steps<br />per garment</p>
+      </div>
+    </div>
+
+    <div class="reveal order-1 lg:order-2">
+      <p class="text-[9px] uppercase tracking-[0.42em] text-black/30">The Atelier</p>
+      <h2 class="mt-5 font-serif text-[clamp(2rem,4.4vw,3.4rem)] leading-[1.05] tracking-[-0.02em]">
+        Considered from<br /> the <em class="italic text-black/55">first thread</em>
+      </h2>
+      <p class="mt-7 max-w-md text-[13px] leading-[1.9] text-black/50">
+        Every ATELIER tee begins as raw long-staple cotton, spun in a family mill outside Arequipa
+        and knitted at a deliberate, unhurried pace. The result is a fabric that holds its shape
+        through a thousand washes — and softens with each one.
+      </p>
+
+      <dl class="mt-11 grid grid-cols-2 gap-x-8 gap-y-8 border-t border-black/[0.08] pt-9">
+        <div>
+          <dt class="text-[9px] uppercase tracking-[0.26em] text-black/30">Origin</dt>
+          <dd class="mt-2 font-serif text-lg leading-tight">Arequipa, Peru</dd>
+        </div>
+        <div>
+          <dt class="text-[9px] uppercase tracking-[0.26em] text-black/30">Fibre</dt>
+          <dd class="mt-2 font-serif text-lg leading-tight">Long-staple cotton</dd>
+        </div>
+        <div>
+          <dt class="text-[9px] uppercase tracking-[0.26em] text-black/30">Finish</dt>
+          <dd class="mt-2 font-serif text-lg leading-tight">Garment-dyed</dd>
+        </div>
+        <div>
+          <dt class="text-[9px] uppercase tracking-[0.26em] text-black/30">Guarantee</dt>
+          <dd class="mt-2 font-serif text-lg leading-tight">Lifetime repairs</dd>
+        </div>
+      </dl>
+
+      <a href="#" class="group mt-11 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.26em] text-black/55 transition-colors hover:text-ink">
+        Read the full story
+        <span class="block h-px w-10 bg-current transition-all duration-500 group-hover:w-16"></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     NEWSLETTER
+     ============================================================ -->
+<section class="relative overflow-hidden py-24 sm:py-32">
+  <div class="pointer-events-none absolute left-1/2 top-1/2 h-[36rem] w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full
+              bg-[radial-gradient(circle,rgba(255,255,255,0.9),rgba(255,255,255,0)_70%)]"></div>
+
+  <div class="relative mx-auto max-w-xl px-5 text-center sm:px-8">
+    <p class="reveal text-[9px] uppercase tracking-[0.42em] text-black/30">Private list</p>
+    <h2 class="reveal mt-5 font-serif text-[clamp(2rem,5vw,3.2rem)] leading-[1.05] tracking-[-0.02em]">
+      First access, <em class="italic text-black/55">always</em>
+    </h2>
+    <p class="reveal mt-6 text-[13px] leading-[1.9] text-black/45">
+      New weights, quiet restocks and atelier notes. One letter a month — nothing more.
+    </p>
+
+    <form class="reveal mx-auto mt-10 flex max-w-md flex-col gap-3 sm:flex-row"
+          x-data="{ email: '', done: false }"
+          @submit.prevent="if (email) { done = true; email = ''; setTimeout(() => done = false, 3200) }">
+      <input type="email" required placeholder="your@email.com" x-model="email"
+             class="w-full flex-1 border-b border-black/15 bg-transparent px-1 py-3.5 text-[13px] tracking-wide
+                    placeholder:text-black/25 focus:border-ink/60 focus:outline-none transition-colors duration-500" />
+      <button type="submit"
+              class="shrink-0 rounded-full bg-ink px-7 py-3.5 text-[10px] uppercase tracking-[0.26em] text-bone
+                     transition-all duration-500 hover:bg-black hover:shadow-[0_18px_40px_-18px_rgba(0,0,0,0.55)]">
+        <span x-show="!done">Subscribe</span>
+        <span x-show="done" x-cloak>Thank you ✦</span>
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="border-t border-black/[0.08] bg-white/25">
+  <div class="mx-auto max-w-[1440px] px-5 py-16 sm:px-8 lg:px-12 lg:py-20">
+
+    <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+      <div class="lg:col-span-1">
+        <p class="font-serif text-2xl tracking-[0.3em]">ATELIER</p>
+        <p class="mt-5 max-w-[15rem] text-[12px] leading-[1.85] text-black/40">
+          Essentials, elevated. Designed in Copenhagen, made in Peru.
+        </p>
+      </div>
+      <div>
+        <p class="text-[9px] uppercase tracking-[0.3em] text-black/30">Shop</p>
+        <ul class="mt-5 space-y-3 text-[12px] text-black/55">
+          <li><a href="#" class="transition-colors hover:text-ink">All tees</a></li>
+          <li><a href="#" class="transition-colors hover:text-ink">New arrivals</a></li>
+          <li><a href="#" class="transition-colors hover:text-ink">Gift cards</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-[9px] uppercase tracking-[0.3em] text-black/30">House</p>
+        <ul class="mt-5 space-y-3 text-[12px] text-black/55">
+          <li><a href="#" class="transition-colors hover:text-ink">Our story</a></li>
+          <li><a href="#" class="transition-colors hover:text-ink">Materials</a></li>
+          <li><a href="#" class="transition-colors hover:text-ink">Journal</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-[9px] uppercase tracking-[0.3em] text-black/30">Care</p>
+        <ul class="mt-5 space-y-3 text-[12px] text-black/55">
+          <li><a href="#" class="transition-colors hover:text-ink">Shipping</a></li>
+          <li><a href="#" class="transition-colors hover:text-ink">Returns</a></li>
+          <li><a href="#" class="transition-colors hover:text-ink">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-16 flex flex-col items-center justify-between gap-5 border-t border-black/[0.07] pt-8 sm:flex-row">
+      <p class="text-[9.5px] uppercase tracking-[0.24em] text-black/30">© 2025 Atelier Studio</p>
+      <div class="flex items-center gap-7 text-[9.5px] uppercase tracking-[0.24em] text-black/30">
+        <a href="#" class="transition-colors hover:text-ink">Instagram</a>
+        <a href="#" class="transition-colors hover:text-ink">Pinterest</a>
+        <a href="#" class="transition-colors hover:text-ink">Privacy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     PRODUCT MODAL — centered
+     ============================================================ -->
+<div x-data="productForm()" @open-product.window="load($event.detail)" x-cloak>
+
+  <div x-show="$store.ui.productOpen"
+       class="fixed inset-0 z-[85] flex items-center justify-center p-3 sm:p-6"
+       role="dialog" aria-modal="true" aria-label="Product details">
+
+    <!-- backdrop -->
+    <div class="absolute inset-0 bg-ink/40 backdrop-blur-[5px]"
+         x-show="$store.ui.productOpen"
+         x-transition:enter="transition ease-out duration-400"
+         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+         @click="$store.ui.productOpen = false"></div>
+
+    <!-- modal card -->
+    <div class="relative flex max-h-[92vh] w-full max-w-[940px] flex-col overflow-hidden rounded-[5px] bg-bone shadow-[0_60px_160px_-40px_rgba(0,0,0,0.65)] md:flex-row"
+         x-show="$store.ui.productOpen"
+         x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-500"
+         x-transition:enter-start="opacity-0 translate-y-6 scale-[0.97]"
+         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+         x-transition:leave="transition ease-in duration-250"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 translate-y-4 scale-[0.98]">
+
+      <!-- close -->
+      <button @click="$store.ui.productOpen = false"
+              class="absolute right-3 top-3 z-30 flex h-9 w-9 items-center justify-center rounded-full bg-bone/80 text-black/50 shadow-sm backdrop-blur transition hover:bg-bone hover:text-ink md:right-4 md:top-4"
+              aria-label="Close product view">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <!-- LEFT: garment stage -->
+      <div class="relative flex h-[210px] w-full shrink-0 items-center justify-center overflow-hidden bg-[linear-gradient(160deg,#EDE7DE_0%,#E4DBCC_58%,#DACFBD_100%)] px-6 py-5 sm:h-[250px] md:h-auto md:w-[42%] md:px-10 md:py-12">
+        <div class="pointer-events-none absolute left-1/2 top-2 h-40 w-40 -translate-x-1/2 rounded-full bg-white/70 blur-3xl md:top-8"></div>
+
+        <svg viewBox="0 20 300 400"
+             class="tee-svg relative h-full w-auto max-w-full transition-all duration-700 md:h-auto md:w-full md:max-w-[280px]"
+             :style="{ '--tee': color.hex, '--ink': color.ink }">
+          <use href="#tee-hanger" />
+        </svg>
+
+        <p class="absolute inset-x-0 bottom-2.5 text-center text-[8.5px] uppercase tracking-[0.28em] text-black/35 md:bottom-5 md:text-[9px]"
+           x-text="color.name + ' · ' + weight.gsm + 'gsm · ' + weight.kg.toFixed(2) + ' kg'"></p>
+      </div>
+
+      <!-- RIGHT: options -->
+      <div class="flex min-h-0 flex-1 flex-col">
+
+        <!-- compact header -->
+        <div class="hidden shrink-0 border-b border-black/[0.07] px-7 pb-4 pt-6 md:block">
+          <p class="text-[9px] uppercase tracking-[0.32em] text-black/30">Atelier · Essential Tee</p>
+        </div>
+
+        <!-- scrollable body -->
+        <div class="panel-scroll min-h-0 flex-1 overflow-y-auto px-5 pb-6 pt-6 sm:px-7 md:pt-6">
+
+          <h2 class="font-serif text-[27px] leading-none tracking-[-0.01em] sm:text-[30px]"
+              x-text="'The ' + color.name + ' Tee'"></h2>
+
+          <div class="mt-3 flex items-end gap-2.5">
+            <p class="text-[19px] leading-none text-ink" x-text="money(total)"></p>
+            <p class="pb-0.5 text-[10.5px] uppercase tracking-[0.16em] text-black/35"
+               x-text="qty > 1 ? 'for ' + qty + ' packs' : 'total'"></p>
+          </div>
+          <p class="mt-2 text-[10.5px] tracking-[0.06em] text-black/40"
+             x-text="money(perTee) + ' per tee · ' + (unit.qty * qty) + ' tee' + ((unit.qty * qty) > 1 ? 's' : '') + ' · ' + totalKg + ' kg total'"></p>
+
+          <p class="mt-4 text-[12.5px] leading-[1.85] text-black/45">
+            Boxy, drop-shoulder cut in long-staple Peruvian cotton. Garment-dyed for depth of colour,
+            pre-shrunk for a fit that stays true.
+          </p>
+
+          <!-- COLOR -->
+          <div class="mt-7">
+            <div class="flex items-baseline justify-between">
+              <p class="text-[9px] uppercase tracking-[0.3em] text-black/30">Colour</p>
+              <p class="text-[10.5px] text-black/50" x-text="color.name"></p>
+            </div>
+            <div class="mt-3.5 flex flex-wrap gap-3">
+              <template x-for="c in catalog.colors" :key="c.id">
+                <button type="button" @click="colorId = c.id"
+                        class="relative h-8 w-8 rounded-full border border-black/10 transition-transform duration-300 hover:scale-110"
+                        :class="colorId === c.id && 'opt-ring'"
+                        :style="{ backgroundColor: c.hex }"
+                        :aria-label="c.name" :aria-pressed="colorId === c.id">
+                  <span x-show="c.mod > 0" class="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-ink"></span>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <!-- SIZE -->
+          <div class="mt-7">
+            <div class="flex items-baseline justify-between">
+              <p class="text-[9px] uppercase tracking-[0.3em] text-black/30">Size</p>
+              <p class="text-[10.5px] text-black/50" x-text="size.name + (size.mod > 0 ? ' · +' + money(size.mod) : '')"></p>
+            </div>
+            <div class="mt-3.5 grid grid-cols-6 gap-1.5">
+              <template x-for="s in catalog.sizes" :key="s.id">
+                <button type="button" @click="sizeId = s.id"
+                        class="rounded-[2px] border py-2.5 text-[10.5px] uppercase tracking-[0.1em] transition-all duration-300"
+                        :class="sizeId === s.id ? 'border-ink bg-ink text-bone' : 'border-black/12 text-black/55 hover:border-ink/40 hover:text-ink'"
+                        x-text="s.name"></button>
+              </template>
+            </div>
+          </div>
+
+          <!-- WEIGHT -->
+          <div class="mt-7">
+            <div class="flex items-baseline justify-between">
+              <p class="text-[9px] uppercase tracking-[0.3em] text-black/30">Fabric weight</p>
+              <p class="text-[10.5px] text-black/50" x-text="weight.kg.toFixed(2) + ' kg / tee'"></p>
+            </div>
+            <div class="mt-3.5 grid grid-cols-2 gap-2">
+              <template x-for="w in catalog.weights" :key="w.id">
+                <button type="button" @click="weightId = w.id"
+                        class="flex flex-col items-start rounded-[2px] border px-3 py-2.5 text-left transition-all duration-300"
+                        :class="weightId === w.id ? 'border-ink bg-ink/[0.04]' : 'border-black/12 hover:border-ink/40'">
+                  <span class="text-[11.5px] text-ink/85" x-text="w.name + ' · ' + w.gsm + 'gsm'"></span>
+                  <span class="mt-1 flex w-full items-center justify-between text-[10px] text-black/40">
+                    <span x-text="w.kg.toFixed(2) + ' kg'"></span>
+                    <span x-text="w.mod === 0 ? 'included' : (w.mod > 0 ? '+' + money(w.mod) : '−' + money(-w.mod))"></span>
+                  </span>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <!-- UNITS -->
+          <div class="mt-7">
+            <div class="flex items-baseline justify-between">
+              <p class="text-[9px] uppercase tracking-[0.3em] text-black/30">Bundle</p>
+              <p class="text-[10.5px] text-black/50" x-text="unit.qty + ' tee' + (unit.qty > 1 ? 's' : '') + ' per pack'"></p>
+            </div>
+            <div class="mt-3.5 space-y-2">
+              <template x-for="u in catalog.units" :key="u.id">
+                <button type="button" @click="unitId = u.id"
+                        class="flex w-full items-center justify-between rounded-[2px] border px-3.5 py-2.5 transition-all duration-300"
+                        :class="unitId === u.id ? 'border-ink bg-ink/[0.04]' : 'border-black/12 hover:border-ink/40'">
+                  <span class="flex items-center gap-3">
+                    <span class="flex h-4 w-4 items-center justify-center rounded-full border"
+                          :class="unitId === u.id ? 'border-ink' : 'border-black/25'">
+                      <span class="h-1.5 w-1.5 rounded-full bg-ink transition-opacity"
+                            :class="unitId === u.id ? 'opacity-100' : 'opacity-0'"></span>
+                    </span>
+                    <span class="text-[11.5px] text-ink/85" x-text="u.name + ' — ' + u.qty + ' tee' + (u.qty > 1 ? 's' : '')"></span>
+                  </span>
+                  <span class="text-[10.5px]" :class="u.discount > 0 ? 'text-ink/70' : 'text-black/35'"
+                        x-text="u.discount > 0 ? 'save ' + Math.round(u.discount * 100) + '%' : '—'"></span>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <!-- QUANTITY -->
+          <div class="mt-7 flex items-center justify-between">
+            <p class="text-[9px] uppercase tracking-[0.3em] text-black/30">Packs</p>
+            <div class="flex items-center rounded-full border border-black/12">
+              <button type="button" @click="qty > 1 && qty--"
+                      class="px-3.5 py-2 text-[14px] leading-none text-black/40 transition hover:text-ink">−</button>
+              <span class="min-w-[26px] text-center text-[12px]" x-text="qty"></span>
+              <button type="button" @click="qty++"
+                      class="px-3.5 py-2 text-[14px] leading-none text-black/40 transition hover:text-ink">+</button>
+            </div>
+          </div>
+
+          <!-- BREAKDOWN -->
+          <div class="mt-7 space-y-2 rounded-[3px] border border-black/[0.08] bg-white/45 px-4 py-4">
+            <div class="flex justify-between text-[11px] text-black/50">
+              <span>Base tee</span><span x-text="money(catalog.base)"></span>
+            </div>
+            <div class="flex justify-between text-[11px] text-black/50" x-show="color.mod !== 0">
+              <span x-text="color.name + ' colourway'"></span>
+              <span x-text="(color.mod > 0 ? '+' : '−') + money(Math.abs(color.mod))"></span>
+            </div>
+            <div class="flex justify-between text-[11px] text-black/50" x-show="size.mod !== 0">
+              <span x-text="'Size ' + size.name"></span>
+              <span x-text="'+' + money(size.mod)"></span>
+            </div>
+            <div class="flex justify-between text-[11px] text-black/50" x-show="weight.mod !== 0">
+              <span x-text="weight.name + ' ' + weight.gsm + 'gsm'"></span>
+              <span x-text="(weight.mod > 0 ? '+' : '−') + money(Math.abs(weight.mod))"></span>
+            </div>
+            <div class="flex justify-between text-[11px] text-black/50" x-show="unit.discount > 0">
+              <span x-text="unit.name + ' bundle (−' + Math.round(unit.discount * 100) + '%)'"></span>
+              <span class="text-ink/70" x-text="'−' + money(unitPrice * unit.qty * unit.discount)"></span>
+            </div>
+            <div class="mt-3 flex justify-between border-t border-black/[0.08] pt-3 text-[11.5px] text-ink">
+              <span x-text="'Pack price × ' + qty"></span>
+              <span x-text="money(total)"></span>
+            </div>
+          </div>
+
+          <p class="mt-4 text-[10px] leading-[1.8] text-black/35">
+            Free shipping over $150 · 30-day returns · Ships in 1–2 business days
+          </p>
+        </div>
+
+        <!-- sticky footer -->
+        <div class="shrink-0 border-t border-black/[0.08] bg-bone/95 px-5 py-4 backdrop-blur sm:px-7">
+          <div class="flex items-center gap-4">
+            <div class="min-w-0">
+              <p class="text-[17px] leading-none text-ink" x-text="money(total)"></p>
+              <p class="mt-1 truncate text-[9.5px] uppercase tracking-[0.18em] text-black/35"
+                 x-text="color.name + ' · ' + size.name + ' · ' + weight.gsm + 'gsm'"></p>
+            </div>
+            <button type="button" @click="add"
+                    class="group ml-auto flex shrink-0 items-center gap-2.5 rounded-full bg-ink px-6 py-3.5 text-[10px] uppercase tracking-[0.24em] text-bone
+                           transition-all duration-400 hover:bg-black hover:shadow-[0_18px_40px_-18px_rgba(0,0,0,0.6)] sm:px-7">
+              Add to bag
+              <svg class="h-3 w-3 transition-transform duration-400 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     CART DRAWER — right sheet
+     ============================================================ -->
+<div x-cloak>
+  <div x-show="$store.ui.cartOpen" class="fixed inset-0 z-[95]" role="dialog" aria-modal="true" aria-label="Shopping bag">
+
+    <div class="absolute inset-0 bg-ink/25 backdrop-blur-[3px]"
+         x-show="$store.ui.cartOpen"
+         x-transition:enter="transition ease-out duration-400"
+         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+         @click="$store.ui.cartOpen = false"></div>
+
+    <aside class="absolute right-0 top-0 flex h-full w-full max-w-[440px] flex-col bg-bone shadow-[-24px_0_80px_-30px_rgba(0,0,0,0.45)]"
+           x-show="$store.ui.cartOpen"
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-500"
+           x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+           x-transition:leave="transition ease-in duration-300"
+           x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full">
+
+      <div class="flex items-center justify-between border-b border-black/[0.07] px-5 py-5 sm:px-7">
+        <div class="flex items-baseline gap-2.5">
+          <h2 class="font-serif text-[21px] leading-none">Your bag</h2>
+          <span class="text-[10.5px] text-black/35" x-text="'(' + $store.cart.count + ')'"></span>
+        </div>
+        <button @click="$store.ui.cartOpen = false"
+                class="flex h-9 w-9 items-center justify-center rounded-full text-black/40 transition hover:bg-black/5 hover:text-ink" aria-label="Close bag">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div x-show="$store.cart.isEmpty" class="flex flex-1 flex-col items-center justify-center px-8 text-center">
+        <div class="h-28 w-24 opacity-40" style="--tee:#DED6C9; --ink:rgba(0,0,0,0.25);">
+          <svg viewBox="20 60 260 340" class="h-full w-full"><use href="#tee-shirt"/></svg>
+        </div>
+        <p class="mt-7 font-serif text-[20px] leading-tight">Your bag is empty</p>
+        <p class="mt-2.5 text-[11.5px] leading-relaxed text-black/40">Five essentials are waiting to be discovered.</p>
+        <button @click="$store.ui.cartOpen = false"
+                class="mt-7 rounded-full bg-ink px-7 py-3 text-[10px] uppercase tracking-[0.24em] text-bone transition hover:bg-black">
+          Continue shopping
+        </button>
+      </div>
+
+      <div x-show="!$store.cart.isEmpty" class="panel-scroll flex-1 overflow-y-auto px-5 sm:px-7">
+        <template x-for="item in $store.cart.items" :key="item.key">
+          <div class="flex gap-4 border-b border-black/[0.07] py-5">
+            <div class="h-[104px] w-[78px] shrink-0 overflow-hidden rounded-[3px] bg-white/70"
+                 :style="{ '--tee': item.hex, '--ink': item.ink }">
+              <svg viewBox="10 60 280 340" class="h-full w-full"><use href="#tee-shirt" /></svg>
+            </div>
+
+            <div class="flex min-w-0 flex-1 flex-col">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                  <p class="truncate text-[12.5px] text-ink/85" x-text="'The ' + item.colorName + ' Tee'"></p>
+                  <p class="mt-1 text-[10px] uppercase tracking-[0.14em] text-black/35" x-text="item.meta"></p>
+                  <p class="mt-1 text-[10px] text-black/35"
+                     x-text="item.unitName + ' · ' + item.unitQty + ' tee' + (item.unitQty > 1 ? 's' : '') + ' · ' + (item.kg * item.unitQty).toFixed(2) + ' kg'"></p>
+                </div>
+                <button @click="$store.cart.remove(item.key)"
+                        class="shrink-0 text-black/25 transition hover:text-ink" aria-label="Remove item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="mt-auto flex items-end justify-between pt-3">
+                <div class="flex items-center rounded-full border border-black/12">
+                  <button @click="$store.cart.setQty(item.key, item.qty - 1)"
+                          class="px-2.5 py-1 text-[13px] leading-none text-black/40 transition hover:text-ink">−</button>
+                  <span class="min-w-[20px] text-center text-[11px]" x-text="item.qty"></span>
+                  <button @click="$store.cart.setQty(item.key, item.qty + 1)"
+                          class="px-2.5 py-1 text-[13px] leading-none text-black/40 transition hover:text-ink">+</button>
+                </div>
+                <p class="text-[12px] text-black/70" x-text="money(item.packPrice * item.qty)"></p>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <div class="py-5">
+          <div class="flex items-center gap-2 rounded-[3px] bg-white/50 px-4 py-3">
+            <svg class="h-3.5 w-3.5 text-black/35" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M3 7h11v10H3zM14 10h4l3 3v4h-7" stroke-linejoin="round"/>
+              <circle cx="7" cy="19" r="1.6"/><circle cx="17.5" cy="19" r="1.6"/>
+            </svg>
+            <p class="text-[10.5px] text-black/45"
+               x-text="$store.cart.freeShipRemaining > 0
+                 ? 'Add ' + money($store.cart.freeShipRemaining) + ' for free shipping'
+                 : 'Free shipping unlocked ✦'"></p>
+          </div>
+        </div>
+      </div>
+
+      <div x-show="!$store.cart.isEmpty" class="border-t border-black/[0.08] bg-bone px-5 py-5 sm:px-7">
+        <div class="space-y-2.5">
+          <div class="flex justify-between text-[11.5px] text-black/50">
+            <span>Subtotal</span><span x-text="money($store.cart.subtotal)"></span>
+          </div>
+          <div class="flex justify-between text-[11.5px] text-black/50">
+            <span>Shipping</span>
+            <span x-text="$store.cart.shipping === 0 ? 'Free' : money($store.cart.shipping)"></span>
+          </div>
+          <div class="flex justify-between border-t border-black/[0.08] pt-3 text-[13px] text-ink">
+            <span>Total</span><span x-text="money($store.cart.total)"></span>
+          </div>
+        </div>
+
+        <button @click="$store.ui.cartOpen = false; $store.ui.checkoutOpen = true"
+                class="group mt-5 flex w-full items-center justify-center gap-2.5 rounded-full bg-ink py-4 text-[10px] uppercase tracking-[0.26em] text-bone
+                       transition-all duration-400 hover:bg-black hover:shadow-[0_18px_40px_-18px_rgba(0,0,0,0.6)]">
+          Checkout
+          <svg class="h-3 w-3 transition-transform duration-400 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button @click="$store.ui.cartOpen = false"
+                class="mt-2.5 w-full py-2 text-[10px] uppercase tracking-[0.24em] text-black/40 transition hover:text-ink">
+          Continue shopping
+        </button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ============================================================
+     CHECKOUT — right sheet
+     ============================================================ -->
+<div x-data="checkoutForm()" x-cloak>
+  <div x-show="$store.ui.checkoutOpen" class="fixed inset-0 z-[98]" role="dialog" aria-modal="true" aria-label="Checkout">
+
+    <div class="absolute inset-0 bg-ink/30 backdrop-blur-[3px]"
+         x-show="$store.ui.checkoutOpen"
+         x-transition:enter="transition ease-out duration-400"
+         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+         @click="$store.ui.checkoutOpen = false"></div>
+
+    <aside class="absolute right-0 top-0 flex h-full w-full max-w-[500px] flex-col bg-bone shadow-[-24px_0_80px_-30px_rgba(0,0,0,0.45)]"
+           x-show="$store.ui.checkoutOpen"
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-500"
+           x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+           x-transition:leave="transition ease-in duration-300"
+           x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full">
+
+      <div class="flex items-center justify-between border-b border-black/[0.07] px-5 py-5 sm:px-7">
+        <div>
+          <p class="text-[9px] uppercase tracking-[0.32em] text-black/30">Secure checkout</p>
+          <h2 class="mt-1.5 font-serif text-[21px] leading-none" x-text="done ? 'Order confirmed' : 'Complete your order'"></h2>
+        </div>
+        <button @click="$store.ui.checkoutOpen = false"
+                class="flex h-9 w-9 items-center justify-center rounded-full text-black/40 transition hover:bg-black/5 hover:text-ink" aria-label="Close checkout">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div x-show="done" class="flex flex-1 flex-col items-center justify-center px-8 text-center">
+        <div class="flex h-16 w-16 items-center justify-center rounded-full border border-black/10 bg-white/60">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#171614" stroke-width="1.4">
+            <path d="M4 12.5l5 5L20 6.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="mt-7 font-serif text-[26px] leading-tight">Thank you</p>
+        <p class="mt-3 text-[12px] leading-relaxed text-black/45">
+          Your order <span class="text-ink" x-text="orderNo"></span> is confirmed.<br />
+          A receipt is on its way to your inbox.
+        </p>
+        <p class="mt-6 text-[13px] text-ink" x-text="money(orderTotal)"></p>
+        <button @click="reset()"
+                class="mt-8 rounded-full bg-ink px-8 py-3.5 text-[10px] uppercase tracking-[0.24em] text-bone transition hover:bg-black">
+          Continue shopping
+        </button>
+      </div>
+
+      <form x-show="!done" @submit.prevent="submit()" class="flex min-h-0 flex-1 flex-col">
+
+        <div class="panel-scroll flex-1 overflow-y-auto px-5 py-6 sm:px-7">
+
+          <div class="rounded-[3px] border border-black/[0.08] bg-white/45 px-4 py-4">
+            <p class="text-[9px] uppercase tracking-[0.3em] text-black/30">Order summary</p>
+            <div class="mt-3 space-y-2.5">
+              <template x-for="item in $store.cart.items" :key="item.key">
+                <div class="flex items-center justify-between gap-3 text-[11px] text-black/55">
+                  <span class="truncate">
+                    <span x-text="(item.colorName + ' · ' + item.sizeName + ' · ' + item.weightGsm + 'gsm')"></span>
+                    <span class="text-black/30" x-text="' × ' + (item.unitQty * item.qty)"></span>
+                  </span>
+                  <span class="shrink-0" x-text="money(item.packPrice * item.qty)"></span>
+                </div>
+              </template>
+            </div>
+            <div class="mt-3 space-y-2 border-t border-black/[0.08] pt-3 text-[11px] text-black/50">
+              <div class="flex justify-between"><span>Subtotal</span><span x-text="money($store.cart.subtotal)"></span></div>
+              <div class="flex justify-between"><span>Shipping</span><span x-text="$store.cart.shipping === 0 ? 'Free' : money($store.cart.shipping)"></span></div>
+              <div class="flex justify-between pt-1 text-[12.5px] text-ink"><span>Total</span><span x-text="money($store.cart.total)"></span></div>
+            </div>
+          </div>
+
+          <p class="mt-7 text-[9px] uppercase tracking-[0.3em] text-black/30">Contact</p>
+          <input type="email" required placeholder="Email address" x-model="form.email"
+                 class="mt-3 w-full border-b border-black/15 bg-transparent py-3 text-[12.5px] placeholder:text-black/25 focus:border-ink/60 focus:outline-none transition-colors duration-400" />
+
+          <p class="mt-7 text-[9px] uppercase tracking-[0.3em] text-black/30">Shipping address</p>
+          <div class="mt-3 grid grid-cols-2 gap-x-4">
+            <input type="text" required placeholder="First name" x-model="form.first"
+                   class="col-span-1 w-full border-b border-black/15 bg-transparent py-3 text-[12.5px] placeholder:text-black/25 focus:border-ink/60 focus:outline-none transition-colors duration-400" />
+            <input type="text" required placeholder="Last name" x-model="form.last"
+                   class="col-span-1 w-full border-b border-black/15 bg-transparent py-3 text-[12.5px] placeholder:text-black/25 focus:border-ink/60 focus:outline-none transition-colors duration-400" />
+            <input type="text" required placeholder="Address" x-model="form.address"
+                   class="col-span-2 w-full border-b border-black/15 bg-transparent py-3 text-[12.5px] placeholder:text-black/25 focus:border-ink/60 focus:outline-none transition-colors duration-400" />
+            <input type="text" required placeholder="City" x-model="form.city"
+                   class="col-span-1 w-full border-b border-black/15 bg-transparent py-3 text-[12.5px] placeholder:text-black/25 focus:border-ink/60 focus:outline-none transition-colors duration-400" />
+            <input type="text" required placeholder="Postal code" x-model="form.zip"
+                   class="col-span-1 w-full border-b border-black/15 bg-transparent py-3 text-[12.5px] placeholder:text-black/25 focus:border-ink/60 focus:outline-none transition-colors duration-400" />
+            <input type="text" required placeholder="Country" x-model="form.country"
+                   class="col-span-2 w-full border-b border-black/15 bg-transparent py-3 text-[12.5px] placeholder:text-black/25 focus:border-ink/60 focus:outline-none transition-colors duration-400" />
+          </div>
+
+          <p class="mt-7 text-[9px] uppercase tracking-[0.3em] text-black/30">Payment</p>
+          <div class="mt-3 grid grid-cols-2 gap-x-4">
+            <input type="text" required placeholder="Card number" x-model="form.card" maxlength="19"
+                   class="col-span-2 w-full border-b border-black/15 bg-transparent py-3 text-[12.5px] tracking-[0.12em] placeholder:text-black/25 placeholder:tracking-normal focus:border-ink/60 focus:outline-none transition-colors duration-400" />
+            <input type="text" required placeholder="MM / YY" x-model="form.exp" maxlength="7"
+                   class="col-span-1 w-full border-b border-black/15 bg-transparent py-3 text-[12.5px] placeholder:text-black/25 focus:border-ink/60 focus:outline-none transition-colors duration-400" />
+            <input type="text" required placeholder="CVC" x-model="form.cvc" maxlength="4"
+                   class="col-span-1 w-full border-b border-black/15 bg-transparent py-3 text-[12.5px] placeholder:text-black/25 focus:border-ink/60 focus:outline-none transition-colors duration-400" />
+          </div>
+
+          <p class="mt-6 flex items-center gap-2 text-[10px] text-black/35">
+            <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3" stroke-linecap="round"/>
+            </svg>
+            Encrypted & PCI-compliant. This is a demo — no charge is made.
+          </p>
+        </div>
+
+        <div class="border-t border-black/[0.08] bg-bone/95 px-5 py-4 backdrop-blur sm:px-7">
+          <button type="submit"
+                  class="group flex w-full items-center justify-center gap-2.5 rounded-full bg-ink py-4 text-[10px] uppercase tracking-[0.26em] text-bone
+                         transition-all duration-400 hover:bg-black hover:shadow-[0_18px_40px_-18px_rgba(0,0,0,0.6)]">
+            Place order — <span x-text="money($store.cart.total)"></span>
+            <svg class="h-3 w-3 transition-transform duration-400 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script>
+  window.money = (n) => {
+    const v = Math.round((Number(n) + Number.EPSILON) * 100) / 100;
+    return '$' + (Number.isInteger(v) ? v : v.toFixed(2));
+  };
+
+  window.openProduct = (colorId) => {
+    window.dispatchEvent(new CustomEvent('open-product', { detail: colorId || 'bone' }));
+    Alpine.store('ui').productOpen = true;
+  };
+
+  window.CATALOG = {
+    base: 95,
+    colors: [
+      { id: 'bone',     name: 'Bone',     hex: '#EFE9E0', ink: 'rgba(0,0,0,0.34)',      mod: 0 },
+      { id: 'charcoal', name: 'Charcoal', hex: '#2B2B2D', ink: 'rgba(255,255,255,0.42)', mod: 0 },
+      { id: 'sand',     name: 'Sand',     hex: '#D9C6A9', ink: 'rgba(0,0,0,0.30)',      mod: 6 },
+      { id: 'slate',    name: 'Slate',    hex: '#6C7A85', ink: 'rgba(255,255,255,0.40)', mod: 0 },
+      { id: 'clay',     name: 'Clay',     hex: '#B87C61', ink: 'rgba(255,255,255,0.38)', mod: 10 },
+    ],
+    sizes: [
+      { id: 'xs',  name: 'XS',  mod: 0 },
+      { id: 's',   name: 'S',   mod: 0 },
+      { id: 'm',   name: 'M',   mod: 0 },
+      { id: 'l',   name: 'L',   mod: 0 },
+      { id: 'xl',  name: 'XL',  mod: 4 },
+      { id: 'xxl', name: 'XXL', mod: 8 },
+    ],
+    weights: [
+      { id: 'light',   name: 'Light',   gsm: 180, kg: 0.18, mod: -6 },
+      { id: 'classic', name: 'Classic', gsm: 240, kg: 0.24, mod: 0 },
+      { id: 'heavy',   name: 'Heavy',   gsm: 320, kg: 0.32, mod: 12 },
+      { id: 'ultra',   name: 'Ultra',   gsm: 400, kg: 0.40, mod: 24 },
+    ],
+    units: [
+      { id: 'single', name: 'Single', qty: 1, discount: 0 },
+      { id: 'trio',   name: 'Trio',   qty: 3, discount: 0.10 },
+      { id: 'six',    name: 'Six',    qty: 6, discount: 0.18 },
+    ],
+  };
+
+  document.addEventListener('alpine:init', () => {
+
+    Alpine.store('ui', {
+      mobileMenu: false,
+      cartOpen: false,
+      checkoutOpen: false,
+      productOpen: false,
+    });
+
+    Alpine.store('cart', {
+      items: [],
+      bump: false,
+
+      get count() { return this.items.reduce((n, i) => n + i.qty, 0); },
+      get subtotal() {
+        return this.items.reduce((n, i) => n + i.packPrice * i.qty, 0);
+      },
+      get shipping() {
+        if (this.items.length === 0) return 0;
+        return this.subtotal >= 150 ? 0 : 12;
+      },
+      get freeShipRemaining() {
+        return Math.max(0, 150 - this.subtotal);
+      },
+      get total() {
+        return Math.round((this.subtotal + this.shipping) * 100) / 100;
+      },
+      get isEmpty() { return this.items.length === 0; },
+
+      add(item) {
+        const existing = this.items.find((i) => i.key === item.key);
+        if (existing) existing.qty += item.qty;
+        else this.items.push(item);
+        this.bump = true;
+        setTimeout(() => (this.bump = false), 500);
+      },
+
+      remove(key) {
+        this.items = this.items.filter((i) => i.key !== key);
+      },
+
+      setQty(key, qty) {
+        if (qty < 1) return this.remove(key);
+        const item = this.items.find((i) => i.key === key);
+        if (item) item.qty = qty;
+      },
+
+      clear() { this.items = []; },
+    });
+  });
+
+  function productForm() {
+    return {
+      colorId: 'bone',
+      sizeId: 'm',
+      weightId: 'classic',
+      unitId: 'single',
+      qty: 1,
+
+      get catalog() { return window.CATALOG; },
+      get color() { return this.catalog.colors.find((c) => c.id === this.colorId) || this.catalog.colors[0]; },
+      get size() { return this.catalog.sizes.find((s) => s.id === this.sizeId) || this.catalog.sizes[2]; },
+      get weight() { return this.catalog.weights.find((w) => w.id === this.weightId) || this.catalog.weights[1]; },
+      get unit() { return this.catalog.units.find((u) => u.id === this.unitId) || this.catalog.units[0]; },
+
+      get unitPrice() {
+        return this.catalog.base + this.color.mod + this.size.mod + this.weight.mod;
+      },
+      get perTee() {
+        return Math.round(this.unitPrice * (1 - this.unit.discount) * 100) / 100;
+      },
+      get packPrice() {
+        return Math.round(this.unitPrice * this.unit.qty * (1 - this.unit.discount) * 100) / 100;
+      },
+      get total() {
+        return Math.round(this.packPrice * this.qty * 100) / 100;
+      },
+      get totalKg() {
+        return (this.weight.kg * this.unit.qty * this.qty).toFixed(2);
+      },
+
+      load(colorId) {
+        this.colorId = this.catalog.colors.some((c) => c.id === colorId) ? colorId : 'bone';
+        this.sizeId = 'm';
+        this.weightId = 'classic';
+        this.unitId = 'single';
+        this.qty = 1;
+      },
+
+      add() {
+        const key = [this.colorId, this.sizeId, this.weightId, this.unitId].join('-');
+        Alpine.store('cart').add({
+          key,
+          colorId: this.colorId,
+          colorName: this.color.name,
+          hex: this.color.hex,
+          ink: this.color.ink,
+          sizeId: this.sizeId,
+          sizeName: this.size.name,
+          weightId: this.weightId,
+          weightName: this.weight.name,
+          weightGsm: this.weight.gsm,
+          kg: this.weight.kg,
+          unitId: this.unitId,
+          unitName: this.unit.name,
+          unitQty: this.unit.qty,
+          packPrice: this.packPrice,
+          meta: `${this.color.name} · ${this.size.name} · ${this.weight.gsm}gsm`,
+          qty: this.qty,
+        });
+        Alpine.store('ui').productOpen = false;
+        Alpine.store('ui').cartOpen = true;
+      },
+    };
+  }
+
+  function checkoutForm() {
+    return {
+      done: false,
+      orderNo: '',
+      orderTotal: 0,
+      form: { email: '', first: '', last: '', address: '', city: '', zip: '', country: '', card: '', exp: '', cvc: '' },
+
+      submit() {
+        this.orderTotal = Alpine.store('cart').total;
+        this.orderNo = 'AT-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+        this.done = true;
+        Alpine.store('cart').clear();
+      },
+
+      reset() {
+        this.done = false;
+        Alpine.store('ui').checkoutOpen = false;
+        this.form = { email: '', first: '', last: '', address: '', city: '', zip: '', country: '', card: '', exp: '', cvc: '' };
+      },
+    };
+  }
+
+  (function () {
+    const els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+      els.forEach((el) => el.classList.add('is-visible'));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+    );
+    els.forEach((el) => io.observe(el));
+  })();
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !window.Alpine) return;
+    const ui = Alpine.store('ui');
+    if (ui.checkoutOpen) ui.checkoutOpen = false;
+    else if (ui.cartOpen) ui.cartOpen = false;
+    else if (ui.productOpen) ui.productOpen = false;
+    else if (ui.mobileMenu) ui.mobileMenu = false;
+  });
+</script>
+
+</body>
+</html>

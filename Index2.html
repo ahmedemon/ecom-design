@@ -1,0 +1,2394 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MAISON — Considered Essentials for Modern Living</title>
+<meta name="description" content="MAISON — a premium multi-category destination for shoes, clothing, electronics, accessories, groceries and everyday essentials." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:      '#0E0E10',
+          inksoft:  '#1B1B1F',
+          cream:    '#FAF7F2',
+          sand:     '#EDE7DD',
+          gold:     '#B08D57',
+          goldsoft: '#D9C29A',
+        },
+        fontFamily: {
+          sans:  ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          serif: ['"Playfair Display"', 'ui-serif', 'Georgia', 'serif'],
+        },
+        boxShadow: {
+          luxe:  '0 24px 60px -24px rgba(14,14,16,0.28)',
+          card:  '0 1px 2px rgba(14,14,16,0.05)',
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  [x-cloak] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  body { -webkit-font-smoothing: antialiased; }
+  ::selection { background: #B08D57; color: #FAF7F2; }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Elegant scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #FAF7F2; }
+  ::-webkit-scrollbar-thumb { background: #D8CFC0; border-radius: 999px; border: 3px solid #FAF7F2; }
+  ::-webkit-scrollbar-thumb:hover { background: #B08D57; }
+
+  /* Range slider */
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    height: 3px; border-radius: 999px; background: #E3DACC; outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    height: 16px; width: 16px; border-radius: 999px;
+    background: #0E0E10; border: 3px solid #FAF7F2;
+    box-shadow: 0 2px 8px rgba(14,14,16,0.28); cursor: pointer;
+    transition: transform .2s ease;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); background: #B08D57; }
+  input[type="range"]::-moz-range-thumb {
+    height: 14px; width: 14px; border-radius: 999px;
+    background: #0E0E10; border: 3px solid #FAF7F2; cursor: pointer;
+  }
+
+  /* Hero entrance */
+  @keyframes riseIn { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  .rise { animation: riseIn .9s cubic-bezier(.2,.7,.3,1) both; }
+  .rise-1 { animation-delay: .08s; }
+  .rise-2 { animation-delay: .18s; }
+  .rise-3 { animation-delay: .28s; }
+  .rise-4 { animation-delay: .38s; }
+
+  /* Marquee */
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .marquee-track { display: inline-flex; animation: marquee 32s linear infinite; }
+  .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+
+  /* Cart badge pop */
+  @keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
+  .pop { animation: pop .38s ease; }
+
+  /* Hero carousel dot progress */
+  @keyframes dotProgress {
+    from { width: 4px; }
+    to   { width: 28px; }
+  }
+  .dot-active { animation: dotProgress 5s linear forwards; }
+
+  /* Subtle grain for luxury feel */
+  .grain::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .28;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E");
+  }
+</style>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js"></script>
+</head>
+
+<body
+  x-data="shop()"
+  x-init="init()"
+  @keydown.escape.window="closeAll()"
+  class="bg-cream font-sans text-ink antialiased"
+  :class="{ 'overflow-hidden': cartOpen || mobileMenu }"
+>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     ANNOUNCEMENT BAR
+══════════════════════════════════════════════════════════════════ -->
+<div class="bg-ink text-cream/75">
+  <div class="mx-auto flex h-9 max-w-7xl items-center justify-center px-4 text-[10px] uppercase tracking-[0.22em] md:justify-between">
+    <span class="hidden md:inline">Complimentary shipping over $150</span>
+    <span class="flex items-center gap-2">
+      <span class="h-1 w-1 animate-pulse rounded-full bg-gold"></span>
+      Flash Sale — up to 40% off, ends tonight
+    </span>
+    <span class="hidden items-center gap-5 md:flex">
+      <a href="#" @click.prevent="navigate('account')" class="transition hover:text-cream">Track order</a>
+      <a href="#" class="transition hover:text-cream">Help</a>
+    </span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════════════════════ -->
+<header class="sticky top-0 z-40 border-b border-ink/10 bg-cream/85 backdrop-blur-xl">
+  <div class="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:gap-5 md:h-20">
+
+    <!-- Mobile menu -->
+    <button @click="mobileMenu = true" class="grid h-10 w-10 place-items-center rounded-full transition hover:bg-ink/5 lg:hidden" aria-label="Open menu">
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+        <path stroke-linecap="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"/>
+      </svg>
+    </button>
+
+    <!-- Logo -->
+    <a href="#" @click.prevent="navigate('home')" class="shrink-0 select-none font-serif text-[22px] tracking-[0.12em] md:text-[26px]">
+      MAISON<span class="text-gold">.</span>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="ml-6 hidden items-center gap-7 text-[13px] font-medium tracking-wide lg:flex">
+      <a href="#" @click.prevent="openShop('All')" class="relative py-1 transition hover:text-gold"
+         :class="route === 'shop' && filters.category === 'All' ? 'text-gold' : ''">
+        Shop All
+      </a>
+
+      <!-- Mega dropdown -->
+      <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+        <button class="flex items-center gap-1.5 py-1 transition hover:text-gold">
+          Categories
+          <svg class="h-3 w-3 transition-transform duration-300" :class="open && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+          </svg>
+        </button>
+        <div
+          x-show="open" x-cloak x-transition:enter="transition ease-out duration-200"
+          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
+          x-transition:leave="transition ease-in duration-150"
+          x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1"
+          class="absolute left-1/2 top-full w-[520px] -translate-x-1/2 pt-4"
+        >
+          <div class="grid grid-cols-2 gap-1 rounded-2xl border border-ink/5 bg-white p-3 shadow-luxe">
+            <template x-for="c in categories" :key="c.name">
+              <button @click="openShop(c.name); open = false"
+                      class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-cream">
+                <span class="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-sand">
+                  <img :src="c.image" :alt="c.name" class="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                       onerror="this.onerror=null;this.src='https://placehold.co/80x80/EDE7DD/B08D57?text=M'"/>
+                </span>
+                <span class="min-w-0">
+                  <span class="block truncate text-[13px] font-medium" x-text="c.name"></span>
+                  <span class="block text-[11px] text-ink/40" x-text="c.tagline"></span>
+                </span>
+              </button>
+            </template>
+            <div class="col-span-2 mt-1 flex items-center justify-between rounded-xl bg-ink px-4 py-3 text-cream">
+              <span class="text-[11px] uppercase tracking-[0.2em]">New arrivals · SS25</span>
+              <button @click="openShop('All'); open = false" class="text-[11px] uppercase tracking-[0.2em] text-goldsoft transition hover:text-white">Explore →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a href="#" @click.prevent="setFlash()" class="py-1 transition hover:text-gold">Flash Sale</a>
+      <a href="#" @click.prevent="navigate('wishlist')" class="py-1 transition hover:text-gold">Wishlist</a>
+    </nav>
+
+    <!-- Desktop search -->
+    <form @submit.prevent="openShop('All')" class="relative ml-auto hidden w-full max-w-xs md:block lg:max-w-sm">
+      <svg class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/35" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+      </svg>
+      <input
+        x-model="search" type="search" placeholder="Search products, brands…"
+        class="h-11 w-full rounded-full border border-ink/10 bg-white/70 pl-11 pr-4 text-[13px] outline-none transition placeholder:text-ink/35 focus:border-gold/60 focus:bg-white focus:ring-4 focus:ring-gold/10"
+      />
+    </form>
+
+    <!-- Actions -->
+    <div class="ml-auto flex items-center gap-0.5 md:ml-2 md:gap-1">
+      <button @click="navigate('wishlist')" class="relative grid h-10 w-10 place-items-center rounded-full transition hover:bg-ink/5" aria-label="Wishlist">
+        <svg class="h-[19px] w-[19px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
+        </svg>
+        <span x-show="wishlist.length" x-text="wishlist.length"
+              class="absolute right-1 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-gold px-1 text-[9px] font-bold text-white"></span>
+      </button>
+
+      <button @click="navigate('account')" class="hidden h-10 w-10 place-items-center rounded-full transition hover:bg-ink/5 sm:grid" aria-label="Account">
+        <svg class="h-[19px] w-[19px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a7.5 7.5 0 0115 0"/>
+        </svg>
+      </button>
+
+      <button @click="cartOpen = true" class="relative grid h-10 w-10 place-items-center rounded-full transition hover:bg-ink/5" aria-label="Cart">
+        <svg class="h-[19px] w-[19px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12A1.125 1.125 0 0119.75 21.75H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"/>
+        </svg>
+        <span x-show="cartCount" x-text="cartCount" :key="cartCount"
+              class="pop absolute right-1 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-ink px-1 text-[9px] font-bold text-cream"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile search -->
+  <div class="border-t border-ink/5 px-4 pb-3 pt-2.5 md:hidden">
+    <form @submit.prevent="openShop('All')" class="relative">
+      <svg class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/35" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+      </svg>
+      <input x-model="search" type="search" placeholder="Search the collection…"
+             class="h-10 w-full rounded-full border border-ink/10 bg-white/70 pl-11 pr-4 text-[13px] outline-none transition placeholder:text-ink/35 focus:border-gold/60 focus:bg-white"/>
+    </form>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     MOBILE MENU DRAWER
+══════════════════════════════════════════════════════════════════ -->
+<div x-show="mobileMenu" x-cloak class="fixed inset-0 z-50 lg:hidden">
+  <div x-show="mobileMenu" x-transition.opacity.duration.250ms @click="mobileMenu = false"
+       class="absolute inset-0 bg-ink/45 backdrop-blur-sm"></div>
+  <aside
+    x-show="mobileMenu"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full"
+    class="absolute inset-y-0 left-0 flex w-[86%] max-w-sm flex-col bg-cream shadow-2xl"
+  >
+    <div class="flex items-center justify-between border-b border-ink/10 px-5 py-4">
+      <span class="font-serif text-xl tracking-[0.12em]">MAISON<span class="text-gold">.</span></span>
+      <button @click="mobileMenu = false" class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-ink/5">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-3 py-4">
+      <p class="px-3 pb-2 text-[10px] uppercase tracking-[0.25em] text-ink/35">Browse</p>
+      <template x-for="c in categories" :key="c.name">
+        <button @click="openShop(c.name); mobileMenu = false"
+                class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-white">
+          <span class="h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-sand">
+            <img :src="c.image" :alt="c.name" class="h-full w-full object-cover"
+                 onerror="this.onerror=null;this.src='https://placehold.co/80x80/EDE7DD/B08D57?text=M'"/>
+          </span>
+          <span class="flex-1 text-sm font-medium" x-text="c.name"></span>
+          <svg class="h-4 w-4 text-ink/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+        </button>
+      </template>
+
+      <div class="my-4 h-px bg-ink/10"></div>
+      <p class="px-3 pb-2 text-[10px] uppercase tracking-[0.25em] text-ink/35">Discover</p>
+      <button @click="setFlash(); mobileMenu = false" class="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium transition hover:bg-white">⚡ Flash Sale</button>
+      <button @click="navigate('wishlist'); mobileMenu = false" class="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium transition hover:bg-white">Wishlist</button>
+      <button @click="navigate('account'); mobileMenu = false" class="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium transition hover:bg-white">My Account</button>
+      <button @click="navigate('login'); mobileMenu = false" class="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium transition hover:bg-white">Sign In</button>
+    </div>
+
+    <div class="border-t border-ink/10 p-4">
+      <button @click="navigate('shop'); mobileMenu = false"
+              class="w-full rounded-full bg-ink py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-cream transition hover:bg-gold">
+        Shop the collection
+      </button>
+    </div>
+  </aside>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     CART DRAWER
+══════════════════════════════════════════════════════════════════ -->
+<div x-show="cartOpen" x-cloak class="fixed inset-0 z-50">
+  <div x-show="cartOpen" x-transition.opacity.duration.250ms @click="cartOpen = false"
+       class="absolute inset-0 bg-ink/45 backdrop-blur-sm"></div>
+
+  <aside
+    x-show="cartOpen"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full"
+    class="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-cream shadow-2xl"
+  >
+    <div class="flex items-center justify-between border-b border-ink/10 px-5 py-4">
+      <h2 class="font-serif text-xl">Shopping Bag <span class="text-ink/40" x-text="'(' + cartCount + ')'"></span></h2>
+      <button @click="cartOpen = false" class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-ink/5">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Free shipping meter -->
+    <div class="border-b border-ink/10 px-5 py-3" x-show="cart.length">
+      <p class="mb-2 text-[11px] text-ink/55">
+        <template x-if="subtotal < 150">
+          <span>You're <strong class="text-ink" x-text="money(150 - subtotal)"></strong> away from free shipping</span>
+        </template>
+        <template x-if="subtotal >= 150">
+          <span class="font-medium text-gold">✓ Complimentary shipping unlocked</span>
+        </template>
+      </p>
+      <div class="h-1 w-full overflow-hidden rounded-full bg-sand">
+        <div class="h-full rounded-full bg-gold transition-all duration-500" :style="`width:${Math.min(100, (subtotal/150)*100)}%`"></div>
+      </div>
+    </div>
+
+    <!-- Items -->
+    <div class="flex-1 overflow-y-auto px-5">
+      <template x-if="cart.length === 0">
+        <div class="flex h-full flex-col items-center justify-center py-16 text-center">
+          <div class="grid h-20 w-20 place-items-center rounded-full bg-sand">
+            <svg class="h-8 w-8 text-ink/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12A1.125 1.125 0 0119.75 21.75H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"/>
+            </svg>
+          </div>
+          <p class="mt-5 font-serif text-xl">Your bag is empty</p>
+          <p class="mt-1.5 max-w-[240px] text-sm text-ink/50">Discover considered essentials, made to last.</p>
+          <button @click="cartOpen = false; navigate('shop')"
+                  class="mt-6 rounded-full bg-ink px-8 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-cream transition hover:bg-gold">
+            Start shopping
+          </button>
+        </div>
+      </template>
+
+      <template x-for="item in cart" :key="item.key">
+        <div class="flex gap-4 border-b border-ink/5 py-4">
+          <div class="h-24 w-20 shrink-0 overflow-hidden rounded-xl bg-sand">
+            <img :src="item.image" :alt="item.name" class="h-full w-full object-cover"
+                 onerror="this.onerror=null;this.src='https://placehold.co/200x260/EDE7DD/B08D57?text=M'"/>
+          </div>
+          <div class="flex min-w-0 flex-1 flex-col">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <p class="truncate text-sm font-medium" x-text="item.name"></p>
+                <p class="mt-0.5 text-[11px] uppercase tracking-widest text-ink/40" x-text="item.brand"></p>
+                <p x-show="item.size" class="mt-0.5 text-[11px] text-ink/45" x-text="'Size ' + item.size"></p>
+              </div>
+              <button @click="removeFromCart(item.key)" class="shrink-0 text-ink/30 transition hover:text-red-500">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div class="mt-auto flex items-center justify-between pt-3">
+              <div class="flex items-center rounded-full border border-ink/12 bg-white">
+                <button @click="changeQty(item.key, -1)" class="grid h-8 w-8 place-items-center rounded-full text-ink/60 transition hover:text-ink">−</button>
+                <span class="w-7 text-center text-xs font-medium" x-text="item.qty"></span>
+                <button @click="changeQty(item.key, 1)" class="grid h-8 w-8 place-items-center rounded-full text-ink/60 transition hover:text-ink">+</button>
+              </div>
+              <span class="text-sm font-medium" x-text="money(item.price * item.qty)"></span>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- Footer -->
+    <div x-show="cart.length" class="border-t border-ink/10 bg-white/60 px-5 py-4">
+      <div class="flex items-center justify-between text-sm">
+        <span class="text-ink/55">Subtotal</span>
+        <span class="font-medium" x-text="money(subtotal)"></span>
+      </div>
+      <div class="mt-1.5 flex items-center justify-between text-sm">
+        <span class="text-ink/55">Shipping</span>
+        <span class="font-medium" x-text="shipping === 0 ? 'Free' : money(shipping)"></span>
+      </div>
+      <p class="mt-2 text-[11px] text-ink/40">Taxes calculated at checkout</p>
+      <button @click="cartOpen = false; navigate('checkout')"
+              class="mt-4 w-full rounded-full bg-ink py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-cream transition hover:bg-gold">
+        Proceed to checkout
+      </button>
+      <button @click="cartOpen = false; navigate('cart')"
+              class="mt-2 w-full rounded-full py-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/60 transition hover:text-ink">
+        View full bag
+      </button>
+    </div>
+  </aside>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     MAIN — PAGES
+══════════════════════════════════════════════════════════════════ -->
+<main>
+
+<!-- ───────────────────────── HOME ───────────────────────── -->
+<div x-show="route === 'home'" x-transition.opacity.duration.300ms>
+
+  <!-- HERO -->
+  <section class="relative overflow-hidden bg-cream">
+    <div class="pointer-events-none absolute -right-40 -top-40 h-[520px] w-[520px] rounded-full bg-goldsoft/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-52 -left-40 h-[460px] w-[460px] rounded-full bg-sand blur-3xl"></div>
+
+    <div class="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 lg:grid-cols-2 lg:gap-16 lg:py-24">
+      <div>
+        <span class="rise inline-flex items-center gap-2 rounded-full border border-ink/15 px-4 py-1.5 text-[10px] uppercase tracking-[0.22em]">
+          <span class="h-1.5 w-1.5 rounded-full bg-gold"></span> New Season 2025
+        </span>
+
+        <h1 class="rise rise-1 mt-6 font-serif text-[42px] leading-[1.04] tracking-[-0.01em] sm:text-6xl lg:text-[76px]">
+          Considered<br/>
+          <span class="italic text-gold">essentials</span> for<br/>
+          modern living.
+        </h1>
+
+        <p class="rise rise-2 mt-6 max-w-md text-[15px] leading-relaxed text-ink/55">
+          A curated destination for shoes, clothing, electronics, groceries and the everyday objects
+          that quietly elevate your life. Crafted to last. Chosen with care.
+        </p>
+
+        <div class="rise rise-3 mt-9 flex flex-wrap gap-3">
+          <button @click="navigate('shop')"
+                  class="group inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-cream transition-all duration-300 hover:bg-gold hover:shadow-luxe">
+            Shop the collection
+            <svg class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16m0 0l-6-6m6 6l-6 6"/>
+            </svg>
+          </button>
+          <button @click="setFlash()"
+                  class="inline-flex items-center gap-2 rounded-full border border-ink/15 px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 hover:border-ink hover:bg-white">
+            ⚡ Flash Sale
+          </button>
+        </div>
+
+        <div class="rise rise-4 mt-12 flex items-center gap-7 divide-x divide-ink/10">
+          <div class="pr-7">
+            <p class="font-serif text-2xl">40k+</p>
+            <p class="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-ink/40">Customers</p>
+          </div>
+          <div class="px-7">
+            <p class="font-serif text-2xl">4.9<span class="text-sm text-ink/40">/5</span></p>
+            <p class="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-ink/40">Rated</p>
+          </div>
+          <div class="pl-7">
+            <p class="font-serif text-2xl">Free</p>
+            <p class="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-ink/40">Returns 30d</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative">
+        <!-- ═══════ HERO CAROUSEL ═══════ -->
+        <div class="relative overflow-hidden rounded-[2rem] bg-sand shadow-luxe h-[380px] sm:h-[480px] lg:h-[600px]"
+             @mouseenter="heroPaused = true"
+             @mouseleave="heroPaused = false">
+
+          <!-- Stacked slides with crossfade + subtle zoom -->
+          <template x-for="(img, i) in heroImages" :key="i">
+            <img
+              :src="img"
+              :alt="'MAISON curated collection ' + (i + 1)"
+              loading="lazy"
+              class="absolute inset-0 h-full w-full object-cover transition-all duration-[1400ms] ease-out"
+              :class="heroIndex === i ? 'opacity-100 scale-100' : 'opacity-0 scale-110'"
+              onerror="this.onerror=null;this.src='https://placehold.co/900x1100/EDE7DD/B08D57?text=MAISON'"
+            />
+          </template>
+
+          <!-- Gradient overlay -->
+          <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-transparent"></div>
+
+          <!-- Dot indicators -->
+          <div class="absolute bottom-4 right-4 z-10 flex items-center gap-1.5">
+            <template x-for="(img, i) in heroImages" :key="i">
+              <button
+                @click="selectHero(i)"
+                :aria-label="'View slide ' + (i + 1)"
+                class="h-1.5 rounded-full transition-all duration-500 ease-out"
+                :class="heroIndex === i ? 'bg-cream' : 'w-1.5 bg-cream/40 hover:bg-cream/70'"
+                :style="heroIndex === i ? 'width: 28px;' : ''"
+              ></button>
+            </template>
+          </div>
+        </div>
+
+        <!-- Floating card -->
+        <div class="absolute -bottom-4 left-3 w-[220px] rounded-2xl border border-white/60 bg-white/90 p-4 shadow-luxe backdrop-blur-md sm:-left-6 sm:bottom-8">
+          <div class="flex items-center gap-1 text-amber-500">
+            <template x-for="i in 5" :key="i">
+              <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.05 2.93c.3-.92 1.6-.92 1.9 0l1.36 4.18a1 1 0 00.95.69h4.4c.97 0 1.37 1.24.59 1.81l-3.56 2.59a1 1 0 00-.36 1.12l1.36 4.18c.3.92-.75 1.69-1.54 1.12l-3.56-2.59a1 1 0 00-1.18 0l-3.56 2.59c-.79.57-1.84-.2-1.54-1.12l1.36-4.18a1 1 0 00-.36-1.12L2.7 9.61c-.78-.57-.38-1.81.59-1.81h4.4a1 1 0 00.95-.69l1.36-4.18z"/></svg>
+            </template>
+          </div>
+          <p class="mt-2 text-[12px] font-medium leading-snug">"Beautifully packaged, exceptional quality."</p>
+          <p class="mt-1.5 text-[10px] uppercase tracking-[0.18em] text-ink/40">— Amara K., verified</p>
+        </div>
+
+        <!-- Floating badge -->
+        <div class="absolute -right-2 top-6 rotate-3 rounded-2xl bg-ink px-4 py-3 text-cream shadow-luxe sm:-right-4">
+          <p class="text-[9px] uppercase tracking-[0.2em] text-cream/60">Up to</p>
+          <p class="font-serif text-2xl leading-tight text-goldsoft">40% off</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <section class="border-y border-ink/10 bg-white/60">
+    <div class="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-ink/10 px-4 lg:grid-cols-4">
+      <div class="flex items-center gap-3 px-4 py-6">
+        <svg class="h-5 w-5 shrink-0 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25"/></svg>
+        <div><p class="text-[12px] font-medium">Free Shipping</p><p class="text-[10px] text-ink/40">On orders over $150</p></div>
+      </div>
+      <div class="flex items-center gap-3 px-4 py-6">
+        <svg class="h-5 w-5 shrink-0 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+        <div><p class="text-[12px] font-medium">30-Day Returns</p><p class="text-[10px] text-ink/40">No questions asked</p></div>
+      </div>
+      <div class="flex items-center gap-3 px-4 py-6">
+        <svg class="h-5 w-5 shrink-0 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/></svg>
+        <div><p class="text-[12px] font-medium">Secure Payment</p><p class="text-[10px] text-ink/40">256-bit encryption</p></div>
+      </div>
+      <div class="flex items-center gap-3 px-4 py-6">
+        <svg class="h-5 w-5 shrink-0 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"/></svg>
+        <div><p class="text-[12px] font-medium">Concierge Support</p><p class="text-[10px] text-ink/40">7 days a week</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="mx-auto max-w-7xl px-4 py-16 lg:py-24">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="text-[10px] uppercase tracking-[0.28em] text-gold">Browse</p>
+        <h2 class="mt-2 font-serif text-3xl sm:text-4xl lg:text-5xl">Shop by category</h2>
+      </div>
+      <button @click="navigate('shop')" class="group inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/60 transition hover:text-gold">
+        View all
+        <svg class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16m0 0l-6-6m6 6l-6 6"/></svg>
+      </button>
+    </div>
+
+    <div class="mt-10 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-3">
+      <template x-for="(c, i) in categories" :key="c.name">
+        <button @click="openShop(c.name)"
+                class="group relative overflow-hidden rounded-2xl bg-sand text-left"
+                :class="i === 0 ? 'lg:col-span-1 lg:row-span-2' : ''">
+          <div class="relative" :class="i === 0 ? 'aspect-[4/5] lg:aspect-auto lg:h-full lg:min-h-[420px]' : 'aspect-[4/5] sm:aspect-[16/11]'">
+            <img :src="c.image" :alt="c.name" loading="lazy"
+                 class="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110"
+                 onerror="this.onerror=null;this.src='https://placehold.co/800x900/EDE7DD/B08D57?text=MAISON'"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/15 to-transparent"></div>
+            <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-4 sm:p-5">
+              <div>
+                <h3 class="font-serif text-xl text-cream sm:text-2xl" x-text="c.name"></h3>
+                <p class="mt-0.5 text-[11px] uppercase tracking-[0.18em] text-cream/60" x-text="c.tagline"></p>
+              </div>
+              <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-cream/15 text-cream backdrop-blur transition-all duration-300 group-hover:bg-gold group-hover:text-white">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16m0 0l-6-6m6 6l-6 6"/></svg>
+              </span>
+            </div>
+          </div>
+        </button>
+      </template>
+    </div>
+  </section>
+
+  <!-- FLASH SALE -->
+  <section class="relative overflow-hidden bg-ink py-16 text-cream lg:py-24">
+    <div class="pointer-events-none absolute -left-32 top-0 h-96 w-96 rounded-full bg-gold/15 blur-3xl"></div>
+    <div class="pointer-events-none absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-gold/10 blur-3xl"></div>
+
+    <div class="relative mx-auto max-w-7xl px-4">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <span class="inline-flex items-center gap-2 rounded-full bg-gold/15 px-4 py-1.5 text-[10px] uppercase tracking-[0.22em] text-goldsoft">
+            <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-goldsoft"></span> Limited time
+          </span>
+          <h2 class="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl">Flash Sale<span class="text-gold">.</span></h2>
+          <p class="mt-2 max-w-md text-sm text-cream/50">Up to 40% off a hand-picked edit. When the clock stops, so do the prices.</p>
+        </div>
+
+        <!-- Countdown -->
+        <div class="flex items-center gap-2.5">
+          <template x-for="(unit, idx) in [countdown.h, countdown.m, countdown.s]" :key="idx">
+            <div class="flex items-center gap-2.5">
+              <div class="grid h-16 w-16 place-items-center rounded-xl border border-white/10 bg-white/5 backdrop-blur">
+                <span class="font-serif text-2xl tabular-nums" x-text="unit"></span>
+              </div>
+              <span x-show="idx < 2" class="text-lg text-cream/25">:</span>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- Rail -->
+      <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <template x-for="p in flashProducts" :key="p.id">
+          <article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white text-ink transition duration-500 hover:-translate-y-1 hover:shadow-2xl">
+            <div class="relative aspect-[4/5] overflow-hidden bg-sand">
+              <img :src="p.image" :alt="p.name" loading="lazy"
+                   class="h-full w-full object-cover transition-transform duration-[900ms] group-hover:scale-110"
+                   onerror="this.onerror=null;this.src='https://placehold.co/600x750/EDE7DD/B08D57?text=M'"/>
+              <span class="absolute left-2.5 top-2.5 rounded-full bg-red-600 px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-white"
+                    x-text="'-' + Math.round((1 - p.price/p.oldPrice)*100) + '%'"></span>
+              <button @click="toggleWishlist(p)" class="absolute right-2.5 top-2.5 grid h-8 w-8 place-items-center rounded-full bg-white/90 backdrop-blur transition hover:bg-white"
+                      :class="isWished(p.id) ? 'text-red-500' : 'text-ink/50'">
+                <svg class="h-3.5 w-3.5" :fill="isWished(p.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+              </button>
+            </div>
+            <div class="flex flex-1 flex-col p-3.5">
+              <p class="text-[9px] uppercase tracking-[0.2em] text-ink/40" x-text="p.brand"></p>
+              <h3 @click="openProduct(p)" class="mt-1 cursor-pointer text-[13px] font-medium leading-snug transition hover:text-gold" x-text="p.name"></h3>
+              <div class="mt-auto pt-3">
+                <div class="flex items-baseline gap-1.5">
+                  <span class="font-serif text-base" x-text="money(p.price)"></span>
+                  <span class="text-[11px] text-ink/35 line-through" x-text="money(p.oldPrice)"></span>
+                </div>
+                <button @click="addToCart(p)"
+                        class="mt-2.5 w-full rounded-full border border-ink/12 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] transition hover:border-ink hover:bg-ink hover:text-cream">
+                  Add to bag
+                </button>
+              </div>
+            </div>
+          </article>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED / TABS -->
+  <section class="mx-auto max-w-7xl px-4 py-16 lg:py-24">
+    <div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="text-[10px] uppercase tracking-[0.28em] text-gold">Curated</p>
+        <h2 class="mt-2 font-serif text-3xl sm:text-4xl lg:text-5xl">The edit</h2>
+      </div>
+
+      <div class="flex flex-wrap gap-1.5 rounded-full border border-ink/10 bg-white/60 p-1.5">
+        <template x-for="t in [{k:'trending',l:'Trending'},{k:'best',l:'Best Sellers'},{k:'new',l:'New In'}]" :key="t.k">
+          <button @click="activeTab = t.k"
+                  class="rounded-full px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] transition-all duration-300"
+                  :class="activeTab === t.k ? 'bg-ink text-cream shadow-md' : 'text-ink/50 hover:text-ink'"
+                  x-text="t.l"></button>
+        </template>
+      </div>
+    </div>
+
+    <div class="mt-10 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
+      <template x-for="p in tabProducts" :key="p.id">
+        <article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-ink/5 transition-all duration-500 hover:-translate-y-1 hover:shadow-luxe">
+          <div class="relative aspect-[4/5] overflow-hidden bg-sand">
+            <img :src="p.image" :alt="p.name" loading="lazy"
+                 class="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110"
+                 onerror="this.onerror=null;this.src='https://placehold.co/800x1000/EDE7DD/B08D57?text=MAISON'"/>
+            <div class="absolute left-3 top-3 flex flex-col items-start gap-1.5">
+              <span x-show="p.oldPrice" class="rounded-full bg-ink px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-cream"
+                    x-text="'-' + Math.round((1 - p.price/p.oldPrice)*100) + '%'"></span>
+              <span x-show="p.badge" x-text="p.badge"
+                    class="rounded-full bg-white/90 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-ink backdrop-blur"></span>
+            </div>
+            <button @click="toggleWishlist(p)"
+                    class="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 backdrop-blur transition hover:bg-white"
+                    :class="isWished(p.id) ? 'text-red-500' : 'text-ink/50 hover:text-ink'">
+              <svg class="h-4 w-4" :fill="isWished(p.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+            </button>
+            <div class="absolute inset-x-3 bottom-3 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+              <button @click="addToCart(p)" class="w-full rounded-full bg-ink/95 py-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-cream backdrop-blur transition hover:bg-gold">
+                Add to Bag
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-1 flex-col p-4">
+            <p class="text-[9px] uppercase tracking-[0.2em] text-ink/40" x-text="p.brand"></p>
+            <h3 @click="openProduct(p)" class="mt-1 cursor-pointer text-sm font-medium leading-snug transition hover:text-gold" x-text="p.name"></h3>
+            <div class="mt-2 flex items-center gap-1">
+              <svg class="h-3.5 w-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.05 2.93c.3-.92 1.6-.92 1.9 0l1.36 4.18a1 1 0 00.95.69h4.4c.97 0 1.37 1.24.59 1.81l-3.56 2.59a1 1 0 00-.36 1.12l1.36 4.18c.3.92-.75 1.69-1.54 1.12l-3.56-2.59a1 1 0 00-1.18 0l-3.56 2.59c-.79.57-1.84-.2-1.54-1.12l1.36-4.18a1 1 0 00-.36-1.12L2.7 9.61c-.78-.57-.38-1.81.59-1.81h4.4a1 1 0 00.95-.69l1.36-4.18z"/></svg>
+              <span class="text-[11px] font-medium" x-text="p.rating"></span>
+              <span class="text-[11px] text-ink/35" x-text="'(' + p.reviews.toLocaleString() + ')'"></span>
+            </div>
+            <div class="mt-auto flex items-baseline gap-2 pt-3">
+              <span class="font-serif text-lg" x-text="money(p.price)"></span>
+              <span x-show="p.oldPrice" class="text-[11px] text-ink/35 line-through" x-text="money(p.oldPrice)"></span>
+            </div>
+          </div>
+        </article>
+      </template>
+    </div>
+
+    <div class="mt-12 text-center">
+      <button @click="navigate('shop')"
+              class="inline-flex items-center gap-2 rounded-full border border-ink/15 px-9 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 hover:border-ink hover:bg-ink hover:text-cream">
+        View all products
+        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16m0 0l-6-6m6 6l-6 6"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- PROMO BANNERS -->
+  <section class="mx-auto max-w-7xl px-4 pb-16 lg:pb-24">
+    <div class="grid gap-4 sm:gap-5 lg:grid-cols-3">
+      <div class="group relative overflow-hidden rounded-2xl bg-ink p-8 text-cream lg:col-span-2">
+        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80"
+             alt="Store interior" class="absolute inset-0 h-full w-full object-cover opacity-35 transition duration-[1200ms] group-hover:scale-105"
+             onerror="this.style.display='none'"/>
+        <div class="relative max-w-sm">
+          <p class="text-[10px] uppercase tracking-[0.28em] text-goldsoft">Members only</p>
+          <h3 class="mt-3 font-serif text-3xl leading-tight sm:text-4xl">Join the Maison Circle</h3>
+          <p class="mt-3 text-sm leading-relaxed text-cream/60">Early access to drops, private sales and complimentary styling consultations.</p>
+          <button @click="navigate('register')"
+                  class="mt-6 rounded-full bg-cream px-7 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-ink transition hover:bg-gold hover:text-white">
+            Become a member
+          </button>
+        </div>
+      </div>
+
+      <div class="group relative overflow-hidden rounded-2xl bg-sand p-8">
+        <div class="relative z-10">
+          <p class="text-[10px] uppercase tracking-[0.28em] text-gold">Gifting</p>
+          <h3 class="mt-3 font-serif text-2xl leading-tight sm:text-3xl">The art of<br/>giving well</h3>
+          <p class="mt-3 text-sm leading-relaxed text-ink/55">Beautifully wrapped, thoughtfully chosen.</p>
+          <button @click="openShop('Accessories')"
+                  class="mt-6 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-ink transition group-hover:text-gold">
+            Shop gifts
+            <svg class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16m0 0l-6-6m6 6l-6 6"/></svg>
+          </button>
+        </div>
+        <div class="pointer-events-none absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-goldsoft/40 blur-2xl"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="border-y border-ink/10 bg-white/60 py-16 lg:py-20">
+    <div class="mx-auto max-w-7xl px-4">
+      <div class="text-center">
+        <p class="text-[10px] uppercase tracking-[0.28em] text-gold">Loved by 40,000+</p>
+        <h2 class="mt-2 font-serif text-3xl sm:text-4xl">What our customers say</h2>
+      </div>
+      <div class="mt-10 grid gap-5 md:grid-cols-3">
+        <template x-for="(t, i) in testimonials" :key="i">
+          <figure class="flex flex-col rounded-2xl border border-ink/5 bg-white p-6 transition duration-300 hover:shadow-luxe">
+            <div class="flex gap-0.5 text-amber-500">
+              <template x-for="s in 5" :key="s">
+                <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.05 2.93c.3-.92 1.6-.92 1.9 0l1.36 4.18a1 1 0 00.95.69h4.4c.97 0 1.37 1.24.59 1.81l-3.56 2.59a1 1 0 00-.36 1.12l1.36 4.18c.3.92-.75 1.69-1.54 1.12l-3.56-2.59a1 1 0 00-1.18 0l-3.56 2.59c-.79.57-1.84-.2-1.54-1.12l1.36-4.18a1 1 0 00-.36-1.12L2.7 9.61c-.78-.57-.38-1.81.59-1.81h4.4a1 1 0 00.95-.69l1.36-4.18z"/></svg>
+              </template>
+            </div>
+            <blockquote class="mt-4 flex-1 text-sm leading-relaxed text-ink/70" x-text="t.quote"></blockquote>
+            <figcaption class="mt-5 flex items-center gap-3 border-t border-ink/5 pt-4">
+              <span class="grid h-9 w-9 place-items-center rounded-full bg-sand font-serif text-sm" x-text="t.initials"></span>
+              <div>
+                <p class="text-[13px] font-medium" x-text="t.name"></p>
+                <p class="text-[10px] uppercase tracking-[0.18em] text-ink/40" x-text="t.role"></p>
+              </div>
+            </figcaption>
+          </figure>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="mx-auto max-w-7xl px-4 py-16 lg:py-24">
+    <div class="relative overflow-hidden rounded-[2rem] bg-ink px-6 py-14 text-center text-cream sm:px-12 lg:py-20">
+      <div class="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-gold/20 blur-3xl"></div>
+      <div class="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-gold/10 blur-3xl"></div>
+      <div class="relative mx-auto max-w-xl">
+        <p class="text-[10px] uppercase tracking-[0.28em] text-goldsoft">Stay in the know</p>
+        <h2 class="mt-3 font-serif text-3xl sm:text-4xl lg:text-5xl">Join the list</h2>
+        <p class="mt-3 text-sm leading-relaxed text-cream/55">Ten percent off your first order, plus early access to every new arrival.</p>
+        <form @submit.prevent="notify('Welcome to MAISON — check your inbox')" class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <input type="email" required placeholder="your@email.com"
+                 class="h-13 flex-1 rounded-full border border-white/15 bg-white/5 px-6 py-3.5 text-sm text-cream outline-none transition placeholder:text-cream/35 focus:border-gold/60 focus:bg-white/10"/>
+          <button type="submit" class="rounded-full bg-cream px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-ink transition hover:bg-gold hover:text-white">
+            Subscribe
+          </button>
+        </form>
+        <p class="mt-4 text-[11px] text-cream/30">By subscribing you agree to our Privacy Policy.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ───────────────────────── SHOP ───────────────────────── -->
+<div x-show="route === 'shop'" x-cloak x-transition.opacity.duration.300ms>
+  <!-- Page header -->
+  <div class="border-b border-ink/10 bg-white/50">
+    <div class="mx-auto max-w-7xl px-4 py-10 lg:py-14">
+      <nav class="flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-ink/40">
+        <button @click="navigate('home')" class="transition hover:text-ink">Home</button>
+        <span>/</span>
+        <span class="text-ink" x-text="filters.category === 'All' ? 'Shop All' : filters.category"></span>
+      </nav>
+      <div class="mt-4 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 class="font-serif text-4xl sm:text-5xl" x-text="filters.category === 'All' ? 'The Collection' : filters.category"></h1>
+          <p class="mt-2 text-sm text-ink/50">
+            <span x-text="filtered.length"></span> <span x-text="filtered.length === 1 ? 'product' : 'products'"></span>
+            <span x-show="search"> matching “<span x-text="search"></span>”</span>
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <label class="text-[11px] uppercase tracking-[0.18em] text-ink/40">Sort</label>
+          <select x-model="sort"
+                  class="h-11 rounded-full border border-ink/12 bg-white px-4 pr-9 text-[12px] font-medium outline-none transition focus:border-gold/60 focus:ring-4 focus:ring-gold/10">
+            <option value="featured">Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+            <option value="new">Newest</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-7xl px-4 py-10 lg:py-14">
+    <div class="lg:grid lg:grid-cols-[260px_1fr] lg:gap-10">
+
+      <!-- FILTERS -->
+      <aside class="mb-6 lg:mb-0">
+        <!-- Mobile toggle -->
+        <button @click="filtersOpen = !filtersOpen"
+                class="flex w-full items-center justify-between rounded-xl border border-ink/12 bg-white px-4 py-3.5 text-[12px] font-semibold uppercase tracking-[0.16em] lg:hidden">
+          Filters
+          <svg class="h-4 w-4 transition-transform duration-300" :class="filtersOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        </button>
+
+        <div x-show="filtersOpen || window.innerWidth >= 1024" x-collapse class="mt-4 space-y-7 lg:mt-0">
+
+          <!-- Categories -->
+          <div>
+            <h3 class="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/40">Category</h3>
+            <div class="space-y-1">
+              <template x-for="c in ['All', ...categories.map(x => x.name)]" :key="c">
+                <button @click="filters.category = c"
+                        class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-[13px] transition"
+                        :class="filters.category === c ? 'bg-ink text-cream' : 'text-ink/65 hover:bg-white'">
+                  <span x-text="c === 'All' ? 'All Products' : c"></span>
+                  <span class="text-[11px] opacity-50" x-text="countFor(c)"></span>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <!-- Price -->
+          <div>
+            <h3 class="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/40">Max Price</h3>
+            <input type="range" min="10" max="2000" step="10" x-model.number="filters.maxPrice" class="w-full"/>
+            <div class="mt-3 flex items-center justify-between text-[12px] text-ink/55">
+              <span>$10</span>
+              <span class="font-semibold text-ink" x-text="money(filters.maxPrice)"></span>
+            </div>
+          </div>
+
+          <!-- Rating -->
+          <div>
+            <h3 class="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/40">Rating</h3>
+            <div class="space-y-1">
+              <template x-for="r in [4.5, 4.0, 3.5]" :key="r">
+                <button @click="filters.rating = filters.rating === r ? 0 : r"
+                        class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-[13px] transition"
+                        :class="filters.rating === r ? 'bg-sand font-medium' : 'hover:bg-white'">
+                  <span class="flex gap-0.5 text-amber-500">
+                    <template x-for="i in 5" :key="i">
+                      <svg class="h-3 w-3" :class="i <= Math.round(r) ? 'opacity-100' : 'opacity-25'" fill="currentColor" viewBox="0 0 20 20"><path d="M9.05 2.93c.3-.92 1.6-.92 1.9 0l1.36 4.18a1 1 0 00.95.69h4.4c.97 0 1.37 1.24.59 1.81l-3.56 2.59a1 1 0 00-.36 1.12l1.36 4.18c.3.92-.75 1.69-1.54 1.12l-3.56-2.59a1 1 0 00-1.18 0l-3.56 2.59c-.79.57-1.84-.2-1.54-1.12l1.36-4.18a1 1 0 00-.36-1.12L2.7 9.61c-.78-.57-.38-1.81.59-1.81h4.4a1 1 0 00.95-.69l1.36-4.18z"/></svg>
+                    </template>
+                  </span>
+                  <span class="text-ink/55" x-text="r + ' & up'"></span>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <!-- Brands -->
+          <div>
+            <h3 class="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/40">Brand</h3>
+            <div class="max-h-56 space-y-0.5 overflow-y-auto pr-1">
+              <template x-for="b in brands" :key="b">
+                <label class="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-1.5 text-[13px] text-ink/65 transition hover:bg-white">
+                  <input type="checkbox" :value="b" x-model="filters.brands"
+                         class="h-4 w-4 rounded border-ink/20 text-ink focus:ring-gold/40"/>
+                  <span x-text="b"></span>
+                </label>
+              </template>
+            </div>
+          </div>
+
+          <button @click="resetFilters()"
+                  class="w-full rounded-full border border-ink/12 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:border-ink hover:bg-ink hover:text-cream">
+            Reset filters
+          </button>
+        </div>
+      </aside>
+
+      <!-- GRID -->
+      <div>
+        <!-- Active chips -->
+        <div x-show="filters.category !== 'All' || filters.brands.length || filters.rating || search || filters.maxPrice < 2000"
+             class="mb-5 flex flex-wrap items-center gap-2">
+          <template x-if="filters.category !== 'All'">
+            <button @click="filters.category = 'All'" class="inline-flex items-center gap-1.5 rounded-full bg-sand px-3 py-1.5 text-[11px] font-medium">
+              <span x-text="filters.category"></span>
+              <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </template>
+          <template x-if="search">
+            <button @click="search = ''" class="inline-flex items-center gap-1.5 rounded-full bg-sand px-3 py-1.5 text-[11px] font-medium">
+              “<span x-text="search"></span>”
+              <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </template>
+          <template x-for="b in filters.brands" :key="b">
+            <button @click="filters.brands = filters.brands.filter(x => x !== b)" class="inline-flex items-center gap-1.5 rounded-full bg-sand px-3 py-1.5 text-[11px] font-medium">
+              <span x-text="b"></span>
+              <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </template>
+          <template x-if="filters.rating">
+            <button @click="filters.rating = 0" class="inline-flex items-center gap-1.5 rounded-full bg-sand px-3 py-1.5 text-[11px] font-medium">
+              <span x-text="filters.rating + '★ & up'"></span>
+              <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </template>
+        </div>
+
+        <div x-show="filtered.length === 0" class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-ink/15 py-24 text-center">
+          <div class="grid h-16 w-16 place-items-center rounded-full bg-sand">
+            <svg class="h-7 w-7 text-ink/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+          </div>
+          <p class="mt-5 font-serif text-xl">No products found</p>
+          <p class="mt-1.5 max-w-xs text-sm text-ink/50">Try adjusting your filters or search terms.</p>
+          <button @click="resetFilters()" class="mt-6 rounded-full bg-ink px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-cream transition hover:bg-gold">
+            Clear all filters
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 sm:gap-5 xl:grid-cols-3">
+          <template x-for="p in filtered" :key="p.id">
+            <article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-ink/5 transition-all duration-500 hover:-translate-y-1 hover:shadow-luxe">
+              <div class="relative aspect-[4/5] overflow-hidden bg-sand">
+                <img :src="p.image" :alt="p.name" loading="lazy"
+                     class="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110"
+                     onerror="this.onerror=null;this.src='https://placehold.co/800x1000/EDE7DD/B08D57?text=MAISON'"/>
+                <div class="absolute left-3 top-3 flex flex-col items-start gap-1.5">
+                  <span x-show="p.oldPrice" class="rounded-full bg-ink px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-cream"
+                        x-text="'-' + Math.round((1 - p.price/p.oldPrice)*100) + '%'"></span>
+                  <span x-show="p.badge" x-text="p.badge" class="rounded-full bg-white/90 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-ink backdrop-blur"></span>
+                </div>
+                <button @click="toggleWishlist(p)"
+                        class="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 backdrop-blur transition hover:bg-white"
+                        :class="isWished(p.id) ? 'text-red-500' : 'text-ink/50 hover:text-ink'">
+                  <svg class="h-4 w-4" :fill="isWished(p.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+                </button>
+                <div class="absolute inset-x-3 bottom-3 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                  <button @click="addToCart(p)" class="w-full rounded-full bg-ink/95 py-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-cream backdrop-blur transition hover:bg-gold">
+                    Add to Bag
+                  </button>
+                </div>
+              </div>
+              <div class="flex flex-1 flex-col p-4">
+                <p class="text-[9px] uppercase tracking-[0.2em] text-ink/40" x-text="p.brand"></p>
+                <h3 @click="openProduct(p)" class="mt-1 cursor-pointer text-sm font-medium leading-snug transition hover:text-gold" x-text="p.name"></h3>
+                <div class="mt-2 flex items-center gap-1">
+                  <svg class="h-3.5 w-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.05 2.93c.3-.92 1.6-.92 1.9 0l1.36 4.18a1 1 0 00.95.69h4.4c.97 0 1.37 1.24.59 1.81l-3.56 2.59a1 1 0 00-.36 1.12l1.36 4.18c.3.92-.75 1.69-1.54 1.12l-3.56-2.59a1 1 0 00-1.18 0l-3.56 2.59c-.79.57-1.84-.2-1.54-1.12l1.36-4.18a1 1 0 00-.36-1.12L2.7 9.61c-.78-.57-.38-1.81.59-1.81h4.4a1 1 0 00.95-.69l1.36-4.18z"/></svg>
+                  <span class="text-[11px] font-medium" x-text="p.rating"></span>
+                  <span class="text-[11px] text-ink/35" x-text="'(' + p.reviews.toLocaleString() + ')'"></span>
+                </div>
+                <div class="mt-auto flex items-baseline gap-2 pt-3">
+                  <span class="font-serif text-lg" x-text="money(p.price)"></span>
+                  <span x-show="p.oldPrice" class="text-[11px] text-ink/35 line-through" x-text="money(p.oldPrice)"></span>
+                </div>
+              </div>
+            </article>
+          </template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────────────── PRODUCT DETAIL ───────────────────────── -->
+<div x-show="route === 'product'" x-cloak x-transition.opacity.duration.300ms>
+  <template x-if="currentProduct">
+    <div>
+      <div class="border-b border-ink/10 bg-white/50">
+        <div class="mx-auto max-w-7xl px-4 py-5">
+          <nav class="flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-ink/40">
+            <button @click="navigate('home')" class="transition hover:text-ink">Home</button>
+            <span>/</span>
+            <button @click="openShop(currentProduct.category)" class="transition hover:text-ink" x-text="currentProduct.category"></button>
+            <span>/</span>
+            <span class="text-ink" x-text="currentProduct.name"></span>
+          </nav>
+        </div>
+      </div>
+
+      <div class="mx-auto max-w-7xl px-4 py-10 lg:py-16">
+        <div class="grid gap-10 lg:grid-cols-2 lg:gap-16">
+
+          <!-- Gallery -->
+          <div class="lg:sticky lg:top-28 lg:self-start">
+            <div class="relative overflow-hidden rounded-2xl bg-sand">
+              <img :src="currentProduct.images[gallery]" :alt="currentProduct.name"
+                   class="aspect-[4/5] w-full object-cover transition duration-500"
+                   onerror="this.onerror=null;this.src='https://placehold.co/900x1100/EDE7DD/B08D57?text=MAISON'"/>
+              <button @click="toggleWishlist(currentProduct)"
+                      class="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-white/90 backdrop-blur transition hover:bg-white"
+                      :class="isWished(currentProduct.id) ? 'text-red-500' : 'text-ink/50 hover:text-ink'">
+                <svg class="h-5 w-5" :fill="isWished(currentProduct.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+              </button>
+              <span x-show="currentProduct.oldPrice"
+                    class="absolute left-4 top-4 rounded-full bg-ink px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-cream"
+                    x-text="'-' + Math.round((1 - currentProduct.price/currentProduct.oldPrice)*100) + '%'"></span>
+            </div>
+
+            <div class="mt-3 grid grid-cols-3 gap-3">
+              <template x-for="(img, i) in currentProduct.images" :key="i">
+                <button @click="gallery = i"
+                        class="overflow-hidden rounded-xl bg-sand ring-2 transition duration-200"
+                        :class="gallery === i ? 'ring-ink' : 'ring-transparent hover:ring-ink/20'">
+                  <img :src="img" :alt="currentProduct.name + ' view ' + (i+1)"
+                       class="aspect-square w-full object-cover"
+                       onerror="this.onerror=null;this.src='https://placehold.co/300x300/EDE7DD/B08D57?text=M'"/>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <!-- Info -->
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.24em] text-gold" x-text="currentProduct.brand"></p>
+            <h1 class="mt-2 font-serif text-3xl leading-tight sm:text-4xl lg:text-5xl" x-text="currentProduct.name"></h1>
+
+            <div class="mt-4 flex items-center gap-3">
+              <div class="flex items-center gap-1">
+                <svg class="h-4 w-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.05 2.93c.3-.92 1.6-.92 1.9 0l1.36 4.18a1 1 0 00.95.69h4.4c.97 0 1.37 1.24.59 1.81l-3.56 2.59a1 1 0 00-.36 1.12l1.36 4.18c.3.92-.75 1.69-1.54 1.12l-3.56-2.59a1 1 0 00-1.18 0l-3.56 2.59c-.79.57-1.84-.2-1.54-1.12l1.36-4.18a1 1 0 00-.36-1.12L2.7 9.61c-.78-.57-.38-1.81.59-1.81h4.4a1 1 0 00.95-.69l1.36-4.18z"/></svg>
+                <span class="text-sm font-semibold" x-text="currentProduct.rating"></span>
+              </div>
+              <span class="h-3 w-px bg-ink/15"></span>
+              <span class="text-[13px] text-ink/45" x-text="currentProduct.reviews.toLocaleString() + ' reviews'"></span>
+              <span class="h-3 w-px bg-ink/15"></span>
+              <span class="inline-flex items-center gap-1.5 text-[12px] font-medium text-emerald-600">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> In stock
+              </span>
+            </div>
+
+            <div class="mt-6 flex items-baseline gap-3">
+              <span class="font-serif text-3xl" x-text="money(currentProduct.price)"></span>
+              <span x-show="currentProduct.oldPrice" class="text-lg text-ink/35 line-through" x-text="money(currentProduct.oldPrice)"></span>
+              <span x-show="currentProduct.oldPrice" class="rounded-full bg-gold/15 px-2.5 py-1 text-[11px] font-semibold text-gold"
+                    x-text="'Save ' + money(currentProduct.oldPrice - currentProduct.price)"></span>
+            </div>
+
+            <p class="mt-6 text-[14px] leading-relaxed text-ink/60" x-text="currentProduct.desc"></p>
+
+            <!-- Colors -->
+            <div class="mt-7" x-show="currentProduct.colors && currentProduct.colors.length">
+              <p class="mb-2.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/40">Colour</p>
+              <div class="flex items-center gap-2.5">
+                <template x-for="c in currentProduct.colors" :key="c">
+                  <button @click="selectedColor = c"
+                          class="grid h-9 w-9 place-items-center rounded-full ring-2 ring-offset-2 ring-offset-cream transition"
+                          :class="selectedColor === c ? 'ring-ink' : 'ring-transparent hover:ring-ink/25'">
+                    <span class="h-7 w-7 rounded-full border border-ink/10" :style="`background:${c}`"></span>
+                  </button>
+                </template>
+              </div>
+            </div>
+
+            <!-- Sizes -->
+            <div class="mt-7" x-show="currentProduct.sizes && currentProduct.sizes.length">
+              <div class="mb-2.5 flex items-center justify-between">
+                <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/40">Size</p>
+                <button class="text-[11px] text-ink/40 underline underline-offset-2 transition hover:text-ink">Size guide</button>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <template x-for="s in currentProduct.sizes" :key="s">
+                  <button @click="selectedSize = s"
+                          class="min-w-[48px] rounded-xl border px-4 py-2.5 text-[13px] font-medium transition"
+                          :class="selectedSize === s ? 'border-ink bg-ink text-cream' : 'border-ink/15 hover:border-ink/40'"
+                          x-text="s"></button>
+                </template>
+              </div>
+            </div>
+
+            <!-- Quantity + Add -->
+            <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+              <div class="flex items-center justify-between rounded-full border border-ink/15 bg-white px-2 sm:w-36">
+                <button @click="qty = Math.max(1, qty - 1)" class="grid h-10 w-10 place-items-center rounded-full text-ink/60 transition hover:text-ink">−</button>
+                <span class="text-sm font-semibold tabular-nums" x-text="qty"></span>
+                <button @click="qty = Math.min(10, qty + 1)" class="grid h-10 w-10 place-items-center rounded-full text-ink/60 transition hover:text-ink">+</button>
+              </div>
+              <button @click="addToCart(currentProduct, qty, selectedSize)"
+                      class="flex-1 rounded-full bg-ink py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-cream transition-all duration-300 hover:bg-gold hover:shadow-luxe">
+                Add to bag
+              </button>
+              <button @click="toggleWishlist(currentProduct)"
+                      class="grid h-[52px] w-[52px] shrink-0 place-items-center self-center rounded-full border border-ink/15 transition hover:border-ink sm:self-auto"
+                      :class="isWished(currentProduct.id) ? 'text-red-500' : 'text-ink/50 hover:text-ink'">
+                <svg class="h-5 w-5" :fill="isWished(currentProduct.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+              </button>
+            </div>
+
+            <!-- Assurance -->
+            <div class="mt-8 grid grid-cols-3 gap-3 border-t border-ink/10 pt-6">
+              <div class="text-center">
+                <svg class="mx-auto h-5 w-5 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25"/></svg>
+                <p class="mt-2 text-[11px] font-medium">Free delivery</p>
+                <p class="text-[10px] text-ink/40">2–4 business days</p>
+              </div>
+              <div class="text-center">
+                <svg class="mx-auto h-5 w-5 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>
+                <p class="mt-2 text-[11px] font-medium">30-day returns</p>
+                <p class="text-[10px] text-ink/40">Free & easy</p>
+              </div>
+              <div class="text-center">
+                <svg class="mx-auto h-5 w-5 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/></svg>
+                <p class="mt-2 text-[11px] font-medium">2-year warranty</p>
+                <p class="text-[10px] text-ink/40">Authenticity assured</p>
+              </div>
+            </div>
+
+            <!-- Details accordion -->
+            <div class="mt-8 divide-y divide-ink/10 border-y border-ink/10">
+              <template x-for="(d, i) in [{t:'Details & Materials', b:'Crafted from premium materials with a focus on longevity. Full specifications available on request from our concierge team.'},{t:'Shipping & Returns', b:'Complimentary standard shipping on orders over $150. Express options available at checkout. Returns accepted within 30 days in original condition.'},{t:'Care Instructions', b:'Store in a cool, dry place. Clean with a soft, damp cloth. Avoid prolonged exposure to direct sunlight.'}]" :key="i">
+                <div x-data="{ open: i === 0 }">
+                  <button @click="open = !open" class="flex w-full items-center justify-between py-4 text-left">
+                    <span class="text-[13px] font-medium" x-text="d.t"></span>
+                    <svg class="h-4 w-4 text-ink/40 transition-transform duration-300" :class="open && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                  </button>
+                  <div x-show="open" x-collapse>
+                    <p class="pb-4 text-[13px] leading-relaxed text-ink/55" x-text="d.b"></p>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- You may also like -->
+        <div class="mt-20">
+          <div class="flex items-end justify-between">
+            <h2 class="font-serif text-2xl sm:text-3xl">You may also like</h2>
+            <button @click="openShop(currentProduct.category)" class="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink/50 transition hover:text-gold">View all</button>
+          </div>
+          <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <template x-for="p in relatedProducts" :key="p.id">
+              <article @click="openProduct(p)" class="group cursor-pointer">
+                <div class="overflow-hidden rounded-xl bg-sand">
+                  <img :src="p.image" :alt="p.name" loading="lazy"
+                       class="aspect-[4/5] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                       onerror="this.onerror=null;this.src='https://placehold.co/400x500/EDE7DD/B08D57?text=M'"/>
+                </div>
+                <p class="mt-3 text-[9px] uppercase tracking-[0.2em] text-ink/40" x-text="p.brand"></p>
+                <h3 class="mt-0.5 text-[13px] font-medium transition group-hover:text-gold" x-text="p.name"></h3>
+                <p class="mt-1 font-serif text-sm" x-text="money(p.price)"></p>
+              </article>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+</div>
+
+<!-- ───────────────────────── CART PAGE ───────────────────────── -->
+<div x-show="route === 'cart'" x-cloak x-transition.opacity.duration.300ms>
+  <div class="mx-auto max-w-7xl px-4 py-10 lg:py-16">
+    <h1 class="font-serif text-4xl sm:text-5xl">Shopping bag</h1>
+    <p class="mt-2 text-sm text-ink/50"><span x-text="cartCount"></span> item(s) in your bag</p>
+
+    <div x-show="cart.length === 0" class="mt-10 flex flex-col items-center rounded-2xl border border-dashed border-ink/15 py-24 text-center">
+      <div class="grid h-20 w-20 place-items-center rounded-full bg-sand">
+        <svg class="h-8 w-8 text-ink/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.4"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12A1.125 1.125 0 0119.75 21.75H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"/></svg>
+      </div>
+      <p class="mt-6 font-serif text-2xl">Your bag is empty</p>
+      <p class="mt-2 max-w-sm text-sm text-ink/50">Looks like you haven't added anything yet. Explore the collection and find something you love.</p>
+      <button @click="navigate('shop')" class="mt-7 rounded-full bg-ink px-9 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-cream transition hover:bg-gold">
+        Start shopping
+      </button>
+    </div>
+
+    <div x-show="cart.length" class="mt-8 grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-12">
+      <div class="space-y-3">
+        <template x-for="item in cart" :key="item.key">
+          <div class="flex gap-4 rounded-2xl bg-white p-4 ring-1 ring-ink/5 sm:gap-6 sm:p-5">
+            <div class="h-28 w-24 shrink-0 overflow-hidden rounded-xl bg-sand sm:h-32 sm:w-28">
+              <img :src="item.image" :alt="item.name" class="h-full w-full object-cover"
+                   onerror="this.onerror=null;this.src='https://placehold.co/300x380/EDE7DD/B08D57?text=M'"/>
+            </div>
+            <div class="flex min-w-0 flex-1 flex-col">
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-[10px] uppercase tracking-[0.2em] text-ink/40" x-text="item.brand"></p>
+                  <h3 class="mt-0.5 truncate text-[15px] font-medium" x-text="item.name"></h3>
+                  <p x-show="item.size" class="mt-1 text-[11px] text-ink/45" x-text="'Size ' + item.size"></p>
+                </div>
+                <p class="shrink-0 font-serif text-lg" x-text="money(item.price * item.qty)"></p>
+              </div>
+              <div class="mt-auto flex items-center justify-between pt-4">
+                <div class="flex items-center rounded-full border border-ink/12">
+                  <button @click="changeQty(item.key, -1)" class="grid h-9 w-9 place-items-center rounded-full text-ink/60 transition hover:text-ink">−</button>
+                  <span class="w-8 text-center text-[13px] font-semibold" x-text="item.qty"></span>
+                  <button @click="changeQty(item.key, 1)" class="grid h-9 w-9 place-items-center rounded-full text-ink/60 transition hover:text-ink">+</button>
+                </div>
+                <button @click="removeFromCart(item.key)" class="text-[11px] font-medium uppercase tracking-[0.14em] text-ink/40 transition hover:text-red-500">Remove</button>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <button @click="navigate('shop')" class="inline-flex items-center gap-2 pt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink/50 transition hover:text-gold">
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4m0 0l6-6m-6 6l6 6"/></svg>
+          Continue shopping
+        </button>
+      </div>
+
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        <div class="rounded-2xl bg-white p-6 ring-1 ring-ink/5">
+          <h2 class="font-serif text-xl">Order summary</h2>
+          <div class="mt-5 space-y-3 text-[13px]">
+            <div class="flex justify-between"><span class="text-ink/55">Subtotal</span><span class="font-medium" x-text="money(subtotal)"></span></div>
+            <div class="flex justify-between"><span class="text-ink/55">Shipping</span><span class="font-medium" x-text="shipping === 0 ? 'Free' : money(shipping)"></span></div>
+            <div class="flex justify-between"><span class="text-ink/55">Estimated tax</span><span class="font-medium" x-text="money(tax)"></span></div>
+            <div class="border-t border-ink/10 pt-3">
+              <div class="flex items-baseline justify-between">
+                <span class="text-sm font-semibold">Total</span>
+                <span class="font-serif text-2xl" x-text="money(total)"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5 flex gap-2">
+            <input x-model="promo" placeholder="Promo code"
+                   class="h-11 flex-1 rounded-full border border-ink/12 px-4 text-[13px] outline-none transition placeholder:text-ink/35 focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+            <button @click="applyPromo()" class="rounded-full bg-sand px-5 text-[11px] font-semibold uppercase tracking-[0.14em] transition hover:bg-ink hover:text-cream">Apply</button>
+          </div>
+
+          <button @click="navigate('checkout')"
+                  class="mt-5 w-full rounded-full bg-ink py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-cream transition hover:bg-gold hover:shadow-luxe">
+            Proceed to checkout
+          </button>
+
+          <div class="mt-5 flex items-center justify-center gap-3 text-ink/30">
+            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+          </div>
+          <p class="mt-3 text-center text-[11px] text-ink/35">Secure checkout · 256-bit SSL encryption</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────────────── CHECKOUT ───────────────────────── -->
+<div x-show="route === 'checkout'" x-cloak x-transition.opacity.duration.300ms>
+  <div class="mx-auto max-w-7xl px-4 py-10 lg:py-16">
+    <div class="flex items-center justify-between">
+      <h1 class="font-serif text-3xl sm:text-4xl">Checkout</h1>
+      <button @click="navigate('cart')" class="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink/50 transition hover:text-gold">← Back to bag</button>
+    </div>
+
+    <form @submit.prevent="placeOrder()" class="mt-8 grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-12">
+      <div class="space-y-6">
+
+        <!-- Contact -->
+        <section class="rounded-2xl bg-white p-6 ring-1 ring-ink/5">
+          <div class="flex items-center gap-3">
+            <span class="grid h-7 w-7 place-items-center rounded-full bg-ink text-[11px] font-bold text-cream">1</span>
+            <h2 class="font-serif text-xl">Contact information</h2>
+          </div>
+          <div class="mt-5 grid gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Email address</label>
+              <input type="email" required x-model="form.email" placeholder="you@example.com"
+                     class="h-12 w-full rounded-xl border border-ink/12 px-4 text-sm outline-none transition placeholder:text-ink/30 focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">First name</label>
+              <input type="text" required x-model="form.firstName"
+                     class="h-12 w-full rounded-xl border border-ink/12 px-4 text-sm outline-none transition focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Last name</label>
+              <input type="text" required x-model="form.lastName"
+                     class="h-12 w-full rounded-xl border border-ink/12 px-4 text-sm outline-none transition focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+            </div>
+          </div>
+        </section>
+
+        <!-- Delivery -->
+        <section class="rounded-2xl bg-white p-6 ring-1 ring-ink/5">
+          <div class="flex items-center gap-3">
+            <span class="grid h-7 w-7 place-items-center rounded-full bg-ink text-[11px] font-bold text-cream">2</span>
+            <h2 class="font-serif text-xl">Delivery address</h2>
+          </div>
+          <div class="mt-5 grid gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Street address</label>
+              <input type="text" required x-model="form.address"
+                     class="h-12 w-full rounded-xl border border-ink/12 px-4 text-sm outline-none transition focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">City</label>
+              <input type="text" required x-model="form.city"
+                     class="h-12 w-full rounded-xl border border-ink/12 px-4 text-sm outline-none transition focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Postal code</label>
+              <input type="text" required x-model="form.zip"
+                     class="h-12 w-full rounded-xl border border-ink/12 px-4 text-sm outline-none transition focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Country</label>
+              <select x-model="form.country" class="h-12 w-full rounded-xl border border-ink/12 bg-white px-4 text-sm outline-none transition focus:border-gold/60 focus:ring-4 focus:ring-gold/10">
+                <option>United States</option><option>United Kingdom</option><option>Canada</option><option>Australia</option><option>Germany</option><option>France</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Phone</label>
+              <input type="tel" x-model="form.phone" placeholder="+1 (555) 000-0000"
+                     class="h-12 w-full rounded-xl border border-ink/12 px-4 text-sm outline-none transition placeholder:text-ink/30 focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+            </div>
+          </div>
+
+          <div class="mt-6 space-y-2.5">
+            <p class="text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Shipping method</p>
+            <template x-for="opt in [{k:'standard',t:'Standard delivery',d:'2–4 business days',p: subtotal >= 150 ? 0 : 12},{k:'express',t:'Express delivery',d:'1–2 business days',p: 24}]" :key="opt.k">
+              <label class="flex cursor-pointer items-center justify-between rounded-xl border p-4 transition"
+                     :class="form.shipping === opt.k ? 'border-ink bg-cream' : 'border-ink/12 hover:border-ink/30'">
+                <span class="flex items-center gap-3">
+                  <input type="radio" :value="opt.k" x-model="form.shipping" class="h-4 w-4 text-ink focus:ring-gold/40"/>
+                  <span>
+                    <span class="block text-[13px] font-medium" x-text="opt.t"></span>
+                    <span class="block text-[11px] text-ink/45" x-text="opt.d"></span>
+                  </span>
+                </span>
+                <span class="text-[13px] font-semibold" x-text="opt.p === 0 ? 'Free' : money(opt.p)"></span>
+              </label>
+            </template>
+          </div>
+        </section>
+
+        <!-- Payment -->
+        <section class="rounded-2xl bg-white p-6 ring-1 ring-ink/5">
+          <div class="flex items-center gap-3">
+            <span class="grid h-7 w-7 place-items-center rounded-full bg-ink text-[11px] font-bold text-cream">3</span>
+            <h2 class="font-serif text-xl">Payment</h2>
+          </div>
+
+          <div class="mt-5 grid grid-cols-3 gap-2">
+            <template x-for="m in [{k:'card',l:'Card'},{k:'paypal',l:'PayPal'},{k:'apple',l:'Apple Pay'}]" :key="m.k">
+              <button type="button" @click="form.payment = m.k"
+                      class="rounded-xl border py-3 text-[12px] font-medium transition"
+                      :class="form.payment === m.k ? 'border-ink bg-ink text-cream' : 'border-ink/12 hover:border-ink/30'"
+                      x-text="m.l"></button>
+            </template>
+          </div>
+
+          <div x-show="form.payment === 'card'" class="mt-5 grid gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Card number</label>
+              <input type="text" x-model="form.card" placeholder="0000 0000 0000 0000" maxlength="19"
+                     class="h-12 w-full rounded-xl border border-ink/12 px-4 text-sm outline-none transition placeholder:text-ink/30 focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Expiry</label>
+              <input type="text" x-model="form.expiry" placeholder="MM / YY" maxlength="7"
+                     class="h-12 w-full rounded-xl border border-ink/12 px-4 text-sm outline-none transition placeholder:text-ink/30 focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">CVC</label>
+              <input type="text" x-model="form.cvc" placeholder="123" maxlength="4"
+                     class="h-12 w-full rounded-xl border border-ink/12 px-4 text-sm outline-none transition placeholder:text-ink/30 focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+            </div>
+          </div>
+
+          <p class="mt-5 flex items-center gap-2 text-[11px] text-ink/40">
+            <svg class="h-4 w-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+            Your payment information is encrypted and secure.
+          </p>
+        </section>
+      </div>
+
+      <!-- Summary -->
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        <div class="rounded-2xl bg-white p-6 ring-1 ring-ink/5">
+          <h2 class="font-serif text-xl">Your order</h2>
+
+          <div class="mt-5 max-h-72 space-y-4 overflow-y-auto pr-1">
+            <template x-for="item in cart" :key="item.key">
+              <div class="flex items-center gap-3">
+                <div class="relative h-16 w-14 shrink-0 overflow-hidden rounded-lg bg-sand">
+                  <img :src="item.image" :alt="item.name" class="h-full w-full object-cover"
+                       onerror="this.onerror=null;this.src='https://placehold.co/120x150/EDE7DD/B08D57?text=M'"/>
+                  <span class="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full bg-ink text-[9px] font-bold text-cream" x-text="item.qty"></span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-[12px] font-medium" x-text="item.name"></p>
+                  <p x-show="item.size" class="text-[10px] text-ink/40" x-text="'Size ' + item.size"></p>
+                </div>
+                <p class="text-[12px] font-semibold" x-text="money(item.price * item.qty)"></p>
+              </div>
+            </template>
+          </div>
+
+          <div class="mt-5 space-y-2.5 border-t border-ink/10 pt-4 text-[13px]">
+            <div class="flex justify-between"><span class="text-ink/55">Subtotal</span><span class="font-medium" x-text="money(subtotal)"></span></div>
+            <div class="flex justify-between"><span class="text-ink/55">Shipping</span><span class="font-medium" x-text="checkoutShipping === 0 ? 'Free' : money(checkoutShipping)"></span></div>
+            <div class="flex justify-between"><span class="text-ink/55">Tax</span><span class="font-medium" x-text="money(tax)"></span></div>
+            <div class="flex items-baseline justify-between border-t border-ink/10 pt-3">
+              <span class="text-sm font-semibold">Total</span>
+              <span class="font-serif text-2xl" x-text="money(checkoutTotal)"></span>
+            </div>
+          </div>
+
+          <button type="submit" :disabled="cart.length === 0"
+                  class="mt-5 w-full rounded-full bg-ink py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-cream transition hover:bg-gold hover:shadow-luxe disabled:cursor-not-allowed disabled:opacity-40">
+            Place order
+          </button>
+          <p class="mt-3 text-center text-[11px] text-ink/35">By placing your order you agree to our Terms & Conditions.</p>
+        </div>
+      </aside>
+    </form>
+  </div>
+</div>
+
+<!-- ───────────────────────── WISHLIST ───────────────────────── -->
+<div x-show="route === 'wishlist'" x-cloak x-transition.opacity.duration.300ms>
+  <div class="mx-auto max-w-7xl px-4 py-10 lg:py-16">
+    <h1 class="font-serif text-4xl sm:text-5xl">Wishlist</h1>
+    <p class="mt-2 text-sm text-ink/50"><span x-text="wishlist.length"></span> saved item(s)</p>
+
+    <div x-show="wishlist.length === 0" class="mt-10 flex flex-col items-center rounded-2xl border border-dashed border-ink/15 py-24 text-center">
+      <div class="grid h-20 w-20 place-items-center rounded-full bg-sand">
+        <svg class="h-8 w-8 text-ink/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.4"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+      </div>
+      <p class="mt-6 font-serif text-2xl">Nothing saved yet</p>
+      <p class="mt-2 max-w-sm text-sm text-ink/50">Tap the heart on any product to save it here for later.</p>
+      <button @click="navigate('shop')" class="mt-7 rounded-full bg-ink px-9 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-cream transition hover:bg-gold">
+        Explore products
+      </button>
+    </div>
+
+    <div x-show="wishlist.length" class="mt-8 space-y-3">
+      <template x-for="p in wishedProducts" :key="p.id">
+        <div class="flex items-center gap-4 rounded-2xl bg-white p-4 ring-1 ring-ink/5 sm:gap-6 sm:p-5">
+          <div class="h-24 w-20 shrink-0 cursor-pointer overflow-hidden rounded-xl bg-sand sm:h-28 sm:w-24" @click="openProduct(p)">
+            <img :src="p.image" :alt="p.name" class="h-full w-full object-cover transition duration-500 hover:scale-105"
+                 onerror="this.onerror=null;this.src='https://placehold.co/300x380/EDE7DD/B08D57?text=M'"/>
+          </div>
+          <div class="flex min-w-0 flex-1 flex-col">
+            <p class="text-[10px] uppercase tracking-[0.2em] text-ink/40" x-text="p.brand"></p>
+            <h3 @click="openProduct(p)" class="mt-0.5 cursor-pointer truncate text-[15px] font-medium transition hover:text-gold" x-text="p.name"></h3>
+            <div class="mt-1.5 flex items-baseline gap-2">
+              <span class="font-serif text-base" x-text="money(p.price)"></span>
+              <span x-show="p.oldPrice" class="text-[11px] text-ink/35 line-through" x-text="money(p.oldPrice)"></span>
+            </div>
+            <div class="mt-3 flex flex-wrap items-center gap-2">
+              <button @click="addToCart(p)" class="rounded-full bg-ink px-5 py-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-cream transition hover:bg-gold">
+                Add to bag
+              </button>
+              <button @click="toggleWishlist(p)" class="rounded-full border border-ink/12 px-5 py-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink/60 transition hover:border-ink hover:text-ink">
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────────────── ACCOUNT ───────────────────────── -->
+<div x-show="route === 'account'" x-cloak x-transition.opacity.duration.300ms>
+  <div class="mx-auto max-w-7xl px-4 py-10 lg:py-16">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <p class="text-[10px] uppercase tracking-[0.28em] text-gold">My account</p>
+        <h1 class="mt-2 font-serif text-4xl sm:text-5xl">Welcome back, Alex</h1>
+      </div>
+      <button @click="navigate('home')" class="rounded-full border border-ink/15 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:border-ink hover:bg-ink hover:text-cream">
+        Sign out
+      </button>
+    </div>
+
+    <div class="mt-10 grid gap-8 lg:grid-cols-[240px_1fr] lg:gap-12">
+      <aside>
+        <nav class="space-y-1">
+          <template x-for="t in [{k:'overview',l:'Overview'},{k:'orders',l:'Order history'},{k:'addresses',l:'Addresses'},{k:'wishlist',l:'Wishlist'},{k:'settings',l:'Settings'}]" :key="t.k">
+            <button @click="accountTab = t.k"
+                    class="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-[13px] font-medium transition"
+                    :class="accountTab === t.k ? 'bg-ink text-cream' : 'text-ink/60 hover:bg-white'">
+              <span x-text="t.l"></span>
+              <svg class="h-3.5 w-3.5 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+            </button>
+          </template>
+        </nav>
+      </aside>
+
+      <div>
+        <!-- Overview -->
+        <div x-show="accountTab === 'overview'" class="space-y-5">
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div class="rounded-2xl bg-white p-5 ring-1 ring-ink/5">
+              <p class="text-[10px] uppercase tracking-[0.2em] text-ink/40">Total orders</p>
+              <p class="mt-2 font-serif text-3xl">12</p>
+            </div>
+            <div class="rounded-2xl bg-white p-5 ring-1 ring-ink/5">
+              <p class="text-[10px] uppercase tracking-[0.2em] text-ink/40">Wishlist</p>
+              <p class="mt-2 font-serif text-3xl" x-text="wishlist.length"></p>
+            </div>
+            <div class="rounded-2xl bg-ink p-5 text-cream">
+              <p class="text-[10px] uppercase tracking-[0.2em] text-cream/40">Reward points</p>
+              <p class="mt-2 font-serif text-3xl text-goldsoft">2,480</p>
+            </div>
+          </div>
+
+          <div class="rounded-2xl bg-white p-6 ring-1 ring-ink/5">
+            <h2 class="font-serif text-xl">Recent order</h2>
+            <div class="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-xl bg-cream p-4">
+              <div>
+                <p class="text-[13px] font-medium">#MA-20481</p>
+                <p class="text-[11px] text-ink/45">Placed 12 March 2025 · 2 items</p>
+              </div>
+              <span class="rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-semibold text-emerald-700">Delivered</span>
+              <p class="font-serif text-lg">$289</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Orders -->
+        <div x-show="accountTab === 'orders'" class="space-y-3">
+          <template x-for="o in myOrders" :key="o.id">
+            <div class="rounded-2xl bg-white p-5 ring-1 ring-ink/5">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p class="text-[13px] font-semibold" x-text="o.id"></p>
+                  <p class="text-[11px] text-ink/45" x-text="o.date + ' · ' + o.items + ' items'"></p>
+                </div>
+                <span class="rounded-full px-3 py-1 text-[11px] font-semibold"
+                      :class="o.status === 'Delivered' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'"
+                      x-text="o.status"></span>
+                <p class="font-serif text-lg" x-text="o.total"></p>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <!-- Addresses -->
+        <div x-show="accountTab === 'addresses'" class="grid gap-4 sm:grid-cols-2">
+          <div class="rounded-2xl border-2 border-ink bg-white p-5">
+            <p class="text-[10px] uppercase tracking-[0.2em] text-gold">Default shipping</p>
+            <p class="mt-3 text-[13px] font-medium">Alex Morgan</p>
+            <p class="mt-1 text-[13px] leading-relaxed text-ink/55">1240 Sunset Boulevard<br/>Apt 5B, Los Angeles<br/>CA 90026, United States</p>
+            <button class="mt-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink/50 transition hover:text-gold">Edit</button>
+          </div>
+          <button class="flex min-h-[160px] flex-col items-center justify-center rounded-2xl border border-dashed border-ink/20 text-ink/40 transition hover:border-ink/40 hover:text-ink">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            <span class="mt-2 text-[11px] font-semibold uppercase tracking-[0.16em]">Add address</span>
+          </button>
+        </div>
+
+        <!-- Wishlist shortcut -->
+        <div x-show="accountTab === 'wishlist'" class="rounded-2xl bg-white p-6 ring-1 ring-ink/5">
+          <h2 class="font-serif text-xl">Saved items</h2>
+          <p class="mt-2 text-[13px] text-ink/50">You have <span class="font-semibold text-ink" x-text="wishlist.length"></span> items in your wishlist.</p>
+          <button @click="navigate('wishlist')" class="mt-5 rounded-full bg-ink px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-cream transition hover:bg-gold">
+            View wishlist
+          </button>
+        </div>
+
+        <!-- Settings -->
+        <div x-show="accountTab === 'settings'" class="rounded-2xl bg-white p-6 ring-1 ring-ink/5">
+          <h2 class="font-serif text-xl">Account settings</h2>
+          <div class="mt-5 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Full name</label>
+              <input type="text" value="Alex Morgan" class="h-12 w-full rounded-xl border border-ink/12 px-4 text-sm outline-none focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Email</label>
+              <input type="email" value="alex@example.com" class="h-12 w-full rounded-xl border border-ink/12 px-4 text-sm outline-none focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+            </div>
+          </div>
+          <button @click="notify('Settings saved')" class="mt-5 rounded-full bg-ink px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-cream transition hover:bg-gold">
+            Save changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────────────── LOGIN ───────────────────────── -->
+<div x-show="route === 'login'" x-cloak x-transition.opacity.duration.300ms>
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 lg:grid-cols-2 lg:items-center lg:gap-16 lg:py-20">
+    <div class="relative hidden overflow-hidden rounded-[2rem] bg-sand lg:block">
+      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1000&q=80"
+           alt="Fashion editorial" class="h-[560px] w-full object-cover"
+           onerror="this.onerror=null;this.src='https://placehold.co/800x900/EDE7DD/B08D57?text=MAISON'"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent"></div>
+      <div class="absolute inset-x-8 bottom-8 text-cream">
+        <p class="font-serif text-3xl leading-tight">Where quality<br/>meets intention.</p>
+        <p class="mt-3 text-[13px] text-cream/60">Join 40,000+ members enjoying early access and exclusive pricing.</p>
+      </div>
+    </div>
+
+    <div class="mx-auto w-full max-w-md">
+      <p class="text-[10px] uppercase tracking-[0.28em] text-gold">Welcome back</p>
+      <h1 class="mt-2 font-serif text-4xl">Sign in</h1>
+      <p class="mt-2 text-sm text-ink/50">Access your orders, wishlist and member benefits.</p>
+
+      <form @submit.prevent="navigate('account'); notify('Welcome back, Alex')" class="mt-8 space-y-4">
+        <div>
+          <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Email address</label>
+          <input type="email" required placeholder="you@example.com"
+                 class="h-12 w-full rounded-xl border border-ink/12 bg-white px-4 text-sm outline-none transition placeholder:text-ink/30 focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+        </div>
+        <div>
+          <div class="mb-1.5 flex items-center justify-between">
+            <label class="text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Password</label>
+            <button type="button" class="text-[11px] text-ink/40 underline underline-offset-2 transition hover:text-ink">Forgot?</button>
+          </div>
+          <input type="password" required placeholder="••••••••"
+                 class="h-12 w-full rounded-xl border border-ink/12 bg-white px-4 text-sm outline-none transition placeholder:text-ink/30 focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+        </div>
+        <label class="flex items-center gap-2.5 text-[12px] text-ink/55">
+          <input type="checkbox" class="h-4 w-4 rounded border-ink/20 text-ink focus:ring-gold/40"/> Keep me signed in
+        </label>
+        <button type="submit" class="w-full rounded-full bg-ink py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-cream transition hover:bg-gold hover:shadow-luxe">
+          Sign in
+        </button>
+      </form>
+
+      <div class="my-6 flex items-center gap-4">
+        <span class="h-px flex-1 bg-ink/10"></span>
+        <span class="text-[10px] uppercase tracking-[0.2em] text-ink/30">or</span>
+        <span class="h-px flex-1 bg-ink/10"></span>
+      </div>
+
+      <button @click="notify('Social sign-in is a demo only')" class="w-full rounded-full border border-ink/15 py-3.5 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:border-ink hover:bg-white">
+        Continue with Google
+      </button>
+
+      <p class="mt-6 text-center text-[13px] text-ink/50">
+        New to MAISON?
+        <button @click="navigate('register')" class="font-semibold text-ink underline underline-offset-4 transition hover:text-gold">Create an account</button>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────────────── REGISTER ───────────────────────── -->
+<div x-show="route === 'register'" x-cloak x-transition.opacity.duration.300ms>
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 lg:grid-cols-2 lg:items-center lg:gap-16 lg:py-20">
+    <div class="mx-auto w-full max-w-md lg:order-1">
+      <p class="text-[10px] uppercase tracking-[0.28em] text-gold">Join the circle</p>
+      <h1 class="mt-2 font-serif text-4xl">Create account</h1>
+      <p class="mt-2 text-sm text-ink/50">Enjoy 10% off your first order and exclusive member access.</p>
+
+      <form @submit.prevent="navigate('account'); notify('Welcome to MAISON')" class="mt-8 space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">First name</label>
+            <input type="text" required class="h-12 w-full rounded-xl border border-ink/12 bg-white px-4 text-sm outline-none transition focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Last name</label>
+            <input type="text" required class="h-12 w-full rounded-xl border border-ink/12 bg-white px-4 text-sm outline-none transition focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+          </div>
+        </div>
+        <div>
+          <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Email address</label>
+          <input type="email" required placeholder="you@example.com"
+                 class="h-12 w-full rounded-xl border border-ink/12 bg-white px-4 text-sm outline-none transition placeholder:text-ink/30 focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+        </div>
+        <div>
+          <label class="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45">Password</label>
+          <input type="password" required placeholder="At least 8 characters"
+                 class="h-12 w-full rounded-xl border border-ink/12 bg-white px-4 text-sm outline-none transition placeholder:text-ink/30 focus:border-gold/60 focus:ring-4 focus:ring-gold/10"/>
+        </div>
+        <label class="flex items-start gap-2.5 text-[12px] leading-relaxed text-ink/55">
+          <input type="checkbox" required class="mt-0.5 h-4 w-4 rounded border-ink/20 text-ink focus:ring-gold/40"/>
+          <span>I agree to the <span class="underline underline-offset-2">Terms of Service</span> and <span class="underline underline-offset-2">Privacy Policy</span>.</span>
+        </label>
+        <button type="submit" class="w-full rounded-full bg-ink py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-cream transition hover:bg-gold hover:shadow-luxe">
+          Create account
+        </button>
+      </form>
+
+      <p class="mt-6 text-center text-[13px] text-ink/50">
+        Already have an account?
+        <button @click="navigate('login')" class="font-semibold text-ink underline underline-offset-4 transition hover:text-gold">Sign in</button>
+      </p>
+    </div>
+
+    <div class="relative hidden overflow-hidden rounded-[2rem] bg-sand lg:block">
+      <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=1000&q=80"
+           alt="Boutique interior" class="h-[600px] w-full object-cover"
+           onerror="this.onerror=null;this.src='https://placehold.co/800x900/EDE7DD/B08D57?text=MAISON'"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent"></div>
+      <div class="absolute inset-x-8 bottom-8 text-cream">
+        <p class="font-serif text-3xl leading-tight">Members enjoy<br/>more.</p>
+        <ul class="mt-4 space-y-2 text-[13px] text-cream/70">
+          <li class="flex items-center gap-2"><span class="text-goldsoft">✦</span> 10% off your first order</li>
+          <li class="flex items-center gap-2"><span class="text-goldsoft">✦</span> Early access to new drops</li>
+          <li class="flex items-center gap-2"><span class="text-goldsoft">✦</span> Complimentary gift wrapping</li>
+          <li class="flex items-center gap-2"><span class="text-goldsoft">✦</span> Birthday rewards & private sales</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────────────── ORDER SUCCESS ───────────────────────── -->
+<div x-show="route === 'success'" x-cloak x-transition.opacity.duration.300ms>
+  <div class="mx-auto max-w-2xl px-4 py-16 text-center lg:py-24">
+    <div class="mx-auto grid h-20 w-20 place-items-center rounded-full bg-emerald-50 ring-1 ring-emerald-200">
+      <svg class="h-9 w-9 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+    </div>
+    <h1 class="mt-7 font-serif text-4xl">Thank you<span class="text-gold">.</span></h1>
+    <p class="mt-3 text-sm leading-relaxed text-ink/55">
+      Your order <span class="font-semibold text-ink" x-text="order ? order.id : ''"></span> has been placed successfully.
+      A confirmation has been sent to <span class="font-medium text-ink" x-text="order ? order.email : ''"></span>.
+    </p>
+
+    <div class="mt-8 rounded-2xl bg-white p-6 text-left ring-1 ring-ink/5">
+      <div class="flex items-center justify-between border-b border-ink/10 pb-4">
+        <span class="text-[11px] uppercase tracking-[0.18em] text-ink/40">Order total</span>
+        <span class="font-serif text-2xl" x-text="order ? money(order.total) : ''"></span>
+      </div>
+      <div class="mt-4 space-y-2 text-[13px]">
+        <div class="flex justify-between"><span class="text-ink/50">Estimated delivery</span><span class="font-medium">2–4 business days</span></div>
+        <div class="flex justify-between"><span class="text-ink/50">Shipping to</span><span class="font-medium" x-text="order ? order.city + ', ' + order.country : ''"></span></div>
+        <div class="flex justify-between"><span class="text-ink/50">Payment method</span><span class="font-medium capitalize" x-text="order ? order.payment : ''"></span></div>
+      </div>
+    </div>
+
+    <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+      <button @click="navigate('shop')" class="rounded-full bg-ink px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-cream transition hover:bg-gold">
+        Continue shopping
+      </button>
+      <button @click="navigate('account')" class="rounded-full border border-ink/15 px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] transition hover:border-ink hover:bg-white">
+        Track my order
+      </button>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════════════════ -->
+<footer class="mt-8 border-t border-ink/10 bg-white/50">
+  <div class="mx-auto max-w-7xl px-4 py-14 lg:py-20">
+    <div class="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+
+      <div>
+        <a href="#" @click.prevent="navigate('home')" class="font-serif text-2xl tracking-[0.12em]">MAISON<span class="text-gold">.</span></a>
+        <p class="mt-4 max-w-xs text-[13px] leading-relaxed text-ink/50">
+          A curated destination for considered essentials — shoes, clothing, electronics, groceries, accessories and everyday objects made to last.
+        </p>
+        <div class="mt-6 flex items-center gap-2">
+          <template x-for="s in ['Instagram','Pinterest','TikTok','YouTube']" :key="s">
+            <a href="#" @click.prevent class="grid h-9 w-9 place-items-center rounded-full border border-ink/12 text-[10px] font-semibold uppercase tracking-wider text-ink/50 transition hover:border-ink hover:bg-ink hover:text-cream"
+               x-text="s.charAt(0)"></a>
+          </template>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/40">Shop</h3>
+        <ul class="mt-4 space-y-2.5">
+          <template x-for="c in categories" :key="c.name">
+            <li><button @click="openShop(c.name)" class="text-[13px] text-ink/60 transition hover:text-gold" x-text="c.name"></button></li>
+          </template>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/40">Company</h3>
+        <ul class="mt-4 space-y-2.5 text-[13px] text-ink/60">
+          <li><a href="#" @click.prevent class="transition hover:text-gold">Our story</a></li>
+          <li><a href="#" @click.prevent class="transition hover:text-gold">Sustainability</a></li>
+          <li><a href="#" @click.prevent class="transition hover:text-gold">Careers</a></li>
+          <li><a href="#" @click.prevent class="transition hover:text-gold">Press</a></li>
+          <li><a href="#" @click.prevent class="transition hover:text-gold">Store locator</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/40">Support</h3>
+        <ul class="mt-4 space-y-2.5 text-[13px] text-ink/60">
+          <li><a href="#" @click.prevent class="transition hover:text-gold">Shipping & delivery</a></li>
+          <li><a href="#" @click.prevent class="transition hover:text-gold">Returns & exchanges</a></li>
+          <li><a href="#" @click.prevent class="transition hover:text-gold">Size guide</a></li>
+          <li><a href="#" @click.prevent class="transition hover:text-gold">Contact concierge</a></li>
+          <li><a href="#" @click.prevent class="transition hover:text-gold">FAQs</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-ink/10 pt-8 sm:flex-row">
+      <p class="text-[11px] text-ink/40">© 2025 MAISON. All rights reserved.</p>
+      <div class="flex items-center gap-4 text-[11px] text-ink/40">
+        <a href="#" @click.prevent class="transition hover:text-ink">Privacy</a>
+        <a href="#" @click.prevent class="transition hover:text-ink">Terms</a>
+        <a href="#" @click.prevent class="transition hover:text-ink">Cookies</a>
+      </div>
+      <div class="flex items-center gap-2 text-ink/30">
+        <span class="rounded border border-ink/15 px-2 py-1 text-[9px] font-bold tracking-wider">VISA</span>
+        <span class="rounded border border-ink/15 px-2 py-1 text-[9px] font-bold tracking-wider">MC</span>
+        <span class="rounded border border-ink/15 px-2 py-1 text-[9px] font-bold tracking-wider">AMEX</span>
+        <span class="rounded border border-ink/15 px-2 py-1 text-[9px] font-bold tracking-wider">PAYPAL</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     TOAST
+══════════════════════════════════════════════════════════════════ -->
+<div x-show="toast.show" x-cloak
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-4"
+     class="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2 px-4">
+  <div class="flex items-center gap-3 rounded-full bg-ink px-5 py-3.5 text-cream shadow-luxe">
+    <span class="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-500/90">
+      <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+    </span>
+    <p class="whitespace-nowrap text-[12px] font-medium" x-text="toast.message"></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     APP LOGIC
+══════════════════════════════════════════════════════════════════ -->
+<script>
+/* ─────────────────────────── DATA ─────────────────────────── */
+const IMG = (id, w = 900) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
+
+const CATEGORIES = [
+  { name: 'Shoes',       tagline: 'Sneakers · Boots · Runners', image: IMG('photo-1542291026-7eec264c27ff') },
+  { name: 'Clothing',    tagline: 'Shirts · Knitwear · Outerwear', image: IMG('photo-1489987707025-afc232f7ea0f') },
+  { name: 'Electronics', tagline: 'Audio · Wearables · Tech', image: IMG('photo-1498049794561-7780e7231661') },
+  { name: 'Accessories', tagline: 'Bags · Watches · Eyewear', image: IMG('photo-1523170335258-f5ed11844a49') },
+  { name: 'Groceries',   tagline: 'Coffee · Pantry · Fresh', image: IMG('photo-1542838132-92c53300491e') },
+  { name: 'Everyday',    tagline: 'Home · Living · Objects', image: IMG('photo-1522771739844-6a9f6d5f14af') },
+];
+
+const PRODUCTS = [
+  {
+    id: 1, name: 'Aero Glide Runner', brand: 'Nike', category: 'Shoes',
+    price: 180, oldPrice: 240, rating: 4.8, reviews: 1240, badge: 'Bestseller',
+    image: IMG('photo-1542291026-7eec264c27ff'),
+    images: [IMG('photo-1542291026-7eec264c27ff'), IMG('photo-1600185365483-26d7a4cc7519'), IMG('photo-1595950653106-6c9ebd614d3a')],
+    colors: ['#C0392B', '#111111', '#E8E4DC'], sizes: ['7', '8', '9', '10', '11'],
+    desc: 'Engineered for daily miles with a featherweight knit upper and responsive foam cushioning. A silhouette that moves effortlessly from run to street.',
+  },
+  {
+    id: 2, name: 'Court Classic Low', brand: 'Adidas', category: 'Shoes',
+    price: 120, rating: 4.6, reviews: 860, badge: 'New',
+    image: IMG('photo-1600185365483-26d7a4cc7519'),
+    images: [IMG('photo-1600185365483-26d7a4cc7519'), IMG('photo-1560769629-975ec94e6a86'), IMG('photo-1549298916-b41d501d3772')],
+    colors: ['#FFFFFF', '#111111'], sizes: ['7', '8', '9', '10', '11'],
+    desc: 'A timeless low-profile court shoe in full-grain leather. Clean lines, cushioned collar and a durable cupsole built to age beautifully.',
+  },
+  {
+    id: 3, name: 'Trail Runner GTX', brand: 'Salomon', category: 'Shoes',
+    price: 210, oldPrice: 260, rating: 4.9, reviews: 430, badge: 'Top Rated',
+    image: IMG('photo-1552346154-21d32810aba3'),
+    images: [IMG('photo-1552346154-21d32810aba3'), IMG('photo-1542291026-7eec264c27ff'), IMG('photo-1560769629-975ec94e6a86')],
+    colors: ['#2C3E50', '#C0392B'], sizes: ['8', '9', '10', '11', '12'],
+    desc: 'All-terrain capability with a waterproof membrane and aggressive grip. Built for the long way round, whatever the weather.',
+  },
+  {
+    id: 4, name: 'Suede Chelsea Boot', brand: 'Clarks', category: 'Shoes',
+    price: 165, rating: 4.5, reviews: 210,
+    image: IMG('photo-1549298916-b41d501d3772'),
+    images: [IMG('photo-1549298916-b41d501d3772'), IMG('photo-1595950653106-6c9ebd614d3a'), IMG('photo-1552346154-21d32810aba3')],
+    colors: ['#8B6F47', '#111111'], sizes: ['7', '8', '9', '10', '11'],
+    desc: 'Italian suede in a refined Chelsea silhouette. Elasticated panels and a stacked leather heel for effortless daily wear.',
+  },
+  {
+    id: 5, name: 'Oxford Cotton Shirt', brand: 'Brooks Brothers', category: 'Clothing',
+    price: 95, rating: 4.7, reviews: 320, badge: 'Essential',
+    image: IMG('photo-1596755094514-f87e34085b2c'),
+    images: [IMG('photo-1596755094514-f87e34085b2c'), IMG('photo-1521572163474-6864f9cf17ab'), IMG('photo-1434389677669-e08b4cac3105')],
+    colors: ['#FFFFFF', '#A7C4D9', '#111111'], sizes: ['S', 'M', 'L', 'XL'],
+    desc: 'Woven from long-staple cotton with a subtle lustre. A tailored fit and mother-of-pearl buttons — the quiet foundation of a considered wardrobe.',
+  },
+  {
+    id: 6, name: 'Merino Crew Knit', brand: 'Everlane', category: 'Clothing',
+    price: 130, oldPrice: 165, rating: 4.6, reviews: 540,
+    image: IMG('photo-1434389677669-e08b4cac3105'),
+    images: [IMG('photo-1434389677669-e08b4cac3105'), IMG('photo-1596755094514-f87e34085b2c'), IMG('photo-1551028719-00167b16eac5')],
+    colors: ['#D8CFC0', '#2C3E50', '#111111'], sizes: ['S', 'M', 'L', 'XL'],
+    desc: 'Extra-fine merino in a relaxed crew silhouette. Temperature-regulating, odour-resistant and soft enough to wear against skin.',
+  },
+  {
+    id: 7, name: 'Tailored Leather Jacket', brand: 'Theory', category: 'Clothing',
+    price: 320, rating: 4.8, reviews: 180, badge: 'Editor\'s Pick',
+    image: IMG('photo-1551028719-00167b16eac5'),
+    images: [IMG('photo-1551028719-00167b16eac5'), IMG('photo-1489987707025-afc232f7ea0f'), IMG('photo-1434389677669-e08b4cac3105')],
+    colors: ['#111111', '#6B4A2F'], sizes: ['S', 'M', 'L', 'XL'],
+    desc: 'Buttery lambskin cut with precision. A modern take on the classic biker — pared back hardware, impeccable drape.',
+  },
+  {
+    id: 8, name: 'Essential Cotton Tee', brand: 'COS', category: 'Clothing',
+    price: 45, rating: 4.4, reviews: 980, badge: 'Bestseller',
+    image: IMG('photo-1521572163474-6864f9cf17ab'),
+    images: [IMG('photo-1521572163474-6864f9cf17ab'), IMG('photo-1596755094514-f87e34085b2c'), IMG('photo-1434389677669-e08b4cac3105')],
+    colors: ['#FFFFFF', '#111111', '#D8CFC0'], sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    desc: 'Organic cotton with a dense, structured hand-feel. Cut generously through the body for a clean, architectural line.',
+  },
+  {
+    id: 9, name: 'Studio Wireless Headphones', brand: 'Sony', category: 'Electronics',
+    price: 349, oldPrice: 399, rating: 4.9, reviews: 2100, badge: 'Bestseller',
+    image: IMG('photo-1505740420928-5e560c06d30e'),
+    images: [IMG('photo-1505740420928-5e560c06d30e'), IMG('photo-1583394838336-acd977736f90'), IMG('photo-1498049794561-7780e7231661')],
+    colors: ['#111111', '#E8E4DC'], sizes: [],
+    desc: 'Industry-leading noise cancellation with 40-hour battery life. Precision-engineered drivers deliver a warm, detailed soundstage.',
+  },
+  {
+    id: 10, name: 'Minimalist Smart Watch', brand: 'Garmin', category: 'Electronics',
+    price: 279, rating: 4.7, reviews: 760, badge: 'New',
+    image: IMG('photo-1523275335684-37898b6baf30'),
+    images: [IMG('photo-1523275335684-37898b6baf30'), IMG('photo-1546868871-7041f2a55e12'), IMG('photo-1523170335258-f5ed11844a49')],
+    colors: ['#111111', '#C0C0C0'], sizes: [],
+    desc: 'A sapphire crystal face, titanium case and 14-day battery. Advanced health metrics in a form that belongs on any wrist.',
+  },
+  {
+    id: 11, name: 'UltraBook Pro 14', brand: 'Apple', category: 'Electronics',
+    price: 1499, oldPrice: 1699, rating: 4.9, reviews: 3200, badge: 'Top Rated',
+    image: IMG('photo-1517336714731-489689fd1ca8'),
+    images: [IMG('photo-1517336714731-489689fd1ca8'), IMG('photo-1498049794561-7780e7231661'), IMG('photo-1511707171634-5f897ff02aa9')],
+    colors: ['#9CA3AF', '#111111'], sizes: [],
+    desc: 'A stunning 14-inch Liquid Retina display, all-day battery and silent, fanless performance. The definition of portable power.',
+  },
+  {
+    id: 12, name: 'Noise-Cancelling Buds', brand: 'Bose', category: 'Electronics',
+    price: 199, oldPrice: 249, rating: 4.6, reviews: 1450,
+    image: IMG('photo-1583394838336-acd977736f90'),
+    images: [IMG('photo-1583394838336-acd977736f90'), IMG('photo-1505740420928-5e560c06d30e'), IMG('photo-1511707171634-5f897ff02aa9')],
+    colors: ['#111111', '#FFFFFF'], sizes: [],
+    desc: 'Immersive sound in a pocketable form. Adaptive noise cancellation that reads the room, and eight hours on a single charge.',
+  },
+  {
+    id: 13, name: 'Leather Weekender Bag', brand: 'Mulberry', category: 'Accessories',
+    price: 420, rating: 4.8, reviews: 190, badge: 'Editor\'s Pick',
+    image: IMG('photo-1548036328-c9fa89d128fa'),
+    images: [IMG('photo-1548036328-c9fa89d128fa'), IMG('photo-1553062407-98eeb64c6a62'), IMG('photo-1523170335258-f5ed11844a49')],
+    colors: ['#6B4A2F', '#111111'], sizes: [],
+    desc: 'Full-grain leather with hand-finished edges. Roomy enough for a long weekend, refined enough for the boardroom.',
+  },
+  {
+    id: 14, name: 'Classic Aviator Sunglasses', brand: 'Ray-Ban', category: 'Accessories',
+    price: 155, oldPrice: 185, rating: 4.6, reviews: 620,
+    image: IMG('photo-1524805444758-089113d48a6d'),
+    images: [IMG('photo-1524805444758-089113d48a6d'), IMG('photo-1523170335258-f5ed11844a49'), IMG('photo-1548036328-c9fa89d128fa')],
+    colors: ['#C6A667', '#111111'], sizes: [],
+    desc: 'The original aviator, unchanged since 1937. Crystal glass lenses with 100% UV protection and a lightweight metal frame.',
+  },
+  {
+    id: 15, name: 'Heritage Canvas Backpack', brand: 'Herschel', category: 'Accessories',
+    price: 110, rating: 4.5, reviews: 430,
+    image: IMG('photo-1553062407-98eeb64c6a62'),
+    images: [IMG('photo-1553062407-98eeb64c6a62'), IMG('photo-1548036328-c9fa89d128fa'), IMG('photo-1524805444758-089113d48a6d')],
+    colors: ['#2C3E50', '#111111', '#8B6F47'], sizes: [],
+    desc: 'Waxed canvas with leather trims and a padded laptop sleeve. A dependable companion for the daily commute.',
+  },
+  {
+    id: 16, name: 'Steel Chronograph Watch', brand: 'Fossil', category: 'Accessories',
+    price: 189, oldPrice: 230, rating: 4.7, reviews: 880, badge: 'Bestseller',
+    image: IMG('photo-1523170335258-f5ed11844a49'),
+    images: [IMG('photo-1523170335258-f5ed11844a49'), IMG('photo-1546868871-7041f2a55e12'), IMG('photo-1523275335684-37898b6baf30')],
+    colors: ['#C0C0C0', '#111111'], sizes: [],
+    desc: 'Brushed stainless steel with a precise quartz chronograph movement. Water resistant to 50 metres and finished with a sapphire crystal.',
+  },
+  {
+    id: 17, name: 'Organic Cold Brew Coffee', brand: 'Blue Bottle', category: 'Groceries',
+    price: 24, rating: 4.7, reviews: 340, badge: 'New',
+    image: IMG('photo-1495474472287-4d71bcdd2085'),
+    images: [IMG('photo-1495474472287-4d71bcdd2085'), IMG('photo-1509440159596-0249088772ff'), IMG('photo-1542838132-92c53300491e')],
+    colors: [], sizes: [],
+    desc: 'Single-origin beans steeped for 18 hours for a smooth, low-acid cup. Notes of cocoa, dried fig and brown sugar.',
+  },
+  {
+    id: 18, name: 'Extra Virgin Olive Oil', brand: 'Frantoia', category: 'Groceries',
+    price: 32, rating: 4.8, reviews: 210,
+    image: IMG('photo-1474979266404-7eaacbcd87c5'),
+    images: [IMG('photo-1474979266404-7eaacbcd87c5'), IMG('photo-1542838132-92c53300491e'), IMG('photo-1509440159596-0249088772ff')],
+    colors: [], sizes: [],
+    desc: 'Cold-pressed from Sicilian olives within hours of harvest. Grassy, peppery and beautifully balanced — finishing oil at its finest.',
+  },
+  {
+    id: 19, name: 'Seasonal Fruit Box', brand: 'Farm Fresh', category: 'Groceries',
+    price: 39, oldPrice: 49, rating: 4.6, reviews: 150,
+    image: IMG('photo-1610832958506-aa56368176cf'),
+    images: [IMG('photo-1610832958506-aa56368176cf'), IMG('photo-1542838132-92c53300491e'), IMG('photo-1519996529931-28324d5a630e')],
+    colors: [], sizes: [],
+    desc: 'A rotating selection of the season\'s best, harvested at peak ripeness by small growers. Delivered within 24 hours of picking.',
+  },
+  {
+    id: 20, name: 'Artisan Sourdough Loaf', brand: 'Local Bake', category: 'Groceries',
+    price: 12, rating: 4.9, reviews: 95, badge: 'Top Rated',
+    image: IMG('photo-1509440159596-0249088772ff'),
+    images: [IMG('photo-1509440159596-0249088772ff'), IMG('photo-1546069901-ba9599a7e63c'), IMG('photo-1542838132-92c53300491e')],
+    colors: [], sizes: [],
+    desc: 'Naturally leavened over 36 hours with organic stoneground flour. A blistered crust and an open, custardy crumb.',
+  },
+  {
+    id: 21, name: 'Ceramic Pour-Over Set', brand: 'Kinto', category: 'Everyday',
+    price: 78, rating: 4.7, reviews: 130,
+    image: IMG('photo-1544787219-7f47ccb76574'),
+    images: [IMG('photo-1544787219-7f47ccb76574'), IMG('photo-1495474472287-4d71bcdd2085'), IMG('photo-1522771739844-6a9f6d5f14af')],
+    colors: ['#E8E4DC', '#111111'], sizes: [],
+    desc: 'Hand-thrown porcelain with a matte glaze. Designed for a slow, deliberate morning ritual.',
+  },
+  {
+    id: 22, name: 'Linen Throw Blanket', brand: 'Parachute', category: 'Everyday',
+    price: 120, oldPrice: 150, rating: 4.6, reviews: 240,
+    image: IMG('photo-1522771739844-6a9f6d5f14af'),
+    images: [IMG('photo-1522771739844-6a9f6d5f14af'), IMG('photo-1544787219-7f47ccb76574'), IMG('photo-1495474472287-4d71bcdd2085')],
+    colors: ['#D8CFC0', '#8B6F47', '#111111'], sizes: [],
+    desc: 'European flax, stonewashed for softness. Breathable in summer, cosy in winter — the only throw you\'ll need.',
+  },
+  {
+    id: 23, name: 'Scented Soy Candle', brand: 'Diptyque', category: 'Everyday',
+    price: 68, rating: 4.8, reviews: 410, badge: 'Editor\'s Pick',
+    image: IMG('photo-1602874801006-e26c4c5b5b6e'),
+    images: [IMG('photo-1602874801006-e26c4c5b5b6e'), IMG('photo-1522771739844-6a9f6d5f14af'), IMG('photo-1544787219-7f47ccb76574')],
+    colors: [], sizes: [],
+    desc: 'Hand-poured soy wax with a cotton wick. Fig leaf, cedarwood and a whisper of white amber — 60 hours of burn time.',
+  },
+  {
+    id: 24, name: 'Insulated Water Bottle', brand: 'Yeti', category: 'Everyday',
+    price: 42, rating: 4.5, reviews: 700, badge: 'Bestseller',
+    image: IMG('photo-1602143407151-7111542de6e8'),
+    images: [IMG('photo-1602143407151-7111542de6e8'), IMG('photo-1522771739844-6a9f6d5f14af'), IMG('photo-1544787219-7f47ccb76574')],
+    colors: ['#2C3E50', '#E8E4DC', '#111111'], sizes: [],
+    desc: 'Double-wall vacuum insulation keeps drinks cold for 24 hours or hot for 12. Built from 18/8 stainless steel.',
+  },
+];
+
+/* ─────────────────────────── APP ─────────────────────────── */
+function shop() {
+  return {
+    /* Navigation */
+    route: 'home',
+    params: {},
+
+    /* UI */
+    mobileMenu: false,
+    cartOpen: false,
+    filtersOpen: false,
+    activeTab: 'trending',
+    accountTab: 'overview',
+    gallery: 0,
+    qty: 1,
+    selectedSize: null,
+    selectedColor: null,
+    promo: '',
+
+    /* Commerce */
+    cart: [],
+    wishlist: [],
+    search: '',
+    sort: 'featured',
+    filters: { category: 'All', maxPrice: 2000, rating: 0, brands: [] },
+
+    /* Countdown */
+    countdown: { h: '00', m: '00', s: '00' },
+
+    /* Hero carousel */
+    heroImages: [
+      'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80',
+    ],
+    heroIndex: 0,
+    heroPaused: false,
+    heroTimer: null,
+
+    /* Toast */
+    toast: { show: false, message: '' },
+
+    /* Checkout */
+    form: {
+      email: '', firstName: '', lastName: '', address: '', city: '', zip: '',
+      country: 'United States', phone: '', shipping: 'standard', payment: 'card',
+      card: '', expiry: '', cvc: '',
+    },
+    order: null,
+
+    /* Static data */
+    categories: CATEGORIES,
+    products: PRODUCTS,
+    testimonials: [
+      { quote: 'The quality is genuinely exceptional — everything arrives beautifully packaged and feels considered. My third order this year.', name: 'Amara K.', role: 'Verified buyer', initials: 'AK' },
+      { quote: 'I ordered the Aero Glide runners and a coffee subscription. Both arrived in two days and the packaging alone was worth it.', name: 'Daniel R.', role: 'Verified buyer', initials: 'DR' },
+      { quote: 'Finally a store that does groceries and fashion well. The olive oil is now a permanent fixture in my kitchen.', name: 'Priya M.', role: 'Verified buyer', initials: 'PM' },
+    ],
+    myOrders: [
+      { id: '#MA-20481', date: '12 Mar 2025', items: 2, status: 'Delivered', total: '$289' },
+      { id: '#MA-19872', date: '28 Feb 2025', items: 1, status: 'Delivered', total: '$180' },
+      { id: '#MA-19340', date: '04 Feb 2025', items: 3, status: 'In transit', total: '$412' },
+    ],
+
+    /* ───────────── Lifecycle ───────────── */
+    init() {
+      try {
+        this.cart = JSON.parse(localStorage.getItem('maison_cart') || '[]');
+        this.wishlist = JSON.parse(localStorage.getItem('maison_wish') || '[]');
+      } catch (e) { /* ignore */ }
+
+      this.$watch('cart', v => localStorage.setItem('maison_cart', JSON.stringify(v)));
+      this.$watch('wishlist', v => localStorage.setItem('maison_wish', JSON.stringify(v)));
+
+      this.startCountdown();
+      this.startHeroCarousel();
+    },
+
+    startCountdown() {
+      const tick = () => {
+        const now = new Date();
+        const end = new Date();
+        end.setHours(23, 59, 59, 999);
+        const diff = Math.max(0, end - now);
+        const pad = n => String(n).padStart(2, '0');
+        this.countdown = {
+          h: pad(Math.floor(diff / 3600000)),
+          m: pad(Math.floor((diff % 3600000) / 60000)),
+          s: pad(Math.floor((diff % 60000) / 1000)),
+        };
+      };
+      tick();
+      setInterval(tick, 1000);
+    },
+
+    startHeroCarousel() {
+      clearInterval(this.heroTimer);
+      this.heroTimer = setInterval(() => {
+        if (!this.heroPaused && this.route === 'home') {
+          this.heroIndex = (this.heroIndex + 1) % this.heroImages.length;
+        }
+      }, 5000);
+    },
+
+    selectHero(i) {
+      this.heroIndex = i;
+      this.startHeroCarousel(); // reset the 5s cycle on manual selection
+    },
+
+    /* ───────────── Helpers ───────────── */
+    money(n) {
+      const v = Number(n) || 0;
+      return '$' + v.toLocaleString('en-US', {
+        minimumFractionDigits: v % 1 === 0 ? 0 : 2,
+        maximumFractionDigits: 2,
+      });
+    },
+
+    notify(message) {
+      this.toast = { show: true, message };
+      clearTimeout(this._toastTimer);
+      this._toastTimer = setTimeout(() => { this.toast.show = false; }, 2800);
+    },
+
+    closeAll() {
+      this.cartOpen = false;
+      this.mobileMenu = false;
+    },
+
+    /* ───────────── Navigation ───────────── */
+    navigate(page, params = {}) {
+      this.route = page;
+      this.params = params;
+      this.cartOpen = false;
+      this.mobileMenu = false;
+      this.filtersOpen = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+
+    openShop(category = 'All') {
+      this.filters.category = category;
+      this.filtersOpen = false;
+      this.navigate('shop');
+    },
+
+    setFlash() {
+      this.filters = { category: 'All', maxPrice: 2000, rating: 0, brands: [] };
+      this.sort = 'featured';
+      this.navigate('shop');
+    },
+
+    openProduct(p) {
+      this.gallery = 0;
+      this.qty = 1;
+      this.selectedSize = p.sizes && p.sizes.length ? p.sizes[0] : null;
+      this.selectedColor = p.colors && p.colors.length ? p.colors[0] : null;
+      this.navigate('product', { id: p.id });
+    },
+
+    resetFilters() {
+      this.filters = { category: 'All', maxPrice: 2000, rating: 0, brands: [] };
+      this.search = '';
+    },
+
+    countFor(c) {
+      return c === 'All'
+        ? PRODUCTS.length
+        : PRODUCTS.filter(p => p.category === c).length;
+    },
+
+    /* ───────────── Computed ───────────── */
+    get brands() {
+      return [...new Set(PRODUCTS.map(p => p.brand))].sort();
+    },
+
+    get filtered() {
+      let list = PRODUCTS.slice();
+
+      if (this.search.trim()) {
+        const q = this.search.toLowerCase();
+        list = list.filter(p =>
+          `${p.name} ${p.brand} ${p.category}`.toLowerCase().includes(q)
+        );
+      }
+      if (this.filters.category !== 'All') {
+        list = list.filter(p => p.category === this.filters.category);
+      }
+      list = list.filter(p => p.price <= this.filters.maxPrice);
+      if (this.filters.rating) list = list.filter(p => p.rating >= this.filters.rating);
+      if (this.filters.brands.length) list = list.filter(p => this.filters.brands.includes(p.brand));
+
+      switch (this.sort) {
+        case 'price-asc':  list.sort((a, b) => a.price - b.price); break;
+        case 'price-desc': list.sort((a, b) => b.price - a.price); break;
+        case 'rating':     list.sort((a, b) => b.rating - a.rating); break;
+        case 'new':        list.sort((a, b) => b.id - a.id); break;
+      }
+      return list;
+    },
+
+    get tabProducts() {
+      if (this.activeTab === 'best') {
+        return PRODUCTS.slice().sort((a, b) => b.reviews - a.reviews).slice(0, 8);
+      }
+      if (this.activeTab === 'new') {
+        return PRODUCTS.slice().sort((a, b) => b.id - a.id).slice(0, 8);
+      }
+      return PRODUCTS.slice().sort((a, b) => b.rating - a.rating).slice(0, 8);
+    },
+
+    get flashProducts() {
+      return PRODUCTS.filter(p => p.oldPrice).slice(0, 5);
+    },
+
+    get currentProduct() {
+      return PRODUCTS.find(p => p.id === this.params.id) || PRODUCTS[0];
+    },
+
+    get relatedProducts() {
+      const cur = this.currentProduct;
+      return PRODUCTS.filter(p => p.category === cur.category && p.id !== cur.id).slice(0, 4);
+    },
+
+    get wishedProducts() {
+      return this.wishlist
+        .map(id => PRODUCTS.find(p => p.id === id))
+        .filter(Boolean);
+    },
+
+    /* ───────────── Cart ───────────── */
+    get cartCount() {
+      return this.cart.reduce((s, i) => s + i.qty, 0);
+    },
+
+    get subtotal() {
+      return this.cart.reduce((s, i) => s + i.price * i.qty, 0);
+    },
+
+    get shipping() {
+      if (this.subtotal === 0) return 0;
+      return this.subtotal >= 150 ? 0 : 12;
+    },
+
+    get tax() {
+      return +(this.subtotal * 0.08).toFixed(2);
+    },
+
+    get total() {
+      return +(this.subtotal + this.shipping + this.tax).toFixed(2);
+    },
+
+    get checkoutShipping() {
+      if (this.subtotal === 0) return 0;
+      if (this.form.shipping === 'express') return 24;
+      return this.subtotal >= 150 ? 0 : 12;
+    },
+
+    get checkoutTotal() {
+      return +(this.subtotal + this.checkoutShipping + this.tax).toFixed(2);
+    },
+
+    addToCart(p, qty = 1, size = null) {
+      const sz = size || (p.sizes && p.sizes.length ? p.sizes[0] : null);
+      const key = `${p.id}-${sz || 'one'}`;
+      const existing = this.cart.find(i => i.key === key);
+
+      if (existing) {
+        existing.qty = Math.min(10, existing.qty + qty);
+      } else {
+        this.cart.push({
+          key, id: p.id, name: p.name, brand: p.brand,
+          price: p.price, image: p.image, qty, size: sz,
+        });
+      }
+      this.notify(`${p.name} added to your bag`);
+      this.cartOpen = true;
+    },
+
+    changeQty(key, delta) {
+      const item = this.cart.find(i => i.key === key);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) this.removeFromCart(key);
+    },
+
+    removeFromCart(key) {
+      this.cart = this.cart.filter(i => i.key !== key);
+    },
+
+    applyPromo() {
+      if (!this.promo.trim()) return;
+      this.notify(`Promo code “${this.promo}” is not valid`);
+      this.promo = '';
+    },
+
+    /* ───────────── Wishlist ───────────── */
+    isWished(id) {
+      return this.wishlist.includes(id);
+    },
+
+    toggleWishlist(p) {
+      if (this.isWished(p.id)) {
+        this.wishlist = this.wishlist.filter(id => id !== p.id);
+        this.notify(`${p.name} removed from wishlist`);
+      } else {
+        this.wishlist.push(p.id);
+        this.notify(`${p.name} saved to wishlist`);
+      }
+    },
+
+    /* ───────────── Checkout ───────────── */
+    placeOrder() {
+      if (this.cart.length === 0) return;
+      this.order = {
+        id: '#MA-' + Math.floor(20000 + Math.random() * 9000),
+        email: this.form.email || 'you@example.com',
+        city: this.form.city || 'Los Angeles',
+        country: this.form.country,
+        payment: this.form.payment,
+        total: this.checkoutTotal,
+      };
+      this.cart = [];
+      this.navigate('success');
+    },
+  };
+}
+</script>
+</body>
+</html>
