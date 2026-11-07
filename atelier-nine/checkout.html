@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Checkout — Atelier Nine</title>
+<meta name="description" content="Atelier Nine makes considered footwear, knitwear and everyday clothing in small runs, from materials that age well." />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="font-sans text-gray-900 antialiased" data-page="checkout">
+<div id="site-header"></div>
+<main id="top" class="">
+<section class="bg-sand"><div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8"><nav class="text-[12px] text-gray-500" aria-label="Breadcrumb"><a class="hover:text-gray-900" href="index.html">Home</a> <span class="mx-1 text-gray-300">/</span> <a class="hover:text-gray-900" href="cart.html">Basket</a> <span class="mx-1 text-gray-300">/</span> <span class="text-gray-800">Checkout</span></nav>
+<p class="mt-4 text-[11px] font-semibold uppercase tracking-wider text-brand-700">Checkout</p>
+<h1 class="mt-2 max-w-3xl font-display text-3xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-4xl">Checkout</h1>
+<p class="mt-3 max-w-2xl text-[15px] leading-relaxed text-gray-600">This is a demonstration store — no payment is taken and no real order is placed.</p></div></section>
+<div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+<div id="co-empty" hidden class="py-16 text-center"><p class="font-display text-xl font-bold">Nothing to check out</p><a href="shop.html" class="mt-6 inline-block rounded-xl bg-brand-700 px-6 py-3 text-sm font-semibold text-white">Browse the collection</a></div>
+<form id="co" class="grid gap-8 lg:grid-cols-[1fr_400px]" novalidate>
+ <div class="space-y-8">
+  <section><h2 class="font-display text-lg font-extrabold">Contact</h2><div class="mt-4 grid gap-4"><div class=""><label class="block text-[12px] font-semibold text-gray-700" for="email">Email</label><input id="email" name="email" type="email" placeholder="you@email.com" required autocomplete="email" class="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"/></div></div></section>
+  <section><h2 class="font-display text-lg font-extrabold">Shipping address</h2><div class="mt-4 grid gap-4 sm:grid-cols-2">
+    <div class=""><label class="block text-[12px] font-semibold text-gray-700" for="first">First name</label><input id="first" name="first" type="text" placeholder="" required autocomplete="given-name" class="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"/></div><div class=""><label class="block text-[12px] font-semibold text-gray-700" for="last">Last name</label><input id="last" name="last" type="text" placeholder="" required autocomplete="family-name" class="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"/></div>
+    <div class="sm:col-span-2"><label class="block text-[12px] font-semibold text-gray-700" for="address">Address</label><input id="address" name="address" type="text" placeholder="" required autocomplete="street-address" class="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"/></div>
+    <div class=""><label class="block text-[12px] font-semibold text-gray-700" for="city">City</label><input id="city" name="city" type="text" placeholder="" required autocomplete="address-level2" class="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"/></div><div class=""><label class="block text-[12px] font-semibold text-gray-700" for="state">State</label><input id="state" name="state" type="text" placeholder="OR" required maxlength="2" autocomplete="address-level1" class="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"/></div>
+    <div class=""><label class="block text-[12px] font-semibold text-gray-700" for="zip">ZIP code</label><input id="zip" name="zip" type="text" placeholder="97201" required autocomplete="postal-code" class="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"/></div><div class=""><label class="block text-[12px] font-semibold text-gray-700" for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" placeholder="" autocomplete="tel" class="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"/></div></div></section>
+  <section><h2 class="font-display text-lg font-extrabold">Delivery</h2><div class="mt-4 space-y-2.5">
+    <label class="flex cursor-pointer items-center justify-between rounded-xl border border-gray-200 p-4 has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50"><span class="flex items-center gap-3"><input type="radio" name="ship" value="standard" checked class="accent-brand-700"/><span><span class="block text-sm font-semibold">Standard</span><span class="block text-[12px] text-gray-500">2–4 working days</span></span></span><span id="ship-std" class="text-sm font-semibold"></span></label>
+    <label class="flex cursor-pointer items-center justify-between rounded-xl border border-gray-200 p-4 has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50"><span class="flex items-center gap-3"><input type="radio" name="ship" value="express" class="accent-brand-700"/><span><span class="block text-sm font-semibold">Express</span><span class="block text-[12px] text-gray-500">1–2 working days</span></span></span><span class="text-sm font-semibold">$14.00</span></label></div></section>
+  <section><h2 class="font-display text-lg font-extrabold">Payment <span class="ml-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase text-amber-800 align-middle">demo</span></h2><div class="mt-4 grid gap-4 sm:grid-cols-2">
+    <div class="sm:col-span-2"><label class="block text-[12px] font-semibold text-gray-700" for="card">Card number</label><input id="card" name="card" type="text" placeholder="4242 4242 4242 4242" required inputmode="numeric" autocomplete="off" class="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"/></div><div class=""><label class="block text-[12px] font-semibold text-gray-700" for="exp">Expiry</label><input id="exp" name="exp" type="text" placeholder="MM / YY" required autocomplete="off" class="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"/></div><div class=""><label class="block text-[12px] font-semibold text-gray-700" for="cvc">CVC</label><input id="cvc" name="cvc" type="text" placeholder="123" required inputmode="numeric" autocomplete="off" class="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"/></div></div>
+    <p class="mt-2 text-[12px] text-gray-400">Use any values — nothing is sent anywhere. The order is saved in your browser only.</p></section>
+ </div>
+ <aside class="h-fit rounded-2xl border border-gray-200 bg-white p-5 lg:sticky lg:top-28"><h2 class="font-display text-lg font-extrabold">Order summary</h2><ul id="co-lines" class="mt-4 divide-y divide-gray-100"></ul><dl id="co-totals" class="mt-4 space-y-2 border-t border-gray-200 pt-4 text-[13.5px]"></dl>
+  <p id="co-err" hidden class="mt-4 rounded-lg bg-rose-50 px-3 py-2 text-[12.5px] font-medium text-rose-700">Please complete the highlighted fields.</p>
+  <button type="submit" class="mt-5 w-full rounded-xl bg-brand-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-800 disabled:cursor-not-allowed disabled:opacity-40">Place order</button></aside>
+</form></div>
+</main>
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/layout.js"></script>
+<script>
+
+const $ = id => document.getElementById(id), { money, esc } = Store;
+const method = () => document.querySelector('input[name=ship]:checked').value;
+function summary() {
+  const lines = Store.cart.lines();
+  if (!lines.length && !window.__placed) { $('co').hidden = true; $('co-empty').hidden = false; return; }
+  $('co-lines').innerHTML = lines.map(l => `<li class="flex gap-3 py-3"><div class="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-gray-50"><img src="${l.product.images[0]}" alt="" class="h-full w-full object-cover" onerror="this.style.opacity=0"/><span class="absolute -right-0 -top-0 grid h-5 min-w-5 place-items-center rounded-bl-lg bg-gray-900 px-1 text-[10px] font-bold text-white">${l.qty}</span></div><div class="min-w-0 flex-1"><p class="truncate text-[13.5px] font-semibold">${esc(l.product.name)}</p><p class="text-[11.5px] text-gray-500">${esc(Store.variantLabel(l.product, l.variant))}</p></div><p class="text-[13px] font-bold">${money(l.variant.price * l.qty)}</p></li>`).join('');
+  const m = method(), d = Store.cart.discount();
+  $('ship-std').textContent = Store.cart.shipping('standard') ? money(Store.cart.shipping('standard')) : 'Free';
+  $('co-totals').innerHTML = `<div class="flex justify-between text-gray-600"><dt>Subtotal</dt><dd>${money(Store.cart.subtotal())}</dd></div>${d ? `<div class="flex justify-between text-brand-700"><dt>Discount (${Store.state.promo})</dt><dd>−${money(d)}</dd></div>` : ''}<div class="flex justify-between text-gray-600"><dt>Shipping</dt><dd>${Store.cart.shipping(m) ? money(Store.cart.shipping(m)) : 'Free'}</dd></div><div class="flex justify-between border-t border-gray-200 pt-3 text-base font-bold"><dt>Total</dt><dd>${money(Store.cart.total(m))}</dd></div>`;
+}
+document.addEventListener('store:change', summary); document.querySelectorAll('input[name=ship]').forEach(r => r.onchange = summary); summary();
+const u = Store.user.get(); if (u) { $('email').value = u.email; const [f, ...r] = u.name.split(' '); $('first').value = f; $('last').value = r.join(' '); }
+$('co').addEventListener('submit', e => {
+  e.preventDefault(); let ok = true;
+  e.target.querySelectorAll('input[required]').forEach(i => { const bad = !i.value.trim() || (i.type === 'email' && !/^\S+@\S+\.\S+$/.test(i.value)); i.classList.toggle('border-rose-400', bad); if (bad) ok = false; });
+  $('co-err').hidden = ok; if (!ok) return;
+  const m = method(), f = Object.fromEntries(new FormData(e.target));
+  const order = Store.orders.create({
+    email: f.email, name: `${f.first} ${f.last}`, address: `${f.address}, ${f.city}, ${f.state.toUpperCase()} ${f.zip}`, shipMethod: m,
+    items: Store.cart.lines().map(l => ({ name: l.product.name, variant: Store.variantLabel(l.product, l.variant), qty: l.qty, price: l.variant.price, image: l.product.images[0] })),
+    subtotal: Store.cart.subtotal(), discount: Store.cart.discount(), shipping: Store.cart.shipping(m), total: Store.cart.total(m), promo: Store.state.promo
+  });
+  window.__placed = true; Store.cart.clear(); location.href = 'order-confirmation.html?id=' + order.id;
+});
+
+</script>
+</body>
+</html>

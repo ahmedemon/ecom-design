@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shipping & returns — Atelier Nine</title>
+<meta name="description" content="Atelier Nine makes considered footwear, knitwear and everyday clothing in small runs, from materials that age well." />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="font-sans text-gray-900 antialiased" data-page="shipping">
+<div id="site-header"></div>
+<main id="top" class="">
+<section class="bg-sand"><div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8"><nav class="text-[12px] text-gray-500" aria-label="Breadcrumb"><a class="hover:text-gray-900" href="index.html">Home</a> <span class="mx-1 text-gray-300">/</span> <span class="text-gray-800">Shipping & returns</span></nav>
+<p class="mt-4 text-[11px] font-semibold uppercase tracking-wider text-brand-700">Support</p>
+<h1 class="mt-2 max-w-3xl font-display text-3xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-4xl">Shipping & returns</h1>
+</div></section><div class="mx-auto max-w-4xl px-4 py-12 sm:px-6"><div class="grid gap-5 sm:grid-cols-3"><div class="rounded-2xl border border-gray-200 p-5"><p class="font-semibold">Standard</p><p class="mt-1 text-sm text-gray-600">2–4 working days · $6.90 · free over $100</p></div><div class="rounded-2xl border border-gray-200 p-5"><p class="font-semibold">Express</p><p class="mt-1 text-sm text-gray-600">1–2 working days · $14.00</p></div><div class="rounded-2xl border border-gray-200 p-5"><p class="font-semibold">Returns</p><p class="mt-1 text-sm text-gray-600">60 days · unworn, tags on · exchanges free</p></div></div><h2 class="mt-12 font-display text-xl font-extrabold">Frequently asked</h2><div class="mt-4 divide-y divide-gray-200 border-y border-gray-200" id="faq"></div><p class="mt-8 text-sm text-gray-600">Still stuck? <a class="font-semibold text-brand-700 hover:underline" href="contact.html">Contact us</a> or <a class="font-semibold text-brand-700 hover:underline" href="track-order.html">track an order</a>.</p></div>
+</main>
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/layout.js"></script>
+<script>
+document.getElementById('faq').innerHTML = FAQ.map(([q,a]) => `<details><summary class="flex items-center justify-between py-4 text-[14px] font-semibold">${q}<span class="chev text-gray-400">⌄</span></summary><p class="pb-5 text-[14px] leading-relaxed text-gray-600">${a}</p></details>`).join('');
+</script>
+</body>
+</html>

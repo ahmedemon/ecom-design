@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Atelier Nine — Modern footwear & everyday clothing</title>
+<meta name="description" content="Atelier Nine makes considered footwear, knitwear and everyday clothing in small runs, from materials that age well." />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="font-sans text-gray-900 antialiased" data-page="home">
+<div id="site-header"></div>
+<main id="top" class="">
+
+<section class="relative flex h-[85vh] min-h-[600px] w-full flex-col justify-center overflow-hidden bg-gray-900">
+  <div class="absolute inset-0 z-0">
+    <img src="https://images.unsplash.com/photo-1555529733-0e670560f7e1?auto=format&fit=crop&w=1920&q=80" alt="" class="h-full w-full object-cover" />
+    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-gray-900/80"></div>
+    <div class="absolute inset-0 bg-black/30 backdrop-blur-[2px]"></div>
+  </div>
+  <div class="pointer-events-none relative z-20 mx-auto mt-10 w-full max-w-7xl px-4 sm:px-6 lg:px-8"><div class="relative h-[320px] w-full max-w-xl" id="hero-text"></div></div>
+  <div class="relative z-10 mb-10 mt-auto w-full"><div class="swiper heroSwiper w-full"><div class="swiper-wrapper items-end pb-12" id="hero-products"></div></div></div>
+  <img src="https://pngimg.com/uploads/hand/hand_PNG1954.png" alt="" class="foreground-hand object-contain" />
+  <div class="absolute bottom-8 right-8 z-40 hidden items-center gap-2 lg:flex">
+    <button type="button" id="hero-prev" class="grid h-10 w-10 place-items-center rounded-full border border-white/30 bg-white/10 text-white backdrop-blur transition hover:bg-white hover:text-gray-900" aria-label="Previous slide"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5m5 6-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button type="button" id="hero-next" class="grid h-10 w-10 place-items-center rounded-full border border-white/30 bg-white/10 text-white backdrop-blur transition hover:bg-white hover:text-gray-900" aria-label="Next slide"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14m-5-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+  <div class="absolute bottom-8 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 lg:left-8 lg:translate-x-0" id="hero-dots"></div>
+</section>
+
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <ul class="mt-4 grid grid-cols-2 gap-3 rounded-2xl border border-gray-200 bg-white p-4 sm:grid-cols-4 text-[12.5px] font-medium text-gray-700">
+    <li class="flex items-center gap-2.5"><svg class="h-[18px] w-[18px] shrink-0 text-brand-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.5"/><circle cx="17.5" cy="18" r="1.5"/></svg>Free shipping over $100</li>
+    <li class="flex items-center gap-2.5"><svg class="h-[18px] w-[18px] shrink-0 text-brand-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12a8 8 0 1 1 2.3 5.7" stroke-linecap="round"/><path d="M4 20v-5h5" stroke-linecap="round" stroke-linejoin="round"/></svg>60-day returns</li>
+    <li class="flex items-center gap-2.5"><svg class="h-[18px] w-[18px] shrink-0 text-brand-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 7h10v10H7z"/><path d="m4 12 3-3m13 6-3 3" stroke-linecap="round" stroke-linejoin="round"/></svg>Free exchanges</li>
+    <li class="flex items-center gap-2.5"><svg class="h-[18px] w-[18px] shrink-0 text-brand-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m12 3 7 3v6c0 4.4-3 7.5-7 9-4-1.5-7-4.6-7-9V6Z" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>Traceable materials</li>
+  </ul>
+
+  <div class="mt-4 grid gap-4 lg:grid-cols-3">
+    <div class="relative flex flex-col items-start justify-between gap-4 overflow-hidden rounded-3xl bg-brand-800 px-6 py-6 text-white sm:flex-row sm:items-center sm:px-8">
+      <div class="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-brand-500/30 blur-2xl"></div>
+      <div class="relative"><span class="inline-flex rounded-full bg-amber-400 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-950">New season</span>
+        <p class="mt-2.5 font-display text-lg font-extrabold leading-snug sm:text-xl">Take 15% off all knitwear.</p>
+        <p class="mt-1 text-[13px] leading-relaxed text-white/70">Use code <b class="text-white">KNIT15</b> at checkout.</p></div>
+      <a href="shop.html?category=knitwear" class="relative shrink-0 rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-brand-800 hover:bg-brand-50">Shop knitwear</a>
+    </div>
+    <div class="flex items-start gap-3 rounded-3xl border border-gray-200 bg-white p-5 lg:col-span-2">
+      <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-700"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m12 3 7 3v6c0 4.4-3 7.5-7 9-4-1.5-7-4.6-7-9V6Z" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <div><p class="text-sm font-semibold text-gray-900">Made in small runs</p><p class="mt-0.5 max-w-xl text-[13px] leading-relaxed text-gray-500">Every piece lists its maker, mill and material origin — and we re-order only what gets worn. <a href="factories.html" class="font-semibold text-brand-700 hover:underline">Meet the makers</a></p></div>
+    </div>
+  </div>
+
+  <section class="pt-12" aria-labelledby="cat-heading">
+    <div class="flex items-end justify-between gap-4"><div><h2 id="cat-heading" class="font-display text-xl font-extrabold tracking-tight sm:text-2xl">Shop by category</h2><p class="mt-1 text-sm text-gray-500">Footwear, layers and the details that finish the look.</p></div><a href="shop.html" class="hidden text-sm font-semibold text-brand-700 hover:text-brand-800 sm:inline">View all →</a></div>
+    <div id="cats" class="no-scrollbar -mx-4 mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-4 sm:gap-4 sm:overflow-visible sm:px-0 lg:grid-cols-8"></div>
+  </section>
+
+  <div id="sections"></div>
+
+  <section class="pt-14" aria-labelledby="reviews-heading">
+    <div class="flex flex-wrap items-end justify-between gap-4"><div><h2 id="reviews-heading" class="font-display text-xl font-extrabold tracking-tight sm:text-2xl">Loved in 8,600 wardrobes</h2><p class="mt-1 text-sm text-gray-500">Real reviews from verified orders.</p></div>
+      <div class="flex items-center gap-2"><span class="text-sm font-bold">4.8 / 5</span><span class="flex gap-0.5 text-amber-500" id="avg-stars"></span></div></div>
+    <div id="reviews" class="mt-5 grid gap-4 sm:grid-cols-3"></div>
+  </section>
+
+  <section class="pt-14">
+    <div class="flex items-end justify-between"><div><h2 class="font-display text-xl font-extrabold tracking-tight sm:text-2xl">From the journal</h2><p class="mt-1 text-sm text-gray-500">Care guides, maker visits and style notes.</p></div><a href="journal.html" class="text-sm font-semibold text-brand-700 hover:text-brand-800">All stories →</a></div>
+    <div id="home-journal" class="mt-5 grid gap-5 sm:grid-cols-3"></div>
+  </section>
+
+  <section class="pb-4 pt-14"><div class="overflow-hidden rounded-3xl bg-brand-700"><div class="grid items-center gap-6 p-7 sm:p-10 lg:grid-cols-2">
+    <div><h2 class="font-display text-2xl font-extrabold leading-tight text-white sm:text-[1.75rem]">Get 10% off your first order</h2><p class="mt-2 max-w-md text-sm leading-relaxed text-white/70">Join 9,000 members for early access to new drops, restocks and the occasional sample sale.</p></div>
+    <div><form id="newsletter" class="flex flex-col gap-2 sm:flex-row"><label for="nl-email" class="sr-only">Email address</label><input id="nl-email" type="email" required placeholder="you@email.com" class="min-w-0 flex-1 rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-white focus:bg-white/15 focus:outline-none"/><button class="shrink-0 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-brand-800 hover:bg-brand-50">Subscribe</button></form>
+      <div id="nl-done" hidden class="rounded-xl bg-white/10 px-4 py-3 text-sm text-white">You're on the list. Use code <b>WELCOME10</b> at checkout.</div></div>
+  </div></div></section>
+</div>
+
+</main>
+<div id="site-footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/layout.js"></script>
+<script>
+
+const $ = id => document.getElementById(id);
+// hero text slider
+let hi = 0, ht;
+const renderHero = () => {
+  $('hero-text').innerHTML = HERO_SLIDES.map((s, i) => `<div class="absolute inset-0 flex flex-col justify-center text-white transition duration-700 ${i === hi ? 'opacity-100 translate-y-0' : 'pointer-events-none opacity-0 translate-y-4'}">
+    <span class="inline-flex w-fit items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-semibold backdrop-blur"><span class="h-1.5 w-1.5 rounded-full bg-brand-300"></span>${s.eyebrow}</span>
+    <h1 class="mt-4 font-display text-[2.1rem] font-extrabold leading-[1.05] tracking-tight sm:text-[2.6rem] lg:text-[3rem]">${s.title}</h1>
+    <p class="mt-3 max-w-md text-[14.5px] leading-relaxed text-gray-300">${s.body}</p>
+    <div class="pointer-events-auto mt-6 flex flex-wrap gap-2.5"><a href="${s.primary.href}" class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-100">${s.primary.label} →</a><a href="${s.secondary.href}" class="inline-flex rounded-xl border border-white/30 bg-white/5 px-5 py-3 text-sm font-semibold text-white backdrop-blur hover:bg-white/15">${s.secondary.label}</a></div></div>`).join('');
+  $('hero-dots').innerHTML = HERO_SLIDES.map((_, i) => `<button data-dot="${i}" aria-label="Go to slide ${i + 1}" class="h-1.5 rounded-full transition-all duration-300 ${i === hi ? 'w-8 bg-white' : 'w-1.5 bg-white/40 hover:bg-white/80'}"></button>`).join('');
+};
+const go = i => { hi = (i + HERO_SLIDES.length) % HERO_SLIDES.length; renderHero(); clearInterval(ht); ht = setInterval(() => go(hi + 1), 6500); };
+$('hero-prev').onclick = () => go(hi - 1); $('hero-next').onclick = () => go(hi + 1);
+$('hero-dots').onclick = e => { const b = e.target.closest('[data-dot]'); if (b) go(+b.dataset.dot); };
+go(0);
+// hero product floor (built once, then Swiper loops it)
+const base = PRODUCTS.slice(0, 6).map((p, i) => ({ ...p, hero: HERO_PNGS[i] || p.images[0] }));
+$('hero-products').innerHTML = [...base, ...base].map(p => `<div class="swiper-slide !w-[200px] md:!w-[300px]"><a href="product.html?id=${p.id}" class="group model-shadow block cursor-grab active:cursor-grabbing"><img src="${p.hero}" alt="${Store.esc(p.name)}" class="h-auto w-full object-contain transition-transform duration-500 group-hover:-translate-y-4" draggable="false" onerror="this.src='${p.images[0]}'"/><div class="mt-4 text-center"><h3 class="font-display text-lg text-white transition group-hover:text-brand-300">${Store.esc(p.name)}</h3><p class="mt-1 text-xs text-gray-400">${Store.money(Store.priceFrom(p))}</p></div></a></div>`).join('');
+if (window.Swiper) new Swiper('.heroSwiper', { slidesPerView: 'auto', spaceBetween: 40, loop: true, speed: 10000, freeMode: { enabled: true, momentum: false }, autoplay: { delay: 0, disableOnInteraction: false }, grabCursor: true, breakpoints: { 768: { spaceBetween: 80 } } });
+// categories
+$('cats').innerHTML = CATEGORIES.map(c => `<a href="shop.html?category=${c.id}" class="group flex w-[104px] shrink-0 snap-start flex-col items-center gap-2.5 sm:w-auto"><span class="relative grid h-[104px] w-[104px] place-items-center overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 sm:aspect-square sm:h-auto sm:w-full"><img src="${c.image}" alt="" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" onerror="this.style.opacity=0"/></span><span class="text-center text-[12.5px] font-semibold leading-tight text-gray-800 group-hover:text-brand-700">${Store.esc(c.name)}</span><span class="-mt-1 text-[11px] text-gray-400">${c.count} items</span></a>`).join('');
+// product sections
+$('sections').innerHTML = SECTIONS.map(s => { const list = PRODUCTS.filter(p => p.tags.includes(s.tag)).slice(0, 4);
+  return `<section id="${s.id}" class="scroll-mt-32 pt-12 sm:pt-14"><div class="flex flex-wrap items-end justify-between gap-3"><div><h2 class="font-display text-xl font-extrabold tracking-tight sm:text-2xl">${s.title}</h2><p class="mt-1 max-w-lg text-sm text-gray-500">${s.desc}</p></div><a href="shop.html?tag=${s.tag}" class="text-sm font-semibold text-brand-700 hover:text-brand-800">View all →</a></div><div class="mt-5 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">${list.map(Store.productCard).join('')}</div></section>`; }).join('');
+// reviews + journal + newsletter
+$('avg-stars').innerHTML = Store.star('currentColor', 'h-4 w-4').repeat(5);
+$('reviews').innerHTML = REVIEWS.map(r => `<figure class="flex flex-col rounded-2xl border border-gray-200 bg-white p-5"><div class="flex gap-0.5 text-amber-500">${Store.star().repeat(r.stars)}</div><blockquote class="mt-3 flex-1 text-[14px] leading-relaxed text-gray-700">“${Store.esc(r.quote)}”</blockquote><figcaption class="mt-4 flex items-center gap-3 border-t border-gray-100 pt-3"><span class="grid h-9 w-9 place-items-center rounded-full bg-brand-50 text-[11px] font-bold text-brand-700">${r.initials}</span><span><span class="block text-[13px] font-semibold">${Store.esc(r.name)}</span><span class="block text-[11.5px] text-gray-400">${Store.esc(r.meta)}</span></span></figcaption></figure>`).join('');
+$('home-journal').innerHTML = JOURNAL.slice(0, 3).map(j => `<a href="journal-post.html?slug=${j.slug}" class="group block"><div class="aspect-[3/2] overflow-hidden rounded-2xl bg-gray-100"><img src="${j.image}" alt="" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" onerror="this.style.opacity=0"/></div><p class="mt-3 text-[11px] font-semibold uppercase tracking-wider text-brand-700">${j.tag} · ${j.read}</p><h3 class="mt-1 font-display text-base font-bold leading-snug group-hover:text-brand-700">${Store.esc(j.title)}</h3></a>`).join('');
+$('newsletter').onsubmit = e => { e.preventDefault(); e.target.hidden = true; $('nl-done').hidden = false; Store.toast("You're subscribed — welcome to Atelier Nine"); };
+
+</script>
+</body>
+</html>

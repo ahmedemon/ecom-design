@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Wishlist — Atelier Nine</title>
+<meta name="description" content="Atelier Nine makes considered footwear, knitwear and everyday clothing in small runs, from materials that age well." />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="font-sans text-gray-900 antialiased" data-page="wishlist">
+<div id="site-header"></div>
+<main id="top" class="">
+<section class="bg-sand"><div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8"><nav class="text-[12px] text-gray-500" aria-label="Breadcrumb"><a class="hover:text-gray-900" href="index.html">Home</a> <span class="mx-1 text-gray-300">/</span> <span class="text-gray-800">Wishlist</span></nav>
+<p class="mt-4 text-[11px] font-semibold uppercase tracking-wider text-brand-700">Saved</p>
+<h1 class="mt-2 max-w-3xl font-display text-3xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-4xl">Your wishlist</h1>
+</div></section>
+<div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8"><div id="wl" class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4"></div>
+<div id="wl-empty" hidden class="py-12 text-center"><p class="font-display text-xl font-bold">No favourites yet</p><p class="mt-1 text-sm text-gray-500">Tap the heart on any product to keep it here.</p><a href="shop.html" class="mt-6 inline-block rounded-xl bg-brand-700 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-800">Find something good</a></div></div>
+</main>
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/layout.js"></script>
+<script>
+
+function render() { const items = Store.wish.items(); document.getElementById('wl').innerHTML = items.map(Store.productCard).join(''); document.getElementById('wl-empty').hidden = items.length > 0; }
+document.addEventListener('store:change', render); render();
+
+</script>
+</body>
+</html>

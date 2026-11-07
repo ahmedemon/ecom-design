@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shop — Atelier Nine</title>
+<meta name="description" content="Atelier Nine makes considered footwear, knitwear and everyday clothing in small runs, from materials that age well." />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="font-sans text-gray-900 antialiased" data-page="shop">
+<div id="site-header"></div>
+<main id="top" class="">
+
+<section class="bg-sand"><div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+  <nav class="text-[12px] text-gray-500" aria-label="Breadcrumb"><a class="hover:text-gray-900" href="index.html">Home</a> <span class="mx-1 text-gray-300">/</span> <span class="text-gray-800">Shop</span></nav>
+  <h1 id="shop-title" class="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">All products</h1>
+  <p id="shop-count" class="mt-1 text-sm text-gray-500"></p>
+</div></section>
+<div class="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+  <div class="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:px-0" id="cat-pills"></div>
+  <div class="mt-4 rounded-2xl border border-gray-200 bg-white p-4"><div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+    <div class="flex items-center gap-2"><label for="sort" class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Sort</label>
+      <select id="sort" class="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15"><option value="featured">Featured</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="rating">Top rated</option></select></div>
+    <div class="flex items-center gap-2"><label for="maxprice" class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Max price</label><input id="maxprice" type="range" min="30" max="250" step="10" value="250" class="h-1.5 w-24 cursor-pointer appearance-none rounded-full bg-gray-200 accent-brand-700"/><span id="maxprice-val" class="w-12 text-sm font-semibold">$250</span></div>
+    <label class="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-gray-700"><input id="instock" type="checkbox" class="h-4 w-4 rounded border-gray-300 accent-brand-700"/> In stock only</label>
+    <div class="ml-auto flex flex-wrap items-center gap-2"><div id="chips" class="flex flex-wrap gap-2"></div><button id="clear" class="rounded-lg border border-gray-200 px-3 py-1.5 text-[11.5px] font-semibold text-gray-600 hover:border-gray-300 hover:bg-gray-50">Clear all</button></div>
+  </div></div>
+  <div id="grid" class="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4"></div>
+  <div id="empty" hidden class="mt-6 rounded-2xl border border-dashed border-gray-300 bg-gray-50 px-6 py-16 text-center"><p class="font-display text-lg font-bold">Nothing matches just yet</p><p class="mx-auto mt-1 max-w-sm text-sm text-gray-500">Try a broader search, loosen the price filter, or browse the full collection.</p><button id="empty-clear" class="mt-5 rounded-xl bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-800">Show all products</button></div>
+</div>
+
+</main>
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/layout.js"></script>
+<script>
+
+const $ = id => document.getElementById(id);
+const S = { q: '', category: 'all', tag: '', sort: 'featured', max: 250, stock: false };
+const P = new URLSearchParams(location.search);
+S.q = P.get('q') || ''; S.category = P.get('category') || 'all'; S.tag = P.get('tag') || ''; S.sort = P.get('sort') || 'featured'; S.max = +(P.get('max') || 250); S.stock = P.get('stock') === '1';
+if (P.get('focus') === 'search') setTimeout(() => $('search-desktop')?.focus(), 50);
+$('sort').value = S.sort; $('maxprice').value = S.max; $('instock').checked = S.stock;
+const sync = () => { const p = new URLSearchParams(); if (S.q) p.set('q', S.q); if (S.category !== 'all') p.set('category', S.category); if (S.tag) p.set('tag', S.tag); if (S.sort !== 'featured') p.set('sort', S.sort); if (S.max < 250) p.set('max', S.max); if (S.stock) p.set('stock', '1'); history.replaceState(null, '', location.pathname + (p.toString() ? '?' + p : '')); };
+function render() {
+  const q = S.q.trim().toLowerCase();
+  let list = PRODUCTS.filter(p => (!q || `${p.name} ${p.brand} ${p.categoryLabel} ${p.blurb}`.toLowerCase().includes(q)) && (S.category === 'all' || p.category === S.category) && (!S.tag || p.tags.includes(S.tag)) && Store.priceFrom(p) <= S.max && (!S.stock || p.variants.some(v => v.stock > 0)));
+  const pf = Store.priceFrom;
+  if (S.sort === 'price-asc') list = [...list].sort((a, b) => pf(a) - pf(b));
+  if (S.sort === 'price-desc') list = [...list].sort((a, b) => pf(b) - pf(a));
+  if (S.sort === 'rating') list = [...list].sort((a, b) => b.rating - a.rating);
+  const sec = SECTIONS.find(s => s.tag === S.tag), cat = CATEGORIES.find(c => c.id === S.category);
+  $('shop-title').textContent = q ? `Results for “${S.q.trim()}”` : sec ? sec.title : cat ? cat.name : 'All products';
+  document.title = $('shop-title').textContent + ' — Atelier Nine';
+  $('shop-count').textContent = `${list.length} product${list.length === 1 ? '' : 's'} found`;
+  $('grid').innerHTML = list.map(Store.productCard).join(''); $('empty').hidden = list.length > 0;
+  $('maxprice-val').textContent = '$' + S.max;
+  $('cat-pills').innerHTML = [['all', 'All']].concat(CATEGORIES.map(c => [c.id, c.name])).map(([id, n]) => `<button data-cat="${id}" class="shrink-0 rounded-full border px-4 py-1.5 text-[12.5px] font-semibold transition ${S.category === id ? 'border-brand-700 bg-brand-700 text-white' : 'border-gray-200 bg-white text-gray-700 hover:border-gray-400'}">${Store.esc(n)}</button>`).join('');
+  const chips = []; if (q) chips.push(['q', `“${S.q.trim()}”`]); if (S.tag) chips.push(['tag', sec ? sec.title : S.tag]); if (S.stock) chips.push(['stock', 'In stock']); if (S.max < 250) chips.push(['max', 'Under $' + S.max]);
+  $('chips').innerHTML = chips.map(([k, l]) => `<span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1.5 text-[11.5px] font-semibold text-brand-800">${Store.esc(l)}<button data-chip="${k}" class="grid h-4 w-4 place-items-center rounded-full text-brand-600 hover:bg-brand-200" aria-label="Remove ${Store.esc(l)}">×</button></span>`).join('');
+  sync();
+}
+const reset = () => { Object.assign(S, { q: '', category: 'all', tag: '', sort: 'featured', max: 250, stock: false }); $('sort').value = 'featured'; $('maxprice').value = 250; $('instock').checked = false; document.querySelectorAll('input[type=search]').forEach(i => i.value = ''); render(); };
+$('sort').onchange = e => { S.sort = e.target.value; render(); };
+$('maxprice').oninput = e => { S.max = +e.target.value; render(); };
+$('instock').onchange = e => { S.stock = e.target.checked; render(); };
+$('clear').onclick = reset; $('empty-clear').onclick = reset;
+$('cat-pills').onclick = e => { const b = e.target.closest('[data-cat]'); if (b) { S.category = b.dataset.cat; S.tag = ''; S.q = ''; document.querySelectorAll('input[type=search]').forEach(i => i.value = ''); render(); } };
+$('chips').onclick = e => { const b = e.target.closest('[data-chip]'); if (!b) return; const k = b.dataset.chip; if (k === 'q') { S.q = ''; document.querySelectorAll('input[type=search]').forEach(i => i.value = ''); } if (k === 'tag') S.tag = ''; if (k === 'stock') { S.stock = false; $('instock').checked = false; } if (k === 'max') { S.max = 250; $('maxprice').value = 250; } render(); };
+render();
+
+</script>
+</body>
+</html>

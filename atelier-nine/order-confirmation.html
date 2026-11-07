@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Order confirmed — Atelier Nine</title>
+<meta name="description" content="Atelier Nine makes considered footwear, knitwear and everyday clothing in small runs, from materials that age well." />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="font-sans text-gray-900 antialiased" data-page="confirmation">
+<div id="site-header"></div>
+<main id="top" class="">
+<div class="mx-auto max-w-2xl px-4 py-14 sm:px-6"><div id="conf"></div></div>
+</main>
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/layout.js"></script>
+<script>
+
+const { money, esc } = Store; const o = Store.orders.get(new URLSearchParams(location.search).get('id') || '');
+document.getElementById('conf').innerHTML = !o ? `<div class="text-center"><h1 class="font-display text-2xl font-extrabold">Order not found</h1><p class="mt-2 text-gray-500">We couldn't find that order on this device.</p><a href="track-order.html" class="mt-6 inline-block rounded-xl bg-brand-700 px-6 py-3 text-sm font-semibold text-white">Track an order</a></div>` :
+`<div class="text-center"><div class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-brand-100 text-brand-700"><svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<h1 class="mt-5 font-display text-3xl font-extrabold tracking-tight">Thank you, ${esc(o.name.split(' ')[0])}!</h1><p class="mt-2 text-gray-600">Order <b class="text-gray-900">${o.id}</b> is confirmed. A (pretend) receipt is on its way to ${esc(o.email)}.</p></div>
+<div class="mt-8 rounded-2xl border border-gray-200 bg-white p-5"><ul class="divide-y divide-gray-100">${o.items.map(i => `<li class="flex gap-3 py-3"><img src="${i.image}" alt="" class="h-16 w-16 rounded-lg object-cover bg-gray-50" onerror="this.style.opacity=0"/><div class="flex-1"><p class="text-[14px] font-semibold">${esc(i.name)}</p><p class="text-[12px] text-gray-500">${esc(i.variant)} · Qty ${i.qty}</p></div><p class="text-[14px] font-bold">${money(i.price * i.qty)}</p></li>`).join('')}</ul>
+<dl class="mt-3 space-y-1.5 border-t border-gray-200 pt-3 text-[13.5px]"><div class="flex justify-between text-gray-600"><dt>Subtotal</dt><dd>${money(o.subtotal)}</dd></div>${o.discount ? `<div class="flex justify-between text-brand-700"><dt>Discount</dt><dd>−${money(o.discount)}</dd></div>` : ''}<div class="flex justify-between text-gray-600"><dt>Shipping</dt><dd>${o.shipping ? money(o.shipping) : 'Free'}</dd></div><div class="flex justify-between pt-1 text-base font-bold"><dt>Total</dt><dd>${money(o.total)}</dd></div></dl></div>
+<div class="mt-4 rounded-2xl bg-gray-50 p-5 text-[13.5px] text-gray-600"><p class="font-semibold text-gray-900">Shipping to</p><p class="mt-1">${esc(o.name)}<br>${esc(o.address)}</p><p class="mt-3">${o.shipMethod === 'express' ? 'Express · 1–2 working days' : 'Standard · 2–4 working days'}</p></div>
+<div class="mt-8 flex flex-wrap justify-center gap-3"><a href="track-order.html?id=${o.id}&email=${encodeURIComponent(o.email)}" class="rounded-xl bg-brand-700 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-800">Track this order</a><a href="shop.html" class="rounded-xl border border-gray-300 px-6 py-3 text-sm font-semibold hover:bg-gray-50">Keep shopping</a></div>`;
+
+</script>
+</body>
+</html>
