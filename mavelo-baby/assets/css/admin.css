@@ -1,0 +1,35 @@
+/* Admin-only additions (loaded after style.css) */
+.admin .adminheader .who{display:flex;align-items:center;gap:12px}
+.admin .adminheader .badge{margin-left:2px}
+.admin .toolbar h1{margin:0}.admin .toolbar p{margin:4px 0 0}
+.admin .panel>.tablewrap{margin:-6px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.admin .filters-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+.admin .filters-row .search{margin:0;max-width:360px;flex:1;min-width:200px}
+.admin .filters-row select{padding:11px 14px;border:1px solid var(--line);border-radius:30px;background:#fff}
+dialog{max-width:640px}
+dialog h2{margin-top:0}
+.admin .stat strong{font-size:27px}
+.admin .stat small.neg{color:#a53a4f}
+.admin .bar{min-width:18px}
+.btn.danger{background:#fff;color:#a53a4f;border-color:#f0c9d0}
+.admin .lowrow td{background:#fff9ec}
+.admin .empty-row{text-align:center;color:#8f7c87;padding:30px}
+.admin .mini{display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.admin .mini:last-child{border:0}
+.admin .mini .grow{flex:1}.admin .mini b{font-size:13px}
+.checks{display:grid;gap:10px;margin:10px 0 20px}
+.admin .logout{margin-top:18px;display:block}
+@media(max-width:680px){.admin .filters-row{flex-direction:column;align-items:stretch}.admin .adminheader{flex-wrap:wrap}.admin dialog{padding:20px}}
+
+.sidebar{align-self:start;position:sticky;top:0;height:100vh;overflow:auto}
+.optset{min-width:0;border:1px solid var(--line);border-radius:12px;padding:10px 14px 8px;margin:0 0 12px}
+.optset legend{font-weight:700;font-size:12px;padding:0 6px}
+.chip{display:inline-flex;gap:6px;align-items:center;margin:4px 14px 4px 0;font-size:12px;cursor:pointer}
+.vtable input{width:96px;padding:8px;border:1px solid #ded6db;border-radius:8px;min-height:36px}
+.vtable input.sku{width:140px}
+.sectionnote{margin:-6px 0 12px}
+.admin h3,dialog h3{margin:22px 0 10px;font-size:15px}
+.valuechips{display:flex;gap:6px;flex-wrap:wrap;max-width:360px;white-space:normal}
+.valuechips span{background:#f5f0ec;border-radius:20px;padding:3px 10px;font-size:11px;display:inline-flex;gap:5px;align-items:center}
+@media(max-width:680px){.sidebar{height:auto;position:sticky;top:0;z-index:40;padding:10px 14px;overflow:visible}.sidebar .logo small,.sidebar .logout{display:none}.sidebar nav{margin-top:8px}}
