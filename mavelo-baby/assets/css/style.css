@@ -401,7 +401,7 @@ svg {
   gap: 10px;
 }
 .promo:nth-child(2) {
-  background: #f8e4e9;
+  background: #F5E3DB;
 }
 .promo .art {
   width: 42%;
@@ -1374,7 +1374,7 @@ button:hover,
 .gifttile {
   grid-column: span 2;
   border-radius: 17px;
-  background: linear-gradient(0deg, #f8e4e9, #f8e4e9);
+  background: linear-gradient(0deg, #F5E3DB, #F5E3DB);
   padding: 34px;
   display: flex;
   flex-direction: column;
